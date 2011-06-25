@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block body %}
+    {% if comments %}
+        <div class="wrapper">
+            <div class="divider"></div>
+            {% include "comments/comments.html" with anchored=1 stubbed=0 modcontrols=1 %}
+        </div>
+        {% include "comments/comments_form.html" %}
+    {% else %}
+        <p align="center">No comments yet.</p><div class="divider"></div>
+    {% endif %}
+{% endblock %}

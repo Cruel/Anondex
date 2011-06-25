@@ -1,0 +1,31 @@
+<div class="errdiv"></div>
+<form id="commentform">
+<table class="formtable">
+    <tr>
+        <td class="firstcol">Name</td>
+        <td><input name="name" type="text" maxlength="20" value="" /></td>
+    </tr><tr>
+        <td>Password</td>
+        <td><input name="pass" type="text" maxlength="20" value="" /></td>
+    </tr><tr>
+        <td>Image:</td>
+        <td id="imguploadcell">
+						
+                <div id="imguploader"><p></p></div>
+                <div id="status"></div>
+                <div id="fileinfo"></div>
+                <div id="progressbar"></div>
+						
+        </td>
+    </tr><tr>
+        <td>Comment *<div id="charcounter">[Chars Left: 500]</div></td>
+        <td><textarea id="comment" name="comment" onKeyDown="updateCharCount(this);" onKeyUp="updateCharCount(this);"></textarea></td>
+    </tr><tr>
+        <td></td><td><input id="submitbutton" type="button" value="Post Comment" onclick="submitComment();" /></td>
+    </tr>
+</table>
+<input name="id" type="hidden" value="93" />
+<input name="filename" type="hidden" value="" />
+<input name="info" type="hidden" value="" />
+</form>
+<div class="footerdiv">* The comment is the only required field. (500 character limit)</div>

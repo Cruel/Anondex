@@ -1,0 +1,9 @@
+{% if comment_list %}
+    <ul>
+    {% for comment in comment_list %}
+        <li><a href="/comment/{{ comment.id }}/">{{ comment.name|default:"Anonymous" }} --- {{ comment.comment }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No comments available.</p>
+{% endif %}
