@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import datetime
 
 class User(models.Model):
     ip = models.CharField(unique=True, max_length=45)
@@ -32,7 +33,7 @@ class Comment(models.Model):
     comment = models.TextField()
     image = models.ForeignKey(Image, null=True)
     image_status = models.IntegerField(null=True, blank=True)
-    date = models.DateTimeField()
+    date = models.DateTimeField(default=datetime.now)
     user = models.ForeignKey(User)
     is_mod = models.BooleanField()
     in_image = models.IntegerField()
