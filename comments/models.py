@@ -1,5 +1,12 @@
 from django.db import models
+from django.contrib.auth.models import User
 from datetime import datetime
+
+class UserProfile(models.Model):
+    url = models.URLField()
+    home_address = models.TextField()
+    phone_numer = models.IntegerField()
+    user = models.ForeignKey(User, unique=True)
 
 class User(models.Model):
     ip = models.CharField(unique=True, max_length=45)

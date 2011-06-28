@@ -1,9 +1,9 @@
 
-LOGIN_URL          = '/login/'
-LOGIN_REDIRECT_URL = '/logged-in/'
-LOGIN_ERROR_URL    = '/error/'
+LOGIN_URL          = '/app/login/'
+LOGIN_REDIRECT_URL = '/app/logged-in/'
+LOGIN_ERROR_URL    = '/app/error/'
 
-SOCIAL_AUTH_DEFAULT_USERNAME = 'new_social_auth_user'
+SOCIAL_AUTH_DEFAULT_USERNAME = 'NewUser'
 # If a custom redirect URL is needed that must be different to LOGIN_URL
 #SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/another-login-url/'
 # Different URL for newly registered users
@@ -44,4 +44,10 @@ SOCIAL_AUTH_IMPORT_BACKENDS = (
     #'myproy.social_auth_extra_services',
 )
 
+ACCOUNT_ACTIVATION_DAYS = 7
+
+AUTH_PROFILE_MODULE = 'comments.UserProfile'
+
 HEAD_JS_FILES = {'swfupload/swfupload','jquery.swfupload','jquery.fancybox-1.3.4','jquery.jmc_resizr','jquery.taghandler','jquery.cluetip','jquery.hoverIntent','create2','comments','main','report','flashplayer',}
+
+HEAD_CSS_FILES = {'index','imprimis','browse','comments','create','framer','hoverdiv','report','stars','jquery.fancybox-1.3.4','jquery-ui-1.8.9.custom','jquery.cluetip','data','layout'}

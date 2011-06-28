@@ -66,6 +66,11 @@ TEMPLATE_DIRS = (
     join(ROOT_PATH, 'templates')
 )
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'comments.context_processors.html_header_content',
+)
+
 AUTHENTICATION_BACKENDS = (
     'social_auth.backends.twitter.TwitterBackend',
     'social_auth.backends.facebook.FacebookBackend',
@@ -100,6 +105,8 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.admindocs',
     #'djangotoolbox',
+    'registration',
+    'profiles',
     'social_auth',
     'pagination',
     'gravatar',

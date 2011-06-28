@@ -12,6 +12,8 @@ urlpatterns = patterns('',
     (r'^admin/', include(admin.site.urls)),
     #(r'auth/', include('social_auth.urls')),
     (r'app/', include('app.urls')),
+    (r'^accounts/', include('registration.backends.default.urls')),
+    (r'^profiles/', include('profiles.urls')),
 )
 
 #urlpatterns += staticfiles_urlpatterns()
