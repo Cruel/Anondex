@@ -15,7 +15,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'django1',
+        'NAME': 'anondex2',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': '',
@@ -83,7 +83,7 @@ AUTHENTICATION_BACKENDS = (
     #'social_auth.backends.contrib.orkut.OrkutBackend',
     #'social_auth.backends.contrib.foursquare.FoursquareBackend',
     'social_auth.backends.OpenIDBackend',
-    'django.contrib.auth.backends.ModelBackend',
+    'django.contrib.socialauth.backends.ModelBackend',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -112,7 +112,7 @@ INSTALLED_APPS = (
     'gravatar',
     'anondex.polls',
     'anondex.comments',
-    'anondex.app',
+    'anondex.socialauth',
 )
 
 LOGGING = {

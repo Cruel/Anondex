@@ -1,24 +1,21 @@
 
-LOGIN_URL          = '/app/login/'
-LOGIN_REDIRECT_URL = '/app/logged-in/'
-LOGIN_ERROR_URL    = '/app/error/'
+LOGIN_URL          = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/socialauth/logged-in/'
+LOGIN_ERROR_URL    = '/socialauth/error/'
 
 SOCIAL_AUTH_DEFAULT_USERNAME = 'NewUser'
 # If a custom redirect URL is needed that must be different to LOGIN_URL
-#SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/another-login-url/'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/another-login-url/'
 # Different URL for newly registered users
-#SOCIAL_AUTH_NEW_USER_REDIRECT_URL = '/new-users-login-url/'
+SOCIAL_AUTH_NEW_USER_REDIRECT_URL = '/new-users-login-url/'
 # This defines the desired session key where last error message should be stored. It's disabled by default.
 SOCIAL_AUTH_ERROR_KEY = 'social_errors'
 
 # Final user name will have a random UUID-generated suffix in case it's already taken.
-#SOCIAL_AUTH_UUID_LENGTH = 16
+SOCIAL_AUTH_UUID_LENGTH = 6
 
 # Backends will store extra values from response by default, set this to False to avoid such behavior
 #SOCIAL_AUTH_EXTRA_DATA = False
-
-
-
 # Configure authentication and association complete URL names to avoid possible clashes:
 SOCIAL_AUTH_COMPLETE_URL_NAME  = 'complete'
 SOCIAL_AUTH_ASSOCIATE_URL_NAME = 'associate_complete'
@@ -46,8 +43,37 @@ SOCIAL_AUTH_IMPORT_BACKENDS = (
 
 ACCOUNT_ACTIVATION_DAYS = 7
 
-AUTH_PROFILE_MODULE = 'comments.UserProfile'
+AUTH_PROFILE_MODULE = 'socialauth.Profile'
+#SOCIAL_AUTH_USER_MODEL = 'socialauth.CustomUser'
 
-HEAD_JS_FILES = {'swfupload/swfupload','jquery.swfupload','jquery.fancybox-1.3.4','jquery.jmc_resizr','jquery.taghandler','jquery.cluetip','jquery.hoverIntent','create2','comments','main','report','flashplayer',}
+HEAD_JS_FILES = {
+    'swfupload/swfupload',
+    'jquery.swfupload',
+    'jquery.fancybox-1.3.4',
+    'jquery.jmc_resizr',
+    'jquery.taghandler',
+    'jquery.cluetip',
+    'jquery.hoverIntent',
+    'create2',
+    'comments',
+    'main',
+    'report',
+    'flashplayer',
+}
 
-HEAD_CSS_FILES = {'index','imprimis','browse','comments','create','framer','hoverdiv','report','stars','jquery.fancybox-1.3.4','jquery-ui-1.8.9.custom','jquery.cluetip','data','layout'}
+HEAD_CSS_FILES = {
+    'index',
+    'imprimis',
+    'browse',
+    'comments',
+    'create',
+    'framer',
+    'hoverdiv',
+    'report',
+    'stars',
+    'jquery.fancybox-1.3.4',
+    'jquery-ui-1.8.9.custom',
+    'jquery.cluetip',
+    'data',
+    'layout',
+}

@@ -1,73 +1,15 @@
 {% extends "base.html" %}
 
-{% comment %}{% load thumbnail %}{% endcomment %}
-
 {% block title %}{{ profile.user.username }} - {{ block.super }}{% endblock %}
 
 {% block content %}
-
-{% if profile %}
-    {% comment %}
-   <div id="profile_info">
-      <h1>{{ profile.user.username }}</h1>
-
-      <div id="profile_image">
-	 {% thumbnail profile.photo 150x150 autocrop as thumb %}
-	 <img src="{{ thumb }}" width="{{ thumb.width }}" height="{{ thumb.height }}" />
-      </div>
-
-      <div id="profile_table">
-	 <table>
-	    <ul>
-	       <li>Name: {{ profile.user.first_name }}</li>
-	       <li>Gender: {{ profile.gender }}</li>
-	       <li>Location:
-		  {% if profile.home_city %}
-		     {{ profile.home_city }},
-		  {% endif %} {{ profile.home_state }}</li>
-	       <li>Last Login: {{ profile.user.last_login|date:"F j, Y" }}</li>
-	       <li>Member since: {{ profile.user.date_joined|date:"F j, Y" }}</li>
-	    </ul>
-	 </table>
-      </div>
-
-      <div id="profile_bio">
-	 <p>Bio: {{ profile.bio }}</p>
-      </div>
-
-      <div id="user_details">
-      <ul>
-	 {% if user.is_authenticated %}
-	    {% ifequal user profile.user %}
-	 <li><a href="{% url profiles_edit_profile %}">Edit Profile</a></li>
-	    {% endifequal %}
-	 {% endif %}
-	 <li><a href="/{{ profile.user.username }}/toolbox/">Toolbox</a></li>
-	 <li><a href="/{{ profile.user.username }}/modules/">Modules</a></li>
-	 <li><a href="/{{ profile.user.username }}/parts/">Parts</a></li>
-      </ul>
-   </div>
-
-   <hr />
-
-   <div id="profile_nav">
-      <ul>
-	 <li>Profile</li>
-	 <li>Garage</li>
-	 <li>Blog</li>
-	 <li>Tags</li>
-	 <li>Store</li>
-      </ul>
-   </div>
-    {% endcomment %}
-    <h1>{{ profile.user.username }}</h1>
-    <p>{{ profile.url }}</p>
-    <p>{{ profile.phone_numer }}</p>
-    <p>{{ profile.home_address }}</p>
-{% else %}
-
-<p>This profile is not publicly accessible</p>
-
-{% endif %}
-
+    {% if profile %}
+        {% comment %}{% if user.is_authenticated %}{% endcomment %}
+        <h1>{{ profile.user.username }}{% ifequal user profile.user %} [<a href="{% url profiles_edit_profile %}">edit</a>]{% endifequal %}</h1>
+        <p>{{ profile.user.email }}</p>
+        <p>{{ profile.user.first_name }} {{ profile.user.last_name }}</p>
+        <p>{{ profile.gender }}</p>
+    {% else %}
+        <p>This profile is not publicly accessible</p>
+    {% endif %}
 {% endblock %}
