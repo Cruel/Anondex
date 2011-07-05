@@ -1,10 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html class="comments" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<html class="{% block htmlclass %}{% endblock %}" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 
     <title>{% block title %}Anondex{% endblock %}</title>
     {% block meta %}{% endblock %}
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="description" content="{% block description %}Anondex is a completely anonymous service that allows for people to create/upload a single web page with some files to be indexed for commenting and rating.{% endblock %}" />
 
     <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.2r1/build/reset/reset-min.css" />
     {% for file in HEAD_CSS_FILES %}

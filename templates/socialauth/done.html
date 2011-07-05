@@ -3,7 +3,11 @@
 {% block heading %}Logged in!{% endblock %}
 
 {% block content %}
-    
+
+    {% for message in request.session.social_errors %}
+    <li>{{ message }}</li>
+    {% endfor %}
+
 {% if messages %}
 <h3>Errors:</h3>
 <ul class="messages">
@@ -97,6 +101,6 @@
 </div>
 
 <div>
-  <a rel="nofollow" class="logout" href="/socialauth/logout/">Logout</a>
+  <a rel="nofollow" class="logout" href="/auth/logout/">Logout</a>
 </div>
 {% endblock %}

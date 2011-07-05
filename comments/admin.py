@@ -1,4 +1,4 @@
-from comments.models import Comment, Image, User
+from comments.models import Comment, Image
 from django.contrib import admin
 
 class CommentAdmin(admin.ModelAdmin):
@@ -13,5 +13,4 @@ class CommentAdmin(admin.ModelAdmin):
 
 admin.site.register(Comment)
 admin.site.register(Image)
-admin.site.register(User)
 #admin.site.register(Comment, CommentAdmin)

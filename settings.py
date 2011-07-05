@@ -32,18 +32,20 @@ USE_L10N = True
 
 ROOT_URLCONF = 'anondex.urls'
 
-MEDIA_ROOT = join(ROOT_PATH, 'media')
+#MEDIA_ROOT = join(ROOT_PATH, 'media')
+MEDIA_ROOT = 'C:/Users/Thomas/PycharmProjects/nginx/html/media'
 MEDIA_URL = 'http://localhost/media/'
 ADMIN_MEDIA_PREFIX = 'http://localhost/static/admin/'
 
-STATIC_ROOT = ''
-STATIC_URL = 'http://localhost/static/'
+STATIC_ROOT = join(ROOT_PATH, 'static')
+STATIC_URL = 'http://localhost:8000/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    join(ROOT_PATH, 'static'),
 )
 
 # List of finder classes that know how to find static files in
@@ -69,6 +71,7 @@ TEMPLATE_DIRS = (
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
     'comments.context_processors.html_header_content',
+    'django.core.context_processors.request',
 )
 
 AUTHENTICATION_BACKENDS = (
@@ -83,7 +86,7 @@ AUTHENTICATION_BACKENDS = (
     #'social_auth.backends.contrib.orkut.OrkutBackend',
     #'social_auth.backends.contrib.foursquare.FoursquareBackend',
     'social_auth.backends.OpenIDBackend',
-    'django.contrib.socialauth.backends.ModelBackend',
+    'django.contrib.auth.backends.ModelBackend',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -104,6 +107,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.admindocs',
+    'django.contrib.comments',
     #'djangotoolbox',
     'registration',
     'profiles',
@@ -113,7 +117,10 @@ INSTALLED_APPS = (
     'anondex.polls',
     'anondex.comments',
     'anondex.socialauth',
+    'anondex.adex',
 )
+
+COMMENTS_APP = 'anondex.comments'
 
 LOGGING = {
     'version': 1,

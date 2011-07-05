@@ -1,7 +1,7 @@
 
 LOGIN_URL          = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/socialauth/logged-in/'
-LOGIN_ERROR_URL    = '/socialauth/error/'
+LOGIN_REDIRECT_URL = '/auth/logged-in/'
+LOGIN_ERROR_URL    = '/auth/error/'
 
 SOCIAL_AUTH_DEFAULT_USERNAME = 'NewUser'
 # If a custom redirect URL is needed that must be different to LOGIN_URL

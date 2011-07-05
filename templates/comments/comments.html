@@ -1,4 +1,4 @@
-{% for comment in comments %}
+{% for comment in comment_list %}
     {% if anchored %}
         <a name="{{ comment.id }}"></a>
     {% endif %}
@@ -33,7 +33,7 @@
             {% if stubbed %}
                 stubbed
             {% else %}
-                <a href="javascript:ratecomment('{{ comment.id }}',1)">Up</a> <a href="javascript:ratecomment('{{ comment.id }}',0)">Down</a> <a onclick="hltag('{{ comment.id }}');" href="#{{ comment.id }}">Perm</a> <a href="javascript:reply('{{ comment.id }}');">Reply</a>
+                <a href="javascript:ratecomment('{{ comment.id }}',1)">Up</a> <a href="javascript:ratecomment('{{ comment.id }}',0)">Down</a> <a onclick="hltag('{{ comment.id }}');" href="#{{ comment.id }}">Perm</a> <a href="/comments/flag/{{ comment.id }}/">Flag</a> <a href="javascript:reply('{{ comment.id }}');">Reply</a>
             {% endif %}
         </div>
     </div>

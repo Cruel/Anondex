@@ -30,6 +30,8 @@ class Profile(models.Model):
         verbose_name = 'Profiles'
         verbose_name_plural = 'Profiles'
         #ordering = ('last_name', 'first_name',)
+    def __unicode__(self):
+        return self.user.username
 
 
 from social_auth.signals import pre_update

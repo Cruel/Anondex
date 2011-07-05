@@ -17,6 +17,11 @@ def detail(request, comment_id):
     return render_to_response('comments/detail.html', {'comments':c},
                                context_instance=RequestContext(request))
 
+def test(request):
+    c = get_list_or_404(Comment.objects.select_related().order_by('date'), item_id=comment_id, in_image=0)
+    return render_to_response('comments/detail.html', {'comments':c},
+                               context_instance=RequestContext(request))
+
 @login_required
 def require_authentication(request):
     return HttpResponse('This page requires authentication')

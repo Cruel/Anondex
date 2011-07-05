@@ -1,5 +1,53 @@
 {% extends "base.html" %}
 
+{% block htmlclass %}htmlhome{% endblock %}
+
+{% block meta %}<link rel="alternate" type="application/rss+xml" title="Anondex RSS Feed" href="rssfeed.xml" />{% endblock %}
+
+{% block postscripts %}
+    <script type="text/javascript" src="http://api.recaptcha.net/js/recaptcha_ajax.js"></script>
+    <script type="text/javascript">google.setOnLoadCallback(do_onload);</script>
+{% endblock %}
+
 {% block body %}
-    <a href="/socialauth/">{% block content %}{% endblock %}</a>
+	<div id="wrapper">
+		<div class="headerwrapper">
+			<div id="header">
+				<a id="feedlink" href="rssfeed.xml" title="Subscribe to Anondex feed.">RSS</a>
+				<div id="logo">
+					<h1>Anondex</h1>
+					<h2>The Anonymous Index</h2>
+				</div>
+				<div id="menu">
+					<ul>
+						<li><a id="linkhome" href="#home" onclick="LoadPage(this,'pages/home.php');">Home<span class="elbow-left"><span></span></span><span class="elbow-right"><span></span></span></a></li>
+						<li><a id="linkcreate" href="#create" onclick="LoadPage(this,'pages/create.php');">Create<span class="elbow-left"><span></span></span><span class="elbow-right"><span></span></span></a></li>
+						<li><a id="linkbrowser" href="#browser" onclick="LoadPage(this,'browser/1');">Browse<span class="elbow-left"><span></span></span><span class="elbow-right"><span></span></span></a></li>
+						<li><a id="linkmypage" href="#mypage" onclick="LoadPage(this,'pages/mypage.php');">My Page<span class="elbow-left"><span></span></span><span class="elbow-right"><span></span></span></a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div id="page">
+			<div id="content">
+                {% block content %}
+				    <noscript><h1>Site is loading... You need javascript for this website to function properly.</h1></noscript>
+                {% endblock %}
+			</div>
+			<!-- end div#content -->
+			<div id="sidebar" style="visibility:hidden">
+				{% block sidebar %}Sidebar{% endblock %}
+				<!-- end sideitems -->
+			</div>
+			<!-- end div#sidebar -->
+			<div style="clear: both; height: 1px"></div>
+		</div>
+		<!-- end div#page -->
+		<div class="footerwrapper">
+			<div id="footer">
+				<p id="legal">Copyright &copy; 2011 Anondex.com | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+			</div>
+		</div>
+		<!-- end div#footer -->
+	</div>
 {% endblock %}

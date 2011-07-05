@@ -17,10 +17,12 @@ def associate_complete_wrapper(request, backend):
         return associate_complete(request, backend)
     except ValueError, e:
         if e and len(e.args) > 0:
-            for err in e.args:
+            if e[0] == 'Account already in use.':
+                messages.error(request, "Authentication already used on account: %s" % e[1])
+            #for err in e.args:
                 #messages.error(request, "Authentication Error: %s" % err)
-                messages.error(request, err)
-    return redirect('/socialauth/done')
+                #messages.error(request, err)
+    return redirect('/auth/')
 
 def email(request):
     send_mail('Subject here', 'Here is the message.', 'no-reply@anondex.com', ['machin3@gmail.com'], fail_silently=False)
