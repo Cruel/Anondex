@@ -47,6 +47,8 @@ AUTH_PROFILE_MODULE = 'socialauth.Profile'
 #SOCIAL_AUTH_USER_MODEL = 'socialauth.CustomUser'
 
 HEAD_JS_FILES = {
+    'jquery',
+    'jquery-ui',
     'swfupload/swfupload',
     'jquery.swfupload',
     'jquery.fancybox-1.3.4',

@@ -1,7 +1,7 @@
 {% load comments i18n %}
 
 <div class="errdiv"></div>
-<form id="commentform" action="{% comment_form_target %}">
+<form id="commentform" method="post" enctype="multipart/form-data" action="{% comment_form_target %}">
     {% csrf_token %}
     {% if next %}<div><input type="hidden" name="next" value="{{ next }}" /></div>{% endif %}
     {% for field in form %}
@@ -21,10 +21,10 @@
             <td>Image:</td>
             <td id="imguploadcell">
 
-                    <div id="imguploader"><p></p></div>
-                    <div id="status"></div>
-                    <div id="fileinfo"></div>
-                    <div id="progressbar"></div>
+                <div id="imguploader"><p></p></div>
+                <div id="status"></div>
+                <div id="fileinfo"></div>
+                <div id="progressbar"></div>
 
             </td>
         </tr><tr>
@@ -34,8 +34,16 @@
             <td></td><td><input id="submitbutton" type="button" value="Post Comment" onclick="submitComment();" /></td>
         </tr>
     </table>
-    <input name="id" type="hidden" value="93" />
-    <input name="filename" type="hidden" value="" />
-    <input name="info" type="hidden" value="" />
+    <input type="hidden" name="filename" value="" />
+    <input type="hidden" name="info" value="" />
+    <input type="hidden" name="X-Progress-ID" id="X-Progress-ID" value=""/>
+
+    <input type="hidden" name="title" value="hiddentest" />
+    <input type="submit" value="submit non-ajax" />
+</form>
+<form method="post" enctype="multipart/form-data" action="/upload_image/">{% csrf_token %}
+    <input type="file" name="image" />
+    <input type="submit" value="Submit" />
+    <input type="button" value="Post Comment" onclick="submitComment2();" />
 </form>
 <div class="footerdiv">* The comment is the only required field. (500 character limit)</div>

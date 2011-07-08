@@ -4,6 +4,8 @@
 {% block htmlclass %}comments{% endblock %}
 {% block title %}{{ profile.user.username }} - {{ block.super }}{% endblock %}
 
+{% block postscripts %}<script type="text/javascript">google.setOnLoadCallback(comment_onload);</script>{% endblock %}
+
 {% block content %}
     {% if profile %}
         {% comment %}{% if user.is_authenticated %}{% endcomment %}

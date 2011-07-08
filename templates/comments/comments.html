@@ -1,3 +1,4 @@
+{% load adexcomments %}
 {% for comment in comment_list %}
     {% if anchored %}
         <a name="{{ comment.id }}"></a>
@@ -6,11 +7,11 @@
         <div class="header gravatar">
             {% if comment.hash %}<span class="tripcode"><img src="http://www.gravatar.com/avatar/{{ comment.hash }}?d=wavatar&s=30" /></span>{% endif %}
             {% if comment.name and comment.user %}
-                <a target="_parent" class="iframe" href="#browser/commenter/{{ comment.id }}">{{ comment.name }}</a>
+                <a target="_parent" class="iframe" href="#browser/commenter/{{ comment.id }}">{{ comment.user_name }}</a>
             {% else %}
                 {% if comment.name %}{{ comment.name }}{% else %}Anonymous{% endif %}
             {% endif %}
-			<div class="date">2 days ago{% if modcontrols %} <a href="/admin/comments/comment/{{ comment.id }}/">Mod</a>{% endif %}</div>
+			<div class="date">{{ comment.submit_date|timeago }}{% if modcontrols %} <a href="/admin/comments/comment/{{ comment.id }}/">Mod</a>{% endif %}</div>
             <div class="commentrating"><span style="color:{% if comment.rating < 0 %}red{% else %}green{% endif %}">{% if comment.rating != 0 %}{{ comment.rating }}{% endif %}</span></div>
         </div>
         <div class="content">

@@ -3,12 +3,17 @@ from anondex.socialauth.forms import ProfileForm, RegistrationFormTest
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
+# Initialize comments ajax wrapper
+from comments import ajax_wrapper
+
 from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    (r'^$', 'anondex.home.views.index'),
+    (r'^$', 'home.views.index'),
     (r'^poll/', include('polls.urls')),
+    (r'^upload_image/', 'comments.views.upload_image'),
+    (r'^/get_upload_progress?.*$', 'comments.views.get_upload_progress'),
     (r'^comments/', include('django.contrib.comments.urls')),
     #(r'^comments/', include('comments.urls')),
     (r'^admin/doc/', include('django.contrib.admindocs.urls')),
