@@ -1,7 +1,7 @@
 {% load comments i18n %}
 
 <div class="errdiv"></div>
-<form id="commentform" method="post" encoding="multipart/form-data" action="{% comment_form_target %}">
+<form id="commentform" method="post" enctype="multipart/form-data" action="{% comment_form_target %}">
     {% csrf_token %}
     {% if next %}<div><input type="hidden" name="next" value="{{ next }}" /></div>{% endif %}
     {% for field in form %}

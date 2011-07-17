@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.comments.forms import CommentForm
-from comments.models import AdexComment
+from comments.models import AdexComment, Image
 
 
 class ImageUploadForm(forms.Form):
@@ -9,7 +9,7 @@ class ImageUploadForm(forms.Form):
 
 class AdexCommentForm(CommentForm):
     #title = forms.CharField(max_length=300)
-    image = forms.CharField(required=False)
+    image = forms.ModelChoiceField(Image.objects.all(), required=False)
 
     def get_comment_model(self):
         return AdexComment

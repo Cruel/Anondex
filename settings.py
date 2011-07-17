@@ -33,14 +33,14 @@ USE_L10N = True
 ROOT_URLCONF = 'anondex.urls'
 
 #MEDIA_ROOT = join(ROOT_PATH, 'media')
-MEDIA_ROOT = 'C:/Users/Thomas/PycharmProjects/nginx/html/media/'
+MEDIA_ROOT = 'C:/nginx/html/media/'
 MEDIA_URL = 'http://localhost/media/'
 ADMIN_MEDIA_PREFIX = 'http://localhost/static/admin/'
 
 STATIC_ROOT = join(ROOT_PATH, 'static')
 STATIC_URL = 'http://localhost:8000/static/'
 
-FILE_UPLOAD_TEMP_DIR = 'C:/Users/Thomas/PycharmProjects/nginx/upload_tmp'
+FILE_UPLOAD_TEMP_DIR = 'C:/nginx/upload_tmp'
 
 FILE_UPLOAD_HANDLERS = (
     "comments.uploadprogresscachedhandler.UploadProgressCachedHandler",
