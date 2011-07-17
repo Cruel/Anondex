@@ -1,5 +1,6 @@
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+from django.utils.encoding import smart_unicode
 
 def get_fancy_time(d, display_full_version = False):
     """Returns a user friendly date format
@@ -9,7 +10,7 @@ def get_fancy_time(d, display_full_version = False):
     #some helpers lambda's
     plural = lambda x: 's' if x > 1 else ''
     singular = lambda x: x[:-1]
-    #convert pluran (years) --> to singular (year)
+    #convert plural (years) --> to singular (year)
     display_unit = lambda unit, name: '%s %s%s'%(unit, name, plural(unit)) if unit > 0 else ''
 
     #time units we are interested in descending order of significance
@@ -28,3 +29,18 @@ def get_fancy_time(d, display_full_version = False):
                     return primary_unit + ', '  + secondary_unit + ' ago'
             return primary_unit + ' ago'
     return None
+
+def md5_file(filename):
+    import hashlib
+    md5 = hashlib.md5()
+    with open(filename,'rb') as f:
+        for chunk in iter(lambda: f.read(8192), ''):
+             md5.update(chunk)
+    return md5.hexdigest()
+
+# For use with video timestamps in comments
+def GetInHMS(seconds):
+    seconds = float(seconds)
+    minutes = int(seconds / 60)
+    seconds -= 60*minutes
+    return "%01d:%02d" % (minutes, seconds)

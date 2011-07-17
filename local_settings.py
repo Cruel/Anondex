@@ -1,3 +1,5 @@
+THUMBNAIL_URL = 'http://localhost/media/i/thumb/'
+IMAGE_URL = 'http://localhost/media/i/'
 
 LOGIN_URL          = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/auth/logged-in/'
@@ -47,10 +49,11 @@ AUTH_PROFILE_MODULE = 'socialauth.Profile'
 #SOCIAL_AUTH_USER_MODEL = 'socialauth.CustomUser'
 
 HEAD_JS_FILES = {
-    'jquery',
-    'jquery-ui',
-    'swfupload/swfupload',
-    'jquery.swfupload',
+    #'jquery',
+    #'jquery-ui',
+    #'swfupload/swfupload',
+    #'jquery.swfupload',
+    'jquery.form',
     'jquery.fancybox-1.3.4',
     'jquery.jmc_resizr',
     'jquery.taghandler',
@@ -78,4 +81,5 @@ HEAD_CSS_FILES = {
     'jquery.cluetip',
     'data',
     'layout',
+    'code',
 }

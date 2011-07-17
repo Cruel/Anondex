@@ -15,10 +15,10 @@ class UploadProgressCachedHandler(FileUploadHandler):
 
     def handle_raw_input(self, input_data, META, content_length, boundary, encoding=None):
         self.content_length = content_length
-        if 'X-Progress-ID' in self.request.GET :
-            self.progress_id = self.request.GET['X-Progress-ID']
-        elif 'X-Progress-ID' in self.request.META:
-            self.progress_id = self.request.META['X-Progress-ID']
+        if 'x-id' in self.request.GET :
+            self.progress_id = self.request.GET['x-id']
+        elif 'x-id' in self.request.META:
+            self.progress_id = self.request.META['x-id']
         if self.progress_id:
             self.cache_key = "%s_%s" % (self.request.META['REMOTE_ADDR'], self.progress_id )
             cache.set(self.cache_key, {
@@ -44,27 +44,3 @@ class UploadProgressCachedHandler(FileUploadHandler):
     def upload_complete(self):
         if self.cache_key:
             cache.delete(self.cache_key)
-
-
-
-# A view to report back on upload progress:
-
-from django.core.cache import cache
-from django.http import HttpResponse, HttpResponseServerError 
-
-def upload_progress(request):
-    """
-    Return JSON object with information about the progress of an upload.
-    """
-    progress_id = ''
-    if 'X-Progress-ID' in request.GET:
-        progress_id = request.GET['X-Progress-ID']
-    elif 'X-Progress-ID' in request.META:
-        progress_id = request.META['X-Progress-ID']
-    if progress_id:
-        from django.utils import simplejson
-        cache_key = "%s_%s" % (request.META['REMOTE_ADDR'], progress_id)
-        data = cache.get(cache_key)
-        return HttpResponse(simplejson.dumps(data))
-    else:
-        return HttpResponseServerError('Server Error: You must provide X-Progress-ID header or query param.')

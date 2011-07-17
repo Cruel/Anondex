@@ -7,23 +7,19 @@
 {% block postscripts %}<script type="text/javascript">$(comment_onload);</script>{% endblock %}
 
 {% block content %}
-    {% if profile %}
-        {% comment %}{% if user.is_authenticated %}{% endcomment %}
-        <h1>{{ profile.user.username }}{% ifequal user profile.user %} [<a href="{% url profiles_edit_profile %}">edit</a>]{% endifequal %}</h1>
-        <p>{{ profile.user.email }}</p>
-        <p>{{ profile.user.first_name }} {{ profile.user.last_name }}</p>
-        <p>{{ profile.gender }}</p>
-        {% get_comment_count for profile as comment_count %}
+    {% if image %}
+        <div><a href="{{ IMAGE_URL }}{{ image.name }}"<img src="{{ IMAGE_URL }}{{ image.name }}" /></a></div>
+        {% get_comment_count for image as comment_count %}
         <p>{{ comment_count }} comments have been posted.</p>
-        {% get_comment_list for profile as comment_list %}
+        {% get_comment_list for image as comment_list %}
         {% include "comments/comments.html" with anchored=1 stubbed=0 modcontrols=1 %}
         {% comment %}
             {% render_comment_list for profile %}
             {% render_comment_form for profile %}
         {% endcomment %}
-        {% get_comment_form for profile as form %}
+        {% get_comment_form for image as form %}
         {% include "comments/form.html" %}
     {% else %}
-        <p>This profile is not publicly accessible</p>
+        <p>Image does not exist.</p>
     {% endif %}
 {% endblock %}

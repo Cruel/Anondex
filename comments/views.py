@@ -1,15 +1,18 @@
 from django.contrib.auth.decorators import login_required
+from django.core.files.move import file_move_safe
 from django.dispatch.dispatcher import receiver
 from django.shortcuts import get_object_or_404, render_to_response, get_list_or_404
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseBadRequest
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
-from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.views.decorators.http import require_POST
 from comments.forms import AdexCommentForm, ImageUploadForm
 from comments.models import User, Image, Comment
 from django.core.cache import cache
 from django.utils import simplejson
+from PIL import Image as pil
+from comments.utils import md5_file
 import settings
 
 def index(request):
@@ -29,48 +32,62 @@ def test(request):
     return render_to_response('comments/detail.html', {'comments':c},
                                context_instance=RequestContext(request))
 
+def image_page(request, image_id):
+    image = get_object_or_404(Image.objects, pk = image_id)
+#    c = Comment.objects.order_by('date').filter()
+    return render_to_response('comments/image.html', {'image':image},
+                               context_instance=RequestContext(request))
+
 @login_required
 def require_authentication(request):
     return HttpResponse('This page requires authentication')
 
-def upload(request):
-    id = request.POST['id']
-    path = settings.MEDIA_ROOT+'%s' % id
-    f = request.FILES['picture']
-    destination = open(path, 'wb+')
-    for chunk in f.chunks():
-        destination.write(chunk)
-    destination.close()
-
-def upload2(request):
+def upload_image(request):
     if request.method == 'POST':
-        form = AdexCommentForm(request.POST, request.FILES)
-        if form.is_valid():
-#            handle_uploaded_file(request.FILES['file'])
-            return HttpResponseRedirect('/success/url/')
-    else:
-        form = AdexCommentForm()
-#    return render_to_response('upload.html', {'form': form})
+        EXTENSION_CHOICES = {
+            'image/jpeg':   1,
+            'image/png':    2,
+            'image/gif':    3,
+        }
+        f = request.FILES['imagefile']
+        if f.content_type in EXTENSION_CHOICES:
+            ext = EXTENSION_CHOICES[f.content_type]
+            path = settings.MEDIA_ROOT + 'tmp/' + f.name
+            destination = open(path, 'wb+')
+            print "Opened %s for writing as %s..." % (path, ext)
+            for chunk in f.chunks():
+                destination.write(chunk)
+            destination.close()
+
+            im = pil.open(path)
+            (width, height) = im.size
+            md5 = md5_file(path)
+
+            # If image md5 doesn't already exist, make the image
+            try:
+                image = Image.objects.get(md5=md5)
+            except Image.DoesNotExist:
+                image = Image(width=width, height=width, md5=md5, name=f.name)
+                image.save()
+                im.thumbnail((100,100), pil.ANTIALIAS)
+                im.save(settings.MEDIA_ROOT + "i/thumb/adex%s_%s" % (image.id, f.name))
+                file_move_safe(path,settings.MEDIA_ROOT + "i/adex%s_%s" % (image.id, f.name))
+                image.name = "adex%s_%s" % (image.id, f.name)
+                image.save()
+            print image.id
+            return HttpResponse(simplejson.dumps({'success':True, 'value':image.id}))
+        return HttpResponse(simplejson.dumps({'success':False, 'error':'Not a valid image.'}))
+    return HttpResponse(simplejson.dumps({'success':False, 'error':'Error uploading file.'}))
 
 def get_upload_progress(request):
     """
     Return JSON object with information about the progress of an upload.
     """
-    progress_id = request.GET['X-Progress-ID']
+    progress_id = request.GET['x-id']
     if progress_id:
         cache_key = "%s_%s" % (request.META['REMOTE_ADDR'], progress_id)
         data = cache.get(cache_key)
+        print "Returning progress data: %s" % data
         return HttpResponse(simplejson.dumps(data))
     else:
         return HttpResponseBadRequest('Server Error: You must provide X-Progress-ID header or query param.')
-
-def upload_image(request):
-    form = ImageUploadForm(request.POST, request.FILES)
-    if request.method == 'POST' and form.is_valid():
-        image = form.cleaned_data['image']
-        image2 = Image(
-            image = image,
-        )
-        image2.save()
-        #print form.cleaned_data['image']
-        return HttpResponseRedirect('/')

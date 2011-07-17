@@ -11,7 +11,7 @@
             {% else %}
                 {% if comment.name %}{{ comment.name }}{% else %}Anonymous{% endif %}
             {% endif %}
-			<div class="date">{{ comment.submit_date|timeago }}{% if modcontrols %} <a href="/admin/comments/comment/{{ comment.id }}/">Mod</a>{% endif %}</div>
+			<div class="date">{{ comment.submit_date|timeago }}{% if modcontrols %} <a href="/admin/comments/adexcomment/{{ comment.id }}/">Mod</a>{% endif %}</div>
             <div class="commentrating"><span style="color:{% if comment.rating < 0 %}red{% else %}green{% endif %}">{% if comment.rating != 0 %}{{ comment.rating }}{% endif %}</span></div>
         </div>
         <div class="content">
@@ -19,7 +19,7 @@
                 {% if comment.image %}
                     <div class="imagediv">
                         <a target="_parent" class="iframe" href="/image/{{ comment.image.id }}">
-                            <img src="{{ MEDIA_URL }}i/thumbs/{{ comment.image.md5 }}.{{ comment.image.ext }}" class="cimg" />
+                            <img src="{{ THUMBNAIL_URL }}{{ comment.image.name }}" class="cimg" />
                         </a>
                         {% if comment.image.vote_count > 0 %}
                             <div class="rating"><ul class="star-rating2"><li class="current-rating" style="width:{% widthratio comment.image.rating 5 100 %}%"></li><li></li><li></li><li></li><li></li><li></li></ul></div>
@@ -27,7 +27,7 @@
                         <p>comment count</p>
                     </div>
                 {% endif %}
-                {{ comment.comment|safe }}
+                {{ comment.comment|bbcode|safe }}
             </div>
         </div>
         <div class="commentcontrols">
