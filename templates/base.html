@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html class="{% block htmlclass %}{% endblock %}" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<html class="{% block htmlclass %}htmlhome{% endblock %}" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 
     <title>{% block title %}Anondex{% endblock %}</title>
@@ -14,12 +14,8 @@
 
     <script type="text/javascript">var isbanned=false;</script>
     {% block prescripts %}{% endblock %}
-    <script type="text/javascript" src="http://api.recaptcha.net/js/recaptcha_ajax.js"></script>
-    <script src="http://www.google.com/jsapi?key=ABQIAAAAAZnDhnzUKNPDHvrc9EfNfBRtw_vN95wA5aH-dGXKAv5n-VEcWBThYA_IRSmiJZIc1rv5mIP0DWDf1g" type="text/javascript"></script>
-    <script type="text/javascript">google.load("swfobject", "2.2");
-        google.load("jquery", "1.5");
-        google.load("jqueryui", "1.8.9");
-    </script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.js"></script>
     {% for file in HEAD_JS_FILES %}
         <script type="text/javascript" src="{{ STATIC_URL }}js/{{ file }}.js"></script>
     {% endfor %}

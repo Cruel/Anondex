@@ -12,8 +12,6 @@ def bbcode(value):
     return adex_bbcode(value)
 
 class CommentTag(postmarkup.ImgTag):
-#    def __init__(self, name,  **kwargs):
-#        postmarkup.TagBase.__init__(self, name, inline=True, enclosed=True)
     def render_open(self, parser, node_index, **kwargs):
         # TODO: finish this...
         c = self.get_contents(parser)

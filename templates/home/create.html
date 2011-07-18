@@ -1,0 +1,134 @@
+{% extends "home/base.html" %}
+
+{% block postscripts %}
+    <script type="text/javascript" src="http://api.recaptcha.net/js/recaptcha_ajax.js"></script>
+    <script type="text/javascript">$(create_onload);</script>
+{% endblock %}
+
+{% block content %}
+    <div id="creatediv">
+        <div>
+            <div class="fieldlabel">Duration:</div>
+            <select id="duration"><option value="0">Permanent</option><option value="43200">12 Hours</option><option value="86400">1 Day</option><option value="259200">3 Days</option><option value="604800">1 Week</option></select>
+        </div>
+
+        <div id="titlediv">
+            <div class="fieldlabel">Title:<font class="required">*</font></div>
+            <div id="titlefield">
+                <input id="title" type="text" size="25" maxlength="50" class="textskin tooltip" />
+                <span id="titlehint" class="hint">
+                        This is the main title that will be displayed in the index.<br /><br />
+                        And it will be the browser window title:<br>"Anondex - <b>Your title</b>"
+                    <span class="hint-pointer"></span>
+                </span>
+            </div>
+        </div>
+
+        <div id="namediv">
+            <div class="fieldlabel">Name:</div>
+            <div id="namefield">
+                <input id="name" type="text" size="25" maxlength="30" class="textskin tooltip" onkeyup="$.get('func/ajax.php', {a: 'checkname', n: 'i'+ this.value +'i'}, checkName);" autocomplete="off" />
+                <span id="namehint" class="hint">
+                        <b><u>Name requirements</u>:</b>
+                        <ul><li>Must be unique</li>
+                        <li>30 characters maximum</li>
+                        <li>Valid characters:<br>a-z, 0-9, -, _ (no space)</li></ul>
+                        This will allow for links such as: http://<b>name</b>.anondex.com<br /><br />
+                        <div id="namecheck"></div>
+                    <span class="hint-pointer"></span>
+                </span>
+            </div>
+        </div>
+
+        <div id="tagsdiv">
+            <div class="fieldlabel">Tags:</div>
+            <div id="tagsfield">
+                <ul id="taglist"></ul>
+            </div>
+            <span id="tagshint" class="hint">
+                Categorize your submission with tags. Merely separate the words with a comma.<br><br>Example:<br><b>humor, funny, bob sagot</b>
+                <span class="hint-pointer"></span>
+            </span>
+        </div>
+
+        <div id="descriptiondiv">
+            <div class="fieldlabel">Description:<font class="required">*</font></div>
+            <div id="descriptionfield">
+                <textarea id="description" class="textareaskin tooltip"></textarea>
+                <span id="descriptionhint" class="hint">
+                    Briefly describe the content of your submission. This will help people find what they want when searching the index.
+                    <span class="hint-pointer"></span>
+                </span>
+            </div>
+        </div>
+
+        <div id="createbar">
+            <div id="createwrapper">
+                <h1>Template:<font class="required">*</font></h1>
+                <div class="typeradio typeimage"><input id="imageradio" name="type" type="radio" value="image" /><label for="imageradio">Image<b id="imageimage"></b></label></div>
+                <div class="typeradio typevideo"><input id="videoradio" name="type" type="radio" value="video" /><label for="videoradio">Video<b id="videoimage"></b></label></div>
+                <div class="typeradio typeflash"><input id="flashradio" name="type" type="radio" value="flash" /><label for="flashradio">Flash<b id="flashimage"></b></label></div>
+                <div class="typeradio typeurl"><input id="urlradio" name="type" type="radio" value="url" /><label for="urlradio">URL<b id="urlimage"></b></label></div>
+                <div class="typeradio typehtml"><input id="htmlradio" name="type" type="radio" value="html" /><label for="htmlradio">HTML<b id="htmlimage"></b></label></div>
+                <div id="typeoptions">
+                    <div id="urloptions">
+                        <input id="url" type="text" maxlength="200" value="http://" onFocus="if(value=='http://')value='';" onBlur="if(value=='')value='http://';" />
+                    </div>
+                    <div id="imageoptions">
+                        <span id="imageoptionlist">
+                            <div id="imgtemp3"><input name="imgtemplate" id="i3" type="radio" value="3" /><label for="i3"><b>Stretch</b></label></div>
+                            <div id="imgtemp2"><input name="imgtemplate" id="i2" type="radio" value="2" /><label for="i2"><b>Repeat</b></label></div>
+                            <div id="imgtemp1"><input name="imgtemplate" id="i1" type="radio" value="1" /><label for="i1"><b>Center</b></label></div>
+                        </span>
+                        <span id="propcheckspan"><input type="checkbox" name="proportion" checked /> Keep proportions</span>
+                        <span id="imageselectspan"></span>
+                        <span id="musicselectspan"></span>
+                    </div>
+                    <div id="videooptions">
+                        <span id="videoselectspan"></span>
+                    </div>
+                    <div id="flashoptions">
+                        <span id="flashselectspan"></span>
+                    </div>
+                    <div id="htmloptions">
+                        <!-- <span class="fieldlabel">HTML:</span> -->
+                        <div id="htmlfield">
+                            <textarea id="html" wrap="off" class="tooltip"></textarea>
+                            <span class="hint">
+                                    Enter your page content here. All HTML supported.<br /><br />Uploaded media content can be used in your HTML. Just use a relative path to the file, filenames are preserved.<br />Click below on the filename for example HTML. It will append the file's HTML to yours.
+                                <span class="hint-pointer"></span>
+                            </span>
+                        </div>
+                        <span id="htmlselectspan"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="upload-controller">
+            <h1>File Uploads:</h1>
+            <span id="swfupload_placeholder"></span>
+            <span class="filetypes"><b>Supported types:</b> .jpg .gif .png .mp3 .mid .swf .flv</span>
+            <p id="queuestatus" ></p>
+            <div id="filelist">
+
+            </div>
+            <div id="log">
+                <!-- div><span class="progressbar"></span><table class="fileinfo"><tr><td class="filenamecell"><em>file.jpg</em></td><td class="statuscell" >Queued</td><td class="progressvalue" >15% (245/1000kb)</td><td class="cancelcell"><input type="button" value="Cancel" /></td></tr></table></div>
+                <script>
+                    $( ".progressbar" ).progressbar({ value: 49 });
+                </script -->
+            </div>
+        </div>
+
+        <div id="submitbuttons">
+            <div id="recaptchadivframe"></div>
+            <input type="button" value="Create" onClick="createPage(true);" disabled />
+            <input type="button" value="Preview" onClick="createPage(false);" /> <?php //echo $_SESSION['item']; ?>
+            <input type="button" value="Reset" onclick="resetForm();" />
+            <!-- input type="button" value="Test" onclick="testy();" /-->
+        </div>
+        <div id="results"></div>
+
+    </div>
+{% endblock %}

@@ -130,10 +130,12 @@ INSTALLED_APPS = (
     'social_auth',
     'pagination',
     'gravatar',
+    'tagging',
     'anondex.polls',
     'anondex.comments',
     'anondex.socialauth',
     'anondex.adex',
+    'anondex.home',
 )
 
 COMMENTS_APP = 'anondex.comments'

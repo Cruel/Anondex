@@ -1,0 +1,177 @@
+.pages {
+	float: left;
+	clear: both;
+	width: 300px;
+	height: 37px;
+	margin: 10px;
+	padding-left: 170px;
+	font: bold 14px Arial;
+}
+.pages li{
+	text-align: center;
+	margin: 2px;
+}
+.pages a, .pages li{
+	display: block;
+	float: left;
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+	text-decoration: none;
+	color: black;
+}
+.pages li.text {
+	width:50px;
+}
+.pages li.active{
+	border: none;
+}
+.pages a{
+	color: #333;
+	background: #FCC;
+	border-radius: 4px;
+}
+.pages a:hover{
+	color: black;
+	border: 1px solid #F88;
+}
+.browsetable{
+	width: 640px;
+	padding: 5px;
+	float: left;
+}
+.browsetable > *{
+	float: left;
+	width: 640px;
+	border-radius: 8px;
+	-moz-border-radius: 8px;
+	margin: 3px 0;
+	padding: 14px;
+	cursor: pointer;
+}
+.browsetable > *:hover {
+	background-color:#FCC;
+}
+.browsetable {
+	text-align: left;
+	color: black;
+}
+.roweven {background-color:#FFD6D6;}
+.browseimagecell { 
+	float: left;
+	width: 125px;
+}
+.browsedescription{
+	float: left;
+	width: 330px;
+	padding: 5px 0 0 10px;
+	vertical-align: top;
+	overflow: hidden;
+}
+.itemtitle{
+	font-size:200%;
+}
+.itemdescription{
+
+}
+.browseicons{
+	position: relative;
+	float: right;
+	width: 25px;
+	vertical-align:bottom;
+	text-align: center;
+	border-left: none;
+	padding:1px;
+}
+.browsedetails{
+	float: right;
+	width: 130px;
+	vertical-align: top;
+	padding:2px;
+}
+
+
+.browseimagespan a, .browseimagespan img{
+/*	background-color: white;*/
+	border-radius: 5px;
+}
+.browseimagespan a { 
+	position: relative;
+	display: block;
+	width:125px;
+	height:100px;
+}
+.bottomimg {display:none;}
+.videothumb {
+	display: block;
+	width: 125px;
+	height: 100px;
+}
+.videothumb img{position: absolute;}
+.videothumb .topimg {z-index: 2;}
+.videothumb .bottomimg {display: inline; z-index: 1;}
+.browsetable > div:hover .videothumb .bottomimg,
+.videothumb:hover .bottomimg {display: inline; z-index: 3;}
+
+.htmlthumb {
+	display: block;
+	overflow: hidden;
+}
+.htmlthumb img{height:auto;}
+.browsetable > div:hover .htmlthumb,
+.htmlthumb:hover {overflow-y: auto;}
+
+.typeicon {
+	height: 38px;
+	width: 38px;
+	position: absolute;
+	z-index: 4;
+	filter:alpha(opacity=60);
+	opacity:0.6;
+	-moz-border-radius-topleft: 3px;
+	border-top-left-radius: 3px;
+}
+.browseimagespan a:hover .typeicon,
+#imgdiv a:hover .typeicon {
+	filter:alpha(opacity=90);
+	opacity:0.9;
+}
+.icontype1 { background: url(composite.png) -76px 127px; }
+.icontype2 { background: url(composite.png) 0 127px; }
+.icontype3 { background: url(composite.png) -38px 127px; }
+
+
+/* View / Comments buttons */
+
+a.buttonwrapper {
+	display: block;
+	float:left; clear:both;
+	height:20px;
+	border-radius:5px;
+	-moz-border-radius:5px;
+	padding: 0 5px;
+	margin: 1px;
+	text-decoration:none;
+	color: #000;
+}
+a.buttonwrapper:hover {
+	margin:0;
+	border:1px solid #F66;
+	background-color: #F99;
+}
+a.buttonwrapper div{display:inline-block;}
+a.buttonwrapper .buttonicon{
+	width:16px;
+	height:16px;
+	margin-top: 2px;
+}
+a.buttonwrapper:hover .buttonicon{ background-position-x: -196px; }
+a.buttonwrapper .buttoncount {
+	font-size:18px;
+	line-height:20px;
+	padding-left:3px;
+	height:100%;
+	vertical-align:top;
+}
+a.viewbutton .buttonicon {background: url(composite.png) -180px 110px;}
+a.commentbutton .buttonicon {background: url(composite.png) -180px 94px;}

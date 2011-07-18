@@ -1,12 +1,14 @@
 {% extends "base.html" %}
 
+{% load adexhome %}
+
 {% block htmlclass %}htmlhome{% endblock %}
 
 {% block meta %}<link rel="alternate" type="application/rss+xml" title="Anondex RSS Feed" href="rssfeed.xml" />{% endblock %}
 
 {% block postscripts %}
     <script type="text/javascript" src="http://api.recaptcha.net/js/recaptcha_ajax.js"></script>
-    <script type="text/javascript">google.setOnLoadCallback(do_onload);</script>
+    <script type="text/javascript">$(do_onload);</script>
 {% endblock %}
 
 {% block body %}
@@ -20,10 +22,18 @@
 				</div>
 				<div id="menu">
 					<ul>
-						<li><a id="linkhome" href="#home" onclick="LoadPage(this,'pages/home.php');">Home<span class="elbow-left"><span></span></span><span class="elbow-right"><span></span></span></a></li>
-						<li><a id="linkcreate" href="#create" onclick="LoadPage(this,'pages/create.php');">Create<span class="elbow-left"><span></span></span><span class="elbow-right"><span></span></span></a></li>
-						<li><a id="linkbrowser" href="#browser" onclick="LoadPage(this,'browser/1');">Browse<span class="elbow-left"><span></span></span><span class="elbow-right"><span></span></span></a></li>
-						<li><a id="linkmypage" href="#mypage" onclick="LoadPage(this,'pages/mypage.php');">My Page<span class="elbow-left"><span></span></span><span class="elbow-right"><span></span></span></a></li>
+						<li class="{% active request "^/$" %}">
+                            <a id="linkhome" href="/">Home<span class="elbow-left"><span></span></span><span class="elbow-right"><span></span></span></a>
+                        </li>
+                        <li class="{% active request "^/home/create$" %}">
+                            <a id="linkcreate" href="/home/create">Create<span class="elbow-left"><span></span></span><span class="elbow-right"><span></span></span></a>
+                        </li>
+                        <li class="{% active request "^/browse$" %}">
+                            <a id="linkbrowser" href="/browse">Browse<span class="elbow-left"><span></span></span><span class="elbow-right"><span></span></span></a>
+                        </li>
+                        <li class="{% active request "^/home/mypage$" %}">
+                            <a id="linkmypage" href="/home/mypage">My Page<span class="elbow-left"><span></span></span><span class="elbow-right"><span></span></span></a>
+                        </li>
 					</ul>
 				</div>
 			</div>
@@ -35,7 +45,7 @@
                 {% endblock %}
 			</div>
 			<!-- end div#content -->
-			<div id="sidebar" style="visibility:hidden">
+			<div id="sidebar">
 				{% block sidebar %}Sidebar{% endblock %}
 				<!-- end sideitems -->
 			</div>
