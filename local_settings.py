@@ -51,7 +51,8 @@ AUTH_PROFILE_MODULE = 'socialauth.Profile'
 HEAD_JS_FILES = {
     #'jquery',
     #'jquery-ui',
-    'jquery.form',
+    'jquery.fileupload',
+    #'jquery.form',
     'jquery.fancybox-1.3.4',
     'jquery.jmc_resizr',
     'jquery.taghandler',

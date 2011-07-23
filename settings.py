@@ -43,7 +43,7 @@ STATIC_URL = 'http://localhost:8000/static/'
 FILE_UPLOAD_TEMP_DIR = 'C:/nginx/upload_tmp'
 
 FILE_UPLOAD_HANDLERS = (
-    "comments.uploadprogresscachedhandler.UploadProgressCachedHandler",
+    #"comments.uploadprogresscachedhandler.UploadProgressCachedHandler",
     "django.core.files.uploadhandler.MemoryFileUploadHandler",
     "django.core.files.uploadhandler.TemporaryFileUploadHandler",
 )

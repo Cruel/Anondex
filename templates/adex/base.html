@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block htmlclass %}htmlindex{% endblock %}
+
+{% block postscripts %}
+    <script type="text/javascript">
+		var animating = false;
+		hoverbound = true;
+		var expiration = 0;
+		var showads = false;
+		var reportpage = 'http://lockhost/report?a=1&i=133';
+        $(indexLoad);
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div style="height:100%; width:100%;">
+        <div id="headerindex" class="clearfix">
+            <div id="logoindex"><a target="_parent" title="Anondex home page." href="/">Anondex</a></div>
+            <div id="headerrating">
+                <span id="rated_text" class="rated_text"><span class="out5Class">0</span><span class="votesClass"> - 0 Votes</span></span><ul id="starset" class="star-rating"><li id="current-rating" class="current-rating" style="width:0%"></li><li onclick="rate('1','133',false); "title="1 star out of 5" class="star1">1</li><li onclick="rate('2','133',false); "title="2 star out of 5" class="star2">2</li><li onclick="rate('3','133',false); "title="3 star out of 5" class="star3">3</li><li onclick="rate('4','133',false); "title="4 star out of 5" class="star4">4</li><li onclick="rate('5','133',false); "title="5 star out of 5" class="star5">5</li></ul>
+
+            <div id="addthis">
+                <div class="addthis_toolbox addthis_default_style " addthis:title="Dustin Approves!" addthis:description="Dustin Horse">
+                    <a class="addthis_counter addthis_pill_style"></a>
+                </div>
+                <script type="text/javascript">var addthis_config = {"data_track_clickback":true};</script>
+                <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=ra-4d7a704f044c9114"></script>
+            </div>
+            </div>
+            <div id="headerdetails">
+                <a class="buttonwrapper viewbutton iframe" href="http://anondex.com/data/133" title="65 Views"><div class="buttonicon"></div><div class="buttoncount">65</div></a><a class="buttonwrapper commentbutton iframe" href="http://anondex.com/comments/133" title="0 Comments"><div class="buttonicon"></div><div class="buttoncount">0</div></a>		</div>
+            <div id="des" title="Click to show/hide full item description.">
+                <div>
+
+                    <span class="indextitle">Dustin Approves!</span><ul class="itemtags"><li title="There are 1 items tagged with 'dustin'"><a href="http://anondex.com/browse/tagged/dustin"><b>dustin</b> &times;1</a></li><li title="There are 1 items tagged with 'approves'"><a href="http://anondex.com/browse/tagged/approves"><b>approves</b> &times;1</a></li></ul><span id="desexpand" class="desexpandopen" title="Toggle full item description."></span><div class="destext">Dustin Horse</div>			</div>
+            </div>
+                </div>
+
+        <div id="hoverdiv" onmouseover="ShowHoverDiv();" onmouseout="HideHoverdiv();">
+            <div id="hovertitle"></div>
+            <div id="imgdiv"><a href="#"><img src="" alt="" class="topimg" /><img src="" alt="" class="bottomimg" /></a></div>
+            <div id="hoverdescription"></div>
+            <div id="hoverfoot">
+                <div id="hoverrating"><ul class="star-rating2"><li class="current-rating"></li><li></li><li></li><li></li><li></li><li></li></ul></div>
+                <div id="hovercomments"></div>
+                <div id="hoverviews"></div>
+            </div>
+        </div>
+
+
+        <div id="mainwrapper">
+            <div id="itemcell" style="right:550px">
+                <div id="sliderbutton" onclick="ShowHideComments();" title="Toggle comments."><div class="sliderclose"></div><span class="slidertext"></span></div>
+                {% block adexcontent %}{% endblock %}
+            </div>
+            <div id="commentcell" style="display:block;width:430px;">
+                <!--iframe id="comments" name="comments" frameborder="0" src="http://anondex.com/comments/133"></iframe-->
+                <script type="text/javascript">
+                    var commentsopen=true;
+                    var commentframe='<iframe id="comments" name="comments" frameborder="0" src="http://anondex.com/comments/133"></iframe>';
+                </script>
+            </div>
+            <div id="sidebarindex">
+                <a href="http://anondex.com/report.php?a=1&i=133" class="reportbutton"></a>
+                <!-- <img src="images/tab2.gif" alt="Related" title="Related Items" class="tabimg" /> -->
+                <div id="relatedcaption">Related</div>
+                <div id="related" class="csshover">
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

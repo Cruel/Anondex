@@ -1,13 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.core.files.move import file_move_safe
-from django.dispatch.dispatcher import receiver
 from django.shortcuts import get_object_or_404, render_to_response, get_list_or_404
-from django.http import HttpResponseRedirect, HttpResponse, HttpResponseBadRequest
-from django.core.urlresolvers import reverse
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.template import RequestContext
-from django.views.decorators.csrf import csrf_protect, csrf_exempt
-from django.views.decorators.http import require_POST
-from comments.forms import AdexCommentForm, ImageUploadForm
 from comments.models import User, Image, Comment
 from django.core.cache import cache
 from django.utils import simplejson
@@ -54,7 +49,7 @@ def upload_image(request):
             ext = EXTENSION_CHOICES[f.content_type]
             path = settings.MEDIA_ROOT + 'tmp/' + f.name
             destination = open(path, 'wb+')
-            print "Opened %s for writing as %s..." % (path, ext)
+            print "Opened %s for writing as %s..." % (path, f.content_type)
             for chunk in f.chunks():
                 destination.write(chunk)
             destination.close()
@@ -70,9 +65,9 @@ def upload_image(request):
                 image = Image(width=width, height=width, md5=md5, name=f.name)
                 image.save()
                 im.thumbnail((100,100), pil.ANTIALIAS)
-                im.save(settings.MEDIA_ROOT + "i/thumb/adex%s_%s" % (image.id, f.name))
-                file_move_safe(path,settings.MEDIA_ROOT + "i/adex%s_%s" % (image.id, f.name))
                 image.name = "adex%s_%s" % (image.id, f.name)
+                im.save(settings.MEDIA_ROOT + "i/thumb/%s" % image.name)
+                file_move_safe(path,settings.MEDIA_ROOT + "i/%s" % image.name)
                 image.save()
             print image.id
             return HttpResponse(simplejson.dumps({'success':True, 'value':image.id}))

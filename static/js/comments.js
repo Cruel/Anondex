@@ -76,66 +76,6 @@ function gotoDOM(sDOM){
 	$('html, body').animate({scrollTop: offset.top}, delay);
 };
 
-var fileid = '';
-function loadImgUploader(){
-	$(function(){
-		$('#imguploadcell').swfupload({
-			upload_url: "/upload_image/",
-			file_post_name: 'image',
-			file_size_limit : "2048",
-			file_types : "*.jpg;*.png;*.gif",
-			file_types_description : "Image File",
-			file_upload_limit : 1,
-			flash_url : "/static/js/swfupload/swfupload.swf",
-			button_image_url : '/static/js/swfupload/XPButtonUploadText_61x22.png',
-			button_width : 61,
-			button_height : 22,
-			button_placeholder : $('#imguploader p')[0],
-            //post_params: {'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()},
-            prevent_swf_caching: false,
-			debug: false
-		})
-			.bind('fileQueued', function(event, file){
-				fileid = file.id;
-				$('#fileinfo').html(file.name + ' (' + Math.round(file.size/1024) + ' kb)');
-			})
-			.bind('fileQueueError', function(event, file, errorCode, message){
-				alert('Size of the file '+file.name+' is greater than limit');
-			})
-			.bind('fileDialogStart', function(event, numFilesSelected, numFilesQueued){
-				if (fileid != '') $(this).swfupload('cancelUpload',fileid);
-				//$('#status').html('Files Selected: '+numFilesSelected+' / Queued Files: '+numFilesQueued);
-			})
-			.bind('uploadStart', function(event, file){
-				$('#status').html('Uploading...');
-				$('#progressbar').css('width','0');
-				$('#progressbar').css('visibility','visible');
-			})
-			.bind('uploadProgress', function(event, file, bytesLoaded){
-				var percentage=Math.round((bytesLoaded/file.size)*100);
-				$('#progressbar').css('width',percentage+'%');
-			})
-			.bind('uploadSuccess', function(event, file, serverData){
-                data = $.parseJSON(serverData);
-				if (data.success){
-					$('#status').html('Successfully uploaded');
-					$('input[name=image]').val(data.value);
-					postComment();
-				} else {
-					alert(data.error);
-					$('.errdiv').html(data.error);
-					$('#status').html('Failed to upload. Retry with another file.');
-				}
-				$('#fileinfo').html('');
-				//alert(serverData);
-			})
-			.bind('uploadComplete', function(event, file){
-				$('#progressbar').css('visibility','hidden');
-			})
-		
-	});	
-};
-
 function postComment(){
 //    $('#commentform').ajaxSubmit({
 //        dataType: 'json',
@@ -172,9 +112,10 @@ function commentSuccess(data)  {
     }
 };
 
+var bUploadImage = false;
 function submitComment(){
 	$('#submitbutton').attr("disabled", "true").css('color','#555').val('Posting...');
-	if (($('input[name=imagefile]').val() != '') && ($('input[name=image]').val() == ''))
+	if (bUploadImage && ($('input[name=image]').val() == ''))
 		postCommentImage();
 	else
 		postComment();
@@ -190,6 +131,9 @@ function gen_uuid() {
 };
 
 function postCommentImage(){
+    alert('uploading image...');
+    $('#commentform').fileupload('send',{});
+    return;
     $('#progressbar').css('visibility','visible');
     $('#progressbar').css('width',0);
     filename = $("#imglol").val().split(/[\/\\]/).pop();
@@ -235,10 +179,78 @@ function startProgressBarUpdate(upload_id) {
     }, 5000);
 };
 
+function drawImageFit(canvas, image, percentWidth){
+    var p = typeof(percentWidth) != 'undefined' ? percentWidth/100 : 1;
+    var ctx = canvas.getContext('2d');
+    ratio = image.width / image.height;
+    if (ratio >= 1){
+        w = Math.min(image.width, canvas.width);
+        h = w / ratio;
+    } else {
+        h = Math.min(image.height, canvas.height);
+        w = h * ratio;
+    }
+    ctx.drawImage(image,0,0,image.width*p,image.height,0,0,w*p,h);
+};
+
+function loadImage(file){
+    //var file = $('#imagefile')[0].files[0];
+    var reader = new FileReader();
+    reader.onload = function (event) {
+        var ctx = canvas.getContext('2d');
+        img = new Image();
+        img.onload = function(){
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.globalAlpha = 0.5;
+            drawImageFit(canvas, img);
+            ctx.globalAlpha = 1.0;
+            //drawImageFit(canvas, img, 50);
+        }
+        img.src = event.target.result;
+        $('#imagedropframe').css('border','1px solid transparent');
+    };
+    reader.readAsDataURL(file);
+    bUploadImage = true;
+}
+
+var img, canvas;
 function comment_onload() {
+    canvas = $('canvas')[0];
 	if (location.hash.substr(1)) hltag(location.hash.substr(1));
 	//if (parent.window.reportpage) alert('iframed');
 	//loadImgUploader();
+
+    $('#imagedropframe').click(function(e) {
+        e.preventDefault();
+        $('#imagefile').click();
+    });
+
+    $('#commentform').fileupload({
+        url: '/upload_image',
+        'dropZone': $('#imagedropframe'),
+        'fileInput': $('#imagefile'),
+        'progress': function(e, data){
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+                drawImageFit(canvas, img, progress);
+            },
+        add: function (e, data) {
+
+            },
+        change: function (e, data) {
+                loadImage(data.files[0]);
+            },
+        drop: function (e, data) {
+                loadImage(data.files[0]);
+//                $.each(data.files, function (index, file) {
+//                    //alert('Dropped file: ' + file.name);
+//                    loadImage(file);
+//                });
+            },
+        done: function (e, data) {
+                alert(data.result);
+                alert(data.value);
+            }
+    });
 
 	$('a.reply').each(function(i){
 		if (!$($(this).attr('rel')).length) {

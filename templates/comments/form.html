@@ -13,26 +13,29 @@
     <table class="formtable">
         <tr>
             <td class="firstcol">Name</td>
-            <td><input name="name" type="text" maxlength="20" value="" /></td>
+            <td><input name="name" type="text" maxlength="20" placeholder="Name" /></td>
         </tr><tr>
             <td>Password</td>
-            <td><input name="pass" type="text" maxlength="20" value="" /></td>
+            <td><input name="pass" type="text" maxlength="20" placeholder="Hash Password" /></td>
         </tr><tr>
             <td>Image:</td>
             <td id="imguploadcell">
 
                 <div id="imguploader">
-                    <input type="file" name="imagefile" id="imglol" />
+                    <input type="file" name="imagefile" id="imagefile" accept="image/png,image/jpeg,image/gif" />
                     <input type="hidden" name="image" />
+
+                    <div id="imagedropframe"><canvas width="200" height="150" title="Click or drag a file here to upload."></canvas></div>
+
                 </div>
-                <div id="status"></div>
-                <div id="fileinfo"></div>
-                <div id="progressbar"></div>
+                        <div id="progress_report_name"></div>
+                        <div id="progress_report_status" style="font-style: italic;"></div>
+                        <div id="progress_report_bar_container" style="width: 90%; height: 5px;">
 
             </td>
         </tr><tr>
             <td>Comment *<div id="charcounter">[Chars Left: 500]</div></td>
-            <td><textarea id="comment" name="comment" onKeyDown="updateCharCount(this);" onKeyUp="updateCharCount(this);"></textarea></td>
+            <td><textarea id="comment" name="comment" placeholder="Comment [500 Character Limit]" onKeyDown="updateCharCount(this);" onKeyUp="updateCharCount(this);"></textarea></td>
         </tr><tr>
             <td></td><td><input id="submitbutton" type="button" value="Post Comment" onclick="submitComment();" /></td>
         </tr>

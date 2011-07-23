@@ -156,17 +156,17 @@ html.comments .wrapper {
 .formtable input[type=button] {width:100px;}
 
 #imguploadcell{ padding-top:2px; }
-#imguploader, #status, #fileinfo{
-	float:left;
-	height:22px;
-	line-height:22px;
+#imagefile {
+    visibility: hidden;
 }
-#status, #fileinfo{margin:0 4px;}
-#progressbar {
-	clear:both;
-	height:2px;
-	background: blue;
-	visibility:hidden;
+#imagedropframe {
+    height: 150px;
+    width: 200px;
+    border: 1px dashed #444;
+    margin: 3px 0;
+}
+#imagedropframe canvas {
+    border-radius: 3px;
 }
 
 .footerdiv{
