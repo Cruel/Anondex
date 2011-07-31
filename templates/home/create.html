@@ -8,12 +8,12 @@
 {% block content %}
     <div id="creatediv">
         <div>
-            <div class="fieldlabel">Duration:</div>
+            <label class="fieldlabel" for="duration">Duration:</label>
             <select id="duration"><option value="0">Permanent</option><option value="43200">12 Hours</option><option value="86400">1 Day</option><option value="259200">3 Days</option><option value="604800">1 Week</option></select>
         </div>
 
         <div id="titlediv">
-            <div class="fieldlabel">Title:<font class="required">*</font></div>
+            <label class="fieldlabel" for="title">Title:*</label>
             <div id="titlefield">
                 <input id="title" type="text" size="25" maxlength="50" class="textskin tooltip" />
                 <span id="titlehint" class="hint">
@@ -25,23 +25,25 @@
         </div>
 
         <div id="namediv">
-            <div class="fieldlabel">Name:</div>
+            <label class="fieldlabel" for="name">Name:</label>
             <div id="namefield">
                 <input id="name" type="text" size="25" maxlength="30" class="textskin tooltip" onkeyup="$.get('func/ajax.php', {a: 'checkname', n: 'i'+ this.value +'i'}, checkName);" autocomplete="off" />
                 <span id="namehint" class="hint">
-                        <b><u>Name requirements</u>:</b>
-                        <ul><li>Must be unique</li>
+                    <b><u>Name requirements</u>:</b>
+                    <ul>
+                        <li>Must be unique</li>
                         <li>30 characters maximum</li>
-                        <li>Valid characters:<br>a-z, 0-9, -, _ (no space)</li></ul>
-                        This will allow for links such as: http://<b>name</b>.anondex.com<br /><br />
-                        <div id="namecheck"></div>
+                        <li>Valid characters:<br>a-z, 0-9, -, _ (no space)</li>
+                    </ul>
+                    <p>This will allow for links such as: http://<strong>name</strong>.anondex.com</p>
+                    <div id="namecheck"></div>
                     <span class="hint-pointer"></span>
                 </span>
             </div>
         </div>
 
         <div id="tagsdiv">
-            <div class="fieldlabel">Tags:</div>
+            <label class="fieldlabel" for="tags">Tags:</label>
             <div id="tagsfield">
                 <ul id="taglist"></ul>
             </div>
@@ -52,7 +54,7 @@
         </div>
 
         <div id="descriptiondiv">
-            <div class="fieldlabel">Description:<font class="required">*</font></div>
+            <label class="fieldlabel" for="description">Description:*</label>
             <div id="descriptionfield">
                 <textarea id="description" class="textareaskin tooltip"></textarea>
                 <span id="descriptionhint" class="hint">
@@ -64,7 +66,7 @@
 
         <div id="createbar">
             <div id="createwrapper">
-                <h1>Template:<font class="required">*</font></h1>
+                <h1>Template:*</h1>
                 <div class="typeradio typeimage"><input id="imageradio" name="type" type="radio" value="image" /><label for="imageradio">Image<b id="imageimage"></b></label></div>
                 <div class="typeradio typevideo"><input id="videoradio" name="type" type="radio" value="video" /><label for="videoradio">Video<b id="videoimage"></b></label></div>
                 <div class="typeradio typeflash"><input id="flashradio" name="type" type="radio" value="flash" /><label for="flashradio">Flash<b id="flashimage"></b></label></div>
@@ -93,7 +95,7 @@
                     <div id="htmloptions">
                         <!-- <span class="fieldlabel">HTML:</span> -->
                         <div id="htmlfield">
-                            <textarea id="html" wrap="off" class="tooltip"></textarea>
+                            <textarea id="html" wrap="soft" class="tooltip"></textarea>
                             <span class="hint">
                                     Enter your page content here. All HTML supported.<br /><br />Uploaded media content can be used in your HTML. Just use a relative path to the file, filenames are preserved.<br />Click below on the filename for example HTML. It will append the file's HTML to yours.
                                 <span class="hint-pointer"></span>
@@ -109,22 +111,28 @@
             <h1>File Uploads:</h1>
             <span id="swfupload_placeholder"></span>
             <span class="filetypes"><b>Supported types:</b> .jpg .gif .png .mp3 .mid .swf .flv</span>
+            <input type="button" id="btnAddFile" value="Add File" />
+            <ul id="filelist">
+                <li>file.jpg</li>
+            </ul>
+            <form id="fileuploader" method="post">
+                {% csrf_token %}
+                <input type="file" id="file" name="file" accept="image/png,image/jpeg,image/gif" multiple />
+            </form>
+
             <p id="queuestatus" ></p>
-            <div id="filelist">
+            <div id="filedata">
 
             </div>
             <div id="log">
-                <!-- div><span class="progressbar"></span><table class="fileinfo"><tr><td class="filenamecell"><em>file.jpg</em></td><td class="statuscell" >Queued</td><td class="progressvalue" >15% (245/1000kb)</td><td class="cancelcell"><input type="button" value="Cancel" /></td></tr></table></div>
-                <script>
-                    $( ".progressbar" ).progressbar({ value: 49 });
-                </script -->
+                
             </div>
         </div>
 
         <div id="submitbuttons">
             <div id="recaptchadivframe"></div>
             <input type="button" value="Create" onClick="createPage(true);" disabled />
-            <input type="button" value="Preview" onClick="createPage(false);" /> <?php //echo $_SESSION['item']; ?>
+            <input type="button" value="Preview" onClick="createPage(false);" />
             <input type="button" value="Reset" onclick="resetForm();" />
             <!-- input type="button" value="Test" onclick="testy();" /-->
         </div>

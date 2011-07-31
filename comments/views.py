@@ -73,16 +73,3 @@ def upload_image(request):
             return HttpResponse(simplejson.dumps({'success':True, 'value':image.id}))
         return HttpResponse(simplejson.dumps({'success':False, 'error':'Not a valid image.'}))
     return HttpResponse(simplejson.dumps({'success':False, 'error':'Error uploading file.'}))
-
-def get_upload_progress(request):
-    """
-    Return JSON object with information about the progress of an upload.
-    """
-    progress_id = request.GET['x-id']
-    if progress_id:
-        cache_key = "%s_%s" % (request.META['REMOTE_ADDR'], progress_id)
-        data = cache.get(cache_key)
-        print "Returning progress data: %s" % data
-        return HttpResponse(simplejson.dumps(data))
-    else:
-        return HttpResponseBadRequest('Server Error: You must provide X-Progress-ID header or query param.')

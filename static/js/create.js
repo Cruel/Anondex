@@ -9,15 +9,15 @@ function resetForm(){
 	$('.tagHandler').remove();
 	$('#tagsfield').prepend('<ul id="taglist"></ul>');
 	loadTagHandler();
-};
+}
 
 function testy(){
 	$(".progressbar").progressbar({value: 70});
-};
+}
 
 function IsDefined(val){
 	return ((val !== '') && (val !== 'undefined') && (typeof(val) !== 'undefined'));
-};
+}
 
 function checkValues(valData) {
 	var arrErrors = [];
@@ -45,13 +45,13 @@ function checkValues(valData) {
 		return false;
 	} else
 		return true;
-};
+}
 
 function makePOSTData(postdata, paramlist){
 	for (var x in paramlist)
 		//eval("postdata."+paramlist[x]+"= '"+ encodeURIComponent($("#"+paramlist[x]).val()).replace("'","%27") +"'");
 		postdata[paramlist[x]] = encodeURIComponent($("#"+paramlist[x]).val()).replace("'","%27");
-};
+}
 
 function createPage(NotPreview){
 	$('#results').html('');
@@ -99,10 +99,9 @@ function createPage(NotPreview){
 			if (data.indexOf('<div id="createerrors">') > -1) wnd.close(); 
 		});
 	return true;
-};
+}
 
-function insert(filename)
-{
+function insert(filename){
 	var text;
 	var farray = filename.split(".");
 	var filetype = farray[(farray.length-1)].toLowerCase();
@@ -136,7 +135,7 @@ function insert(filename)
 		}
 		textarea.focus();
 	}
-};
+}
 
 var currTemplateLabel = null;
 var currTypeValue = '';
@@ -158,7 +157,7 @@ function selectTemplate(obj) {
 		$("#"+currTypeValue+"options").slideUp(500, openFunc );
 	} else
 		openFunc();
-};
+}
 
 function checkName(data){
 	$("#namecheck").html(data);
@@ -166,12 +165,12 @@ function checkName(data){
 	if (data == '') $("#name").css({ color:"black", backgroundColor:"" });	
 	if ((data.indexOf("Invalid") > -1) || (data.indexOf("not a") > -1)) $("#name").css("backgroundColor", "red");
 	if (data.indexOf("is a") > -1) $("#name").css("backgroundColor", "green");
-};
+}
 
 function refreshFileList(removeid, uploadid) {
 	removeid = (typeof removeid == 'undefined') ? '' : '&d='+removeid;
 	//alert(removeid);
-	$('#filelist').load('/ajax/filelist'+removeid, {},
+	$('#filedata').load('/ajax/filelist'+removeid, {},
 		function(){
 			$('#imageselectspan').html($('#imagelist').remove().html());
 			$('#musicselectspan').html($('#musiclist').remove().html());
@@ -182,9 +181,57 @@ function refreshFileList(removeid, uploadid) {
 			if (typeof uploadid != 'undefined') $('#log div#'+uploadid).remove();
 			//alert($('#imageselectspan').html());
 		});
-};
+}
 
+var filelist = new Array();
 function loadCreateUploader(){
+    $('#btnAddFile').click(function(e) {
+        $('#file').click();
+    });
+
+    $('#fileuploader').fileupload({
+        url: '/upload_file',
+        dataType: 'json',
+        'dropZone': $('#upload-controller'),
+        'fileInput': $('#file'),
+        add: function (e, data) {
+                $.each(data.files, function (index, file) {
+                    //alert('Added file: ' + file.name);
+                    var duplicate = false;
+                    for (f in filelist)
+                        if (f == file)
+                            duplicate = true;
+                    if (!duplicate){
+                        filelist.push(file);
+                        $('#filelist').append('<li>'+file.name+'</li>');
+                    }
+                });
+            },
+        'progress': function(e, data){
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+                //drawImageFit(canvas, img, progress);
+            },
+        change: function (e, data) {
+                //loadImage(data.files[0]);
+            },
+        drop: function (e, data) {
+                //loadImage(data.files[0]);
+                $.each(data.files, function (index, file) {
+                    //alert('Dropped file: ' + file.name);
+                    //loadImage(file);
+                });
+            },
+        done: function (e, data) {
+                if (data.result.success) {
+                    $('input[name=image]').val(data.result.value);
+                    postComment();
+                } else {
+                    $('.errdiv').html('Error: '+data.result.error);
+                }
+            }
+    });
+
+    return;
 	$(function(){
 		$('#upload-controller').swfupload({
 			upload_url: "func/upload-file.php?i="+document.cookie.match(/PHPSESSID=[^;]+/),
@@ -249,7 +296,7 @@ function loadCreateUploader(){
 			});
 		
 	});	
-};
+}
 
 function loadTagHandler(){
 	$('#taglist').tagHandler({
@@ -257,7 +304,7 @@ function loadTagHandler(){
 	    getURL: '/ajax/taglist',
 	    autocomplete: true
 	});
-};
+}
 
 function create_onload() {
 	refreshFileList();
@@ -272,10 +319,10 @@ function create_onload() {
 	$(".typeradio label").click(function(){ selectTemplate($("#"+$(this).attr('for'))[0]); });
 	//$("label[for='"+currTypeValue+"radio']").click();
 	if (!isbanned) {
-		//loadCreateUploader();
+		loadCreateUploader();
 		Recaptcha.create("6LdKer0SAAAAAEj2Tu5XjFY2VajoSy8eltRpjfaN", "recaptchadivframe", 
 				   {	theme: "clean",
 				     	callback: Recaptcha.focus_response_field 
 				   });
 	}
-};
+}
