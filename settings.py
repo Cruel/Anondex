@@ -3,6 +3,10 @@ from os.path import abspath, dirname, basename, join
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+#VERSION = '2.0.0'
+
+INTERNAL_IPS = ('127.0.0.1',)
+
 ROOT_PATH = abspath(dirname(__file__))
 PROJECT_NAME = basename(ROOT_PATH)
 
@@ -32,6 +36,12 @@ USE_L10N = True
 
 ROOT_URLCONF = 'anondex.urls'
 
+MEDIA_DEV_MODE = DEBUG
+DEV_MEDIA_URL = '/devstatic/'
+PRODUCTION_MEDIA_URL = '/static/'
+
+GLOBAL_MEDIA_DIRS = (join(ROOT_PATH, 'static'),)
+
 #MEDIA_ROOT = join(ROOT_PATH, 'media')
 MEDIA_ROOT = 'C:/nginx/html/media/'
 MEDIA_URL = 'http://localhost/media/'
@@ -40,7 +50,15 @@ ADMIN_MEDIA_PREFIX = 'http://localhost/static/admin/'
 STATIC_ROOT = join(ROOT_PATH, 'static')
 STATIC_URL = 'http://localhost:8000/static/'
 
-FILE_UPLOAD_TEMP_DIR = 'C:/nginx/upload_tmp'
+#FILE_UPLOAD_TEMP_DIR = 'C:/nginx/upload_tmp'
+
+YUICOMPRESSOR_PATH = join(ROOT_PATH, 'yuicompressor.jar')
+CLOSURE_COMPILER_PATH = join(ROOT_PATH, 'closure.jar')
+
+ROOT_MEDIA_FILTERS = {
+    'js': 'mediagenerator.filters.closure.Closure',
+    'css': 'mediagenerator.filters.yuicompressor.YUICompressor',
+}
 
 FILE_UPLOAD_HANDLERS = (
     #"comments.uploadprogresscachedhandler.UploadProgressCachedHandler",
@@ -58,14 +76,11 @@ CACHE_BACKEND = 'memcached://127.0.0.1:11211/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     join(ROOT_PATH, 'static'),
 )
 
-# List of finder classes that know how to find static files in
-# various locations.
+# List of finder classes that know how to find static files in various locations.
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
@@ -106,6 +121,7 @@ AUTHENTICATION_BACKENDS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'mediagenerator.middleware.MediaMiddleware', # Media middleware has to come first
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -114,17 +130,22 @@ MIDDLEWARE_CLASSES = (
     'pagination.middleware.PaginationMiddleware',
 )
 
+if DEBUG:
+    MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    #'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.admindocs',
     'django.contrib.comments',
     #'djangotoolbox',
+    'debug_toolbar',
+    'mediagenerator',
     'registration',
     'profiles',
     'social_auth',
@@ -158,7 +179,4 @@ LOGGING = {
     }
 }
 
-try:
-    from local_settings import *
-except:
-    pass
+from local_settings import *

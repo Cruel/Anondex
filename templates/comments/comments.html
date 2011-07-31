@@ -1,8 +1,5 @@
 {% load adexcomments %}
 {% for comment in comment_list %}
-    {% if anchored %}
-        <a name="{{ comment.id }}"></a>
-    {% endif %}
     <div {% if anchored %}id="{{ comment.id }}" {% endif %}class="comment {% cycle "commentodd" "commenteven" %}">
         <div class="header gravatar">
             {% if comment.hash %}<span class="tripcode"><img src="http://www.gravatar.com/avatar/{{ comment.hash }}?d=wavatar&s=30" /></span>{% endif %}
@@ -19,7 +16,7 @@
                 {% if comment.image %}
                     <div class="imagediv">
                         <a target="_parent" class="iframe" href="/image/{{ comment.image.id }}">
-                            <img src="{{ THUMBNAIL_URL }}{{ comment.image.name }}" class="cimg" />
+                            <img src="{{ THUMBNAIL_URL }}{{ comment.image.name }}" alt="{{ comment.image.name }}" class="cimg" />
                         </a>
                         {% if comment.image.vote_count > 0 %}
                             <div class="rating"><ul class="star-rating2"><li class="current-rating" style="width:{% widthratio comment.image.rating 5 100 %}%"></li><li></li><li></li><li></li><li></li><li></li></ul></div>

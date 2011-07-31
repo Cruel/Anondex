@@ -1,5 +1,6 @@
 {% load comments i18n %}
 
+<h1>Add Comment</h1>
 <div class="errdiv"></div>
 <form id="commentform" method="post" enctype="multipart/form-data" action="{% comment_form_target %}">
     {% csrf_token %}
@@ -10,16 +11,11 @@
         {% endif %}
     {% endfor %}
     <div style="display:none;"><label for="id_honeypot">This is secret</label> <input type="text" name="honeypot" id="id_honeypot" /></div>
-    <table class="formtable">
-        <tr>
-            <td class="firstcol">Name</td>
-            <td><input name="name" type="text" maxlength="20" placeholder="Name" /></td>
-        </tr><tr>
-            <td>Password</td>
-            <td><input name="pass" type="text" maxlength="20" placeholder="Hash Password" /></td>
-        </tr><tr>
-            <td>Image:</td>
-            <td id="imguploadcell">
+    <div class="formtable">
+        <input name="name" type="text" maxlength="20" placeholder="Name" />
+        <input name="pass" type="text" maxlength="20" placeholder="Hash Password" />
+
+            <div id="imguploadcell">
 
                 <div id="imguploader">
                     <input type="file" name="imagefile" id="imagefile" accept="image/png,image/jpeg,image/gif" />
@@ -30,16 +26,12 @@
                 </div>
                         <div id="progress_report_name"></div>
                         <div id="progress_report_status" style="font-style: italic;"></div>
-                        <div id="progress_report_bar_container" style="width: 90%; height: 5px;">
-
-            </td>
-        </tr><tr>
-            <td>Comment *<div id="charcounter">[Chars Left: 500]</div></td>
-            <td><textarea id="comment" name="comment" placeholder="Comment [500 Character Limit]" onKeyDown="updateCharCount(this);" onKeyUp="updateCharCount(this);"></textarea></td>
-        </tr><tr>
-            <td></td><td><input id="submitbutton" type="button" value="Post Comment" onclick="submitComment();" /></td>
-        </tr>
-    </table>
+                        <div id="progress_report_bar_container" style="width: 90%; height: 5px;"></div>
+            </div>
+        <div id="charcounter">[Chars Left: 500]</div>
+        <textarea id="comment" name="comment" placeholder="Comment [500 Character Limit]" onKeyDown="updateCharCount(this);" onKeyUp="updateCharCount(this);" required></textarea>
+        <input id="submitbutton" type="button" value="Post Comment" onclick="submitComment();" />
+    </div>
 
     <!--
     <input type="hidden" name="info" value="" />

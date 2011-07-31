@@ -8,7 +8,7 @@
 
 {% block content %}
     {% if image %}
-        <div><a href="{{ IMAGE_URL }}{{ image.name }}"><img src="{{ IMAGE_URL }}{{ image.name }}" /></a></div>
+        <div><a href="{{ IMAGE_URL }}{{ image.name }}"><img src="{{ IMAGE_URL }}{{ image.name }}" alt="{{ image.name }}" /></a></div>
         {% get_comment_count for image as comment_count %}
         <p>{{ comment_count }} comments have been posted.</p>
         {% get_comment_list for image as comment_list %}

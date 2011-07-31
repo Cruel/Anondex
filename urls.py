@@ -1,3 +1,4 @@
+import os
 from django.conf.urls.defaults import *
 from anondex.socialauth.forms import ProfileForm, RegistrationFormTest
 from django.conf import settings
@@ -5,6 +6,9 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 # Initialize comments ajax wrapper
 from comments import ajax_wrapper
+
+#from django import template
+#template.add_to_builtins('project.app.templatetags.custom_tag_module')
 
 from django.contrib import admin
 admin.autodiscover()
@@ -29,10 +33,10 @@ urlpatterns = patterns('',
     #(r'^profiles/edit/', 'profiles.views.edit_profile', {'form_class': ProfileForm,'success_url':'/my/custom/url',}),
     url(r'^profiles/', include('profiles.urls')),
     url(r'^upload_image$', 'comments.views.upload_image'),
-    url(r'^get_upload_progress?.*$', 'comments.views.get_upload_progress'),
+    url(r'^upload_file$', 'adex.views.upload_file'),
     url(r'^ajax/', include('home.ajax_urls')),
 
-    url(r'^static/(?P<path>.*)$', 'django.views.static.serve',  {'document_root': settings.STATIC_ROOT, 'show_indexes': True}),
+    #url(r'^static/(?P<path>.*)$', 'django.views.static.serve',  {'document_root': settings.STATIC_ROOT, 'show_indexes': True}),
 )
 
 #urlpatterns += staticfiles_urlpatterns()

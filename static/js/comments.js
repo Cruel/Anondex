@@ -44,7 +44,7 @@ function reply(id){
 function vidseek(t) {
 	//alert(t);
 	if (parent.window.player)
-		parent.window.player.goto(t);
+		parent.window.player['goto'](t);
 	else
 		alert('Video player not found.');
 };
@@ -77,12 +77,6 @@ function gotoDOM(sDOM){
 };
 
 function postComment(){
-//    $('#commentform').ajaxSubmit({
-//        dataType: 'json',
-//        url: '/comments/post/',
-//        //beforeSubmit: showRequest,
-//        success: commentSuccess
-//    });
 	$.post('/comment/post/', $('#commentform').serialize(),
 			function(data){
 				if (data.success) {
@@ -100,83 +94,17 @@ function postComment(){
 		);
 };
 
-function commentSuccess(data)  {
-    if (data.success) {
-        $('#submitbutton').val('Posted.');
-        $('.errdiv').html(data.html);
-        //window.location.reload();
-    } else {
-        for (var error in data.errors)
-            $('.errdiv').append(error);
-        $('#submitbutton').removeAttr("disabled").css('color','').val('Post Comment');
-    }
-};
-
-var bUploadImage = false;
+var CommentImageFile = null;
 function submitComment(){
 	$('#submitbutton').attr("disabled", "true").css('color','#555').val('Posting...');
-	if (bUploadImage && ($('input[name=image]').val() == ''))
+	if (CommentImageFile && ($('input[name=image]').val() == ''))
 		postCommentImage();
 	else
 		postComment();
 };
 
-// Generate 32 char random uuid
-var xid;
-function gen_uuid() {
-    var uuid = "";
-    for (var i=0; i < 32; i++)
-        uuid += Math.floor(Math.random() * 16).toString(16);
-    return uuid;
-};
-
 function postCommentImage(){
-    alert('uploading image...');
-    $('#commentform').fileupload('send',{});
-    return;
-    $('#progressbar').css('visibility','visible');
-    $('#progressbar').css('width',0);
-    filename = $("#imglol").val().split(/[\/\\]/).pop();
-	//alert('Uploading ' + filename + "...");
-    xid = gen_uuid();
-    //startProgressBarUpdate(xid);
-    $('#commentform').ajaxSubmit({
-        dataType: 'json',
-        url: '/upload_image?x-id='+xid,
-        //beforeSubmit: showRequest,
-        success: imageSuccess
-    });
-};
-
-function imageSuccess(data)  {
-    if (data.success) {
-        $('input[name=image]').val(data.value);
-        postComment();
-    } else {
-        $('.errdiv').html('Error: '+data.error);
-    }
-};
-
-function startProgressBarUpdate(upload_id) {
-    $("#progressbar").fadeIn();
-    $('#progressbar').css('visibility','visible');
-    $('#progressbar').css('width',0);
-    $('#progressbar').css('width',50+'%');
-    if(g_progress_intv != 0)
-        clearInterval(g_progress_intv);
-    g_progress_intv = setInterval(function() {
-        $.getJSON("/get_upload_progress?xid=" + upload_id, function(data) {
-            if (data == null) {
-                $('#progressbar').css('width','100%');
-                clearInterval(g_progress_intv);
-                g_progress_intv = 0;
-                return;
-            }
-            var percentage = Math.floor(100 * parseInt(data.uploaded) / parseInt(data.length));
-            //$("#progressbar").progressBar(percentage);
-            $('#progressbar').css('width',percentage+'%');
-        });
-    }, 5000);
+    $('#commentform').fileupload('send',{files: CommentImageFile});
 };
 
 function drawImageFit(canvas, image, percentWidth){
@@ -190,7 +118,10 @@ function drawImageFit(canvas, image, percentWidth){
         h = Math.min(image.height, canvas.height);
         w = h * ratio;
     }
-    ctx.drawImage(image,0,0,image.width*p,image.height,0,0,w*p,h);
+    ctx.drawImage(image,
+        0, 0, image.width*p, image.height,
+        (canvas.width-w)/2, (canvas.height-h)/2, w*p, h
+    );
 };
 
 function loadImage(file){
@@ -207,34 +138,39 @@ function loadImage(file){
             //drawImageFit(canvas, img, 50);
         }
         img.src = event.target.result;
-        $('#imagedropframe').css('border','1px solid transparent');
     };
     reader.readAsDataURL(file);
-    bUploadImage = true;
+    CommentImageFile = file;
 }
 
 var img, canvas;
 function comment_onload() {
     canvas = $('canvas')[0];
 	if (location.hash.substr(1)) hltag(location.hash.substr(1));
+    
 	//if (parent.window.reportpage) alert('iframed');
-	//loadImgUploader();
 
     $('#imagedropframe').click(function(e) {
         e.preventDefault();
         $('#imagefile').click();
     });
 
+    $('#imagedropframe').bind('dragenter', function(){
+        $('#imagedropframe').css('border','1px solid red');
+    });
+    $('#imagedropframe').bind('dragleave drop', function(){
+        $('#imagedropframe').css('border','1px dashed black');
+    });
+
     $('#commentform').fileupload({
         url: '/upload_image',
+        dataType: 'json',
         'dropZone': $('#imagedropframe'),
         'fileInput': $('#imagefile'),
+        add: function () { },
         'progress': function(e, data){
                 var progress = parseInt(data.loaded / data.total * 100, 10);
                 drawImageFit(canvas, img, progress);
-            },
-        add: function (e, data) {
-
             },
         change: function (e, data) {
                 loadImage(data.files[0]);
@@ -247,8 +183,12 @@ function comment_onload() {
 //                });
             },
         done: function (e, data) {
-                alert(data.result);
-                alert(data.value);
+                if (data.result.success) {
+                    $('input[name=image]').val(data.result.value);
+                    postComment();
+                } else {
+                    $('.errdiv').html('Error: '+data.result.error);
+                }
             }
     });
 

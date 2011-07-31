@@ -1,35 +1,30 @@
+{% load media %}
+
 <!DOCTYPE html>
 <html class="{% block htmlclass %}htmlhome{% endblock %}" lang="en">
 <head>
 
     <title>{% block title %}Anondex{% endblock %}</title>
     {% block meta %}{% endblock %}
-    <meta charset=utf-8 />
+    <meta charset="utf-8" />
     <meta name="description" content="{% block description %}Anondex is a completely anonymous service that allows for people to create/upload a single web page with some files to be indexed for commenting and rating.{% endblock %}" />
 
+    <link rel="shortcut icon" type="image/png" href="/images/favicon.png">
     <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.2r1/build/reset/reset-min.css" />
-    {% for file in HEAD_CSS_FILES %}
-        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}styles/{{ file }}.css" />
-    {% endfor %}
+    {% include_media 'anondex.css' %}
 
     <script type="text/javascript">var isbanned=false;</script>
     {% block prescripts %}{% endblock %}
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.js"></script>
-    {% for file in HEAD_JS_FILES %}
-        <script type="text/javascript" src="{{ STATIC_URL }}js/{{ file }}.js"></script>
-    {% endfor %}
-    {% include "google_analytics.html" %}
+    {% include_media 'anondex.js' %}
     {% block postscripts %}{% endblock %}
 </head>
 <body>
 {% block body %}
-    <div id="sidebar">
-        {% block sidebar %}
-        <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/blog/">Blog</a></li>
-        </ul>
+    <div id="header">
+        {% block header %}
+        HEADER
         {% endblock %}
     </div>
 
