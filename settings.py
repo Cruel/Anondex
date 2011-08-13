@@ -46,12 +46,12 @@ GLOBAL_MEDIA_DIRS = (
     join(ROOT_PATH, 'imported-sass-frameworks'),
 )
 
-MEDIA_ROOT = join(ROOT_PATH, 'media')
+MEDIA_ROOT = join(ROOT_PATH, 'media/')
 #MEDIA_ROOT = 'C:/nginx/html/media/'
 MEDIA_URL = 'http://localhost/media/'
 ADMIN_MEDIA_PREFIX = 'http://localhost/static/admin/'
 
-STATIC_ROOT = join(ROOT_PATH, 'static')
+STATIC_ROOT = join(ROOT_PATH, 'static/')
 STATIC_URL = 'http://localhost:8000/static/'
 
 #FILE_UPLOAD_TEMP_DIR = 'C:/nginx/upload_tmp'
@@ -134,7 +134,7 @@ MIDDLEWARE_CLASSES = (
     'pagination.middleware.PaginationMiddleware',
 )
 
-if DEBUG:
+if not DEBUG:
     MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
 
 INSTALLED_APPS = (
@@ -156,14 +156,16 @@ INSTALLED_APPS = (
     'pagination',
     'gravatar',
     'tagging',
-    'anondex.polls',
-    'anondex.comments',
-    'anondex.socialauth',
-    'anondex.adex',
-    'anondex.home',
+    # Anondex Specific
+    'polls',
+    'comments',
+    'socialauth',
+    'adex',
+    'home',
+    'medialibrary',
 )
 
-COMMENTS_APP = 'anondex.comments'
+COMMENTS_APP = 'comments'
 
 LOGGING = {
     'version': 1,

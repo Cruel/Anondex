@@ -97,7 +97,7 @@ function postComment(){
 var CommentImageFile = null;
 function submitComment(){
 	$('#submitbutton').attr("disabled", "true").css('color','#555').val('Posting...');
-	if (CommentImageFile && ($('input[name=image]').val() == ''))
+	if (CommentImageFile && ($('input[name=file]').val() == ''))
 		postCommentImage();
 	else
 		postComment();
@@ -156,10 +156,10 @@ function comment_onload() {
     });
 
     $('#imagedropframe').bind('dragenter', function(){
-        $('#imagedropframe').css('border','1px solid red');
+        $(this).css('border','1px solid red');
     });
     $('#imagedropframe').bind('dragleave drop', function(){
-        $('#imagedropframe').css('border','1px dashed black');
+        $(this).css('border','1px dashed black');
     });
 
     $('#commentform').fileupload({
@@ -184,7 +184,7 @@ function comment_onload() {
             },
         done: function (e, data) {
                 if (data.result.success) {
-                    $('input[name=image]').val(data.result.value);
+                    $('input[name=file]').val(data.result.value);
                     postComment();
                 } else {
                     $('.errdiv').html('Error: '+data.result.error);

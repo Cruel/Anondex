@@ -5,9 +5,10 @@ from django.contrib.comments.models import Comment
 from django.contrib.comments.views import comments
 from django.contrib.comments.signals import comment_will_be_posted
 from django.dispatch.dispatcher import receiver
+from medialibrary.models import LibraryFile
 
 
-class Image(models.Model):
+class ImageOld(models.Model):
     EXTENSION_CHOICES = {
         1 : 'image/jpeg',
         2 : 'image/png',
@@ -24,14 +25,15 @@ class Image(models.Model):
     def save(self):
         # TODO: make thumbnail here?
         #self.md5 = "test"
-        super(Image, self).save()
+        super(ImageOld, self).save()
         pass
     def __unicode__(self):
         return self.name
 
 class AdexComment(Comment):
     #title = models.CharField(max_length=300)
-    image = models.ForeignKey(Image, null=True)
+    #image = models.ForeignKey(Image, null=True)
+    file = models.ForeignKey(LibraryFile, null=True)
 
 @receiver(comment_will_be_posted, sender=AdexComment)
 def my_callback(sender, comment, request, **kwargs):

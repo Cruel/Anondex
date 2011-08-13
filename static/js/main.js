@@ -115,11 +115,20 @@ function rate(rating, item, is_image){
 			function(data){
 				$('#current-rating').css('width',$('#rated_text #ratingval').html()+'%');
 			});
-};
+}
+
+function CloseAjaxDiv(obj){
+    $(obj).remove();
+    alert($(obj).html());
+}
+
+function AddErrorDiv(container, msg){
+    $(container).prepend('<div class="error_ajax">Error: '+msg+' <a href="#" onclick="CloseAjaxDiv(this.parentNode); return false;">Close</a></div>');
+}
 
 function ShowHoverDiv(){
 	$('#hoverdiv').css('visibility','visible');
-};
+}
 
 function LoadHoverdiv(id, img, title, des, rating, comments, views, type, url, domain) {
 	var imgclass;
@@ -148,18 +157,18 @@ function LoadHoverdiv(id, img, title, des, rating, comments, views, type, url, d
 	$('#hoverdiv .iframe').fancybox(commentBox);
 	ShowHoverDiv();
 	enablehover = true;
-};
+}
 
 function HideHoverdiv(){
 	$('#hoverdiv').css('visibility','hidden');
 	enablehover = false;
-};
+}
 
 function SetCookieValue(name, value, domain){
 	var expiration = new Date();
 	expiration.setTime(expiration.getTime()+(3600*24*365*20));
 	document.cookie = name+"="+value+"; expires="+expiration.toGMTString()+"; path=/;"+domain;
-};
+}
 
 function SaveSettings(){
 	var domain = $('#settings #domain').val();
@@ -171,7 +180,7 @@ function SaveSettings(){
 		SetCookieValue(this.id,(this.checked ? 'on' : ''));
 	});
 	alert('Settings Saved.');
-};
+}
 
 function moveMouse(e){
 	if (enablehover){
@@ -191,7 +200,7 @@ function moveMouse(e){
 		//else
 			$('#hoverdiv').css('top',newY+"px");
 	}
-};
+}
 	
 function do_onload(){
     /*
@@ -200,6 +209,6 @@ function do_onload(){
 	arrpage = page.split('/');
 	LoadPage($('#link'+arrpage[0]), ((arrpage[0]=='browser')? page : 'pages/'+page+'.php'));
 	*/
-};
+}
 
 $(function(){$(document).mousemove(moveMouse);});

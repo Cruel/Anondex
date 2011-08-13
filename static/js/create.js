@@ -183,10 +183,25 @@ function refreshFileList(removeid, uploadid) {
 		});
 }
 
+function startCreateUpload(){
+    for (i in filelist)
+        $('#fileuploader').fileupload('send',{files: filelist[i]});
+}
+
 var filelist = new Array();
 function loadCreateUploader(){
     $('#btnAddFile').click(function(e) {
         $('#file').click();
+    });
+    $('#testylol').click(function(e) {
+        startCreateUpload();
+    });
+
+    $('#upload-controller').bind('dragenter', function(){
+        $(this).css('outline','2px solid red');
+    });
+    $('#upload-controller').bind('dragleave drop', function(){
+        $(this).css('outline','0');
     });
 
     $('#fileuploader').fileupload({
@@ -194,12 +209,13 @@ function loadCreateUploader(){
         dataType: 'json',
         'dropZone': $('#upload-controller'),
         'fileInput': $('#file'),
+        sequentialUploads: true,
+        maxFileSize: 50000,
         add: function (e, data) {
                 $.each(data.files, function (index, file) {
-                    //alert('Added file: ' + file.name);
                     var duplicate = false;
-                    for (f in filelist)
-                        if (f == file)
+                    for (i in filelist)
+                        if (filelist[i].name == file.name)
                             duplicate = true;
                     if (!duplicate){
                         filelist.push(file);
@@ -210,6 +226,7 @@ function loadCreateUploader(){
         'progress': function(e, data){
                 var progress = parseInt(data.loaded / data.total * 100, 10);
                 //drawImageFit(canvas, img, progress);
+                $('#results').append('<p>'+progress+'-'+data.files[0].name+'</p>');
             },
         change: function (e, data) {
                 //loadImage(data.files[0]);
@@ -223,10 +240,13 @@ function loadCreateUploader(){
             },
         done: function (e, data) {
                 if (data.result.success) {
-                    $('input[name=image]').val(data.result.value);
-                    postComment();
+                    //$('input[name=image]').val(data.result.value);
+                    //postComment();
+                    //alert('Success: '+data.result.error);
                 } else {
-                    $('.errdiv').html('Error: '+data.result.error);
+                    //$('.errdiv').html('Error: '+data.result.error);
+                    //alert('Error: '+data.result.error);
+                    AddErrorDiv('#upload-controller', data.result.error);
                 }
             }
     });
@@ -300,7 +320,6 @@ function loadCreateUploader(){
 
 function loadTagHandler(){
 	$('#taglist').tagHandler({
-	    //getData: { a: 'taglist', i: '' },
 	    getURL: '/ajax/taglist',
 	    autocomplete: true
 	});

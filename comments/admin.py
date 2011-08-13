@@ -1,4 +1,4 @@
-from comments.models import Comment, Image, AdexComment
+from comments.models import Comment, AdexComment
 from django.contrib import admin
 
 class CommentAdmin(admin.ModelAdmin):
@@ -11,6 +11,6 @@ class CommentAdmin(admin.ModelAdmin):
     search_fields = ['question']
     date_hierarchy = 'pub_date'
 
-admin.site.register(Image)
+#admin.site.register(Image)
 admin.site.register(AdexComment)
 #admin.site.register(Comment, CommentAdmin)

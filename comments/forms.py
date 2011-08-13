@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.comments.forms import CommentForm
-from comments.models import AdexComment, Image
+from comments.models import AdexComment
+from medialibrary.models import LibraryFile
 
 
 class ImageUploadForm(forms.Form):
@@ -9,7 +10,7 @@ class ImageUploadForm(forms.Form):
 
 class AdexCommentForm(CommentForm):
     #title = forms.CharField(max_length=300)
-    image = forms.ModelChoiceField(Image.objects.all(), required=False)
+    file = forms.ModelChoiceField(LibraryFile.objects.all(), required=False)
 
     def get_comment_model(self):
         return AdexComment
@@ -18,7 +19,7 @@ class AdexCommentForm(CommentForm):
         # Use the data of the superclass, and add in the title field
         data = super(AdexCommentForm, self).get_comment_create_data()
         #data['title'] = self.cleaned_data['title']
-        data['image'] = self.cleaned_data['image']
+        data['file'] = self.cleaned_data['file']
         #data['name'] = self.cleaned_data['name_']
         #print data['image']
         #data['name'] = "herp"

@@ -3,11 +3,13 @@ from django.core.files.move import file_move_safe
 from django.shortcuts import get_object_or_404, render_to_response, get_list_or_404
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.template import RequestContext
-from comments.models import User, Image, Comment
+from comments.models import User, Comment
 from django.core.cache import cache
 from django.utils import simplejson
 from PIL import Image as pil
 from comments.utils import md5_file
+from medialibrary.models import LibraryFile
+from medialibrary.utils import ProcessLibraryImage
 import settings
 
 def index(request):
@@ -28,7 +30,7 @@ def test(request):
                                context_instance=RequestContext(request))
 
 def image_page(request, image_id):
-    image = get_object_or_404(Image.objects, pk = image_id)
+    image = get_object_or_404(LibraryFile.objects, pk = image_id)
 #    c = Comment.objects.order_by('date').filter()
     return render_to_response('comments/image.html', {'image':image},
                                context_instance=RequestContext(request))
@@ -39,37 +41,17 @@ def require_authentication(request):
 
 def upload_image(request):
     if request.method == 'POST':
-        EXTENSION_CHOICES = {
-            'image/jpeg':   1,
-            'image/png':    2,
-            'image/gif':    3,
-        }
+        EXTENSION_CHOICES = ( 'image/jpeg', 'image/png', 'image/gif',)
         f = request.FILES['imagefile']
         if f.content_type in EXTENSION_CHOICES:
-            ext = EXTENSION_CHOICES[f.content_type]
             path = settings.MEDIA_ROOT + 'tmp/' + f.name
             destination = open(path, 'wb+')
             print "Opened %s for writing as %s..." % (path, f.content_type)
             for chunk in f.chunks():
                 destination.write(chunk)
             destination.close()
+            imageid = ProcessLibraryImage(path)
 
-            im = pil.open(path)
-            (width, height) = im.size
-            md5 = md5_file(path)
-
-            # If image md5 doesn't already exist, make the image
-            try:
-                image = Image.objects.get(md5=md5)
-            except Image.DoesNotExist:
-                image = Image(width=width, height=width, md5=md5, name=f.name)
-                image.save()
-                im.thumbnail((100,100), pil.ANTIALIAS)
-                image.name = "adex%s_%s" % (image.id, f.name)
-                im.save(settings.MEDIA_ROOT + "i/thumb/%s" % image.name)
-                file_move_safe(path,settings.MEDIA_ROOT + "i/%s" % image.name)
-                image.save()
-            print image.id
-            return HttpResponse(simplejson.dumps({'success':True, 'value':image.id}))
+            return HttpResponse(simplejson.dumps({'success':True, 'value':imageid}))
         return HttpResponse(simplejson.dumps({'success':False, 'error':'Not a valid image.'}))
     return HttpResponse(simplejson.dumps({'success':False, 'error':'Error uploading file.'}))

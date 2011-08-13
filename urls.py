@@ -28,15 +28,14 @@ urlpatterns = patterns('',
     url(r'^auth/', include('socialauth.urls')),
     url(r'^user/register/$', 'registration.views.register',
          {'backend': 'registration.backends.default.DefaultBackend', 'form_class': RegistrationFormTest}, 'registration_register'),
-    url(r'^user/', include('registration.backends.default.urls')),
+    url(r'^user/', include('registration.urls')),
     url(r'^profiles/edit/', 'profiles.views.edit_profile', {'form_class': ProfileForm,}),
     #(r'^profiles/edit/', 'profiles.views.edit_profile', {'form_class': ProfileForm,'success_url':'/my/custom/url',}),
     url(r'^profiles/', include('profiles.urls')),
     url(r'^upload_image$', 'comments.views.upload_image'),
     url(r'^upload_file$', 'adex.views.upload_file'),
     url(r'^ajax/', include('home.ajax_urls')),
+    url(r'^lib/', include('medialibrary.urls')),
 
     #url(r'^static/(?P<path>.*)$', 'django.views.static.serve',  {'document_root': settings.STATIC_ROOT, 'show_indexes': True}),
 )
-
-#urlpatterns += staticfiles_urlpatterns()
