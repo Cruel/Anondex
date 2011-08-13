@@ -46,12 +46,12 @@ GLOBAL_MEDIA_DIRS = (
     join(ROOT_PATH, 'imported-sass-frameworks'),
 )
 
-MEDIA_ROOT = join(ROOT_PATH, 'media')
+MEDIA_ROOT = join(ROOT_PATH, 'media/')
 #MEDIA_ROOT = 'C:/nginx/html/media/'
 MEDIA_URL = 'http://localhost/media/'
 ADMIN_MEDIA_PREFIX = 'http://localhost/static/admin/'
 
-STATIC_ROOT = join(ROOT_PATH, 'static')
+STATIC_ROOT = join(ROOT_PATH, 'static/')
 STATIC_URL = 'http://localhost:8000/static/'
 
 #FILE_UPLOAD_TEMP_DIR = 'C:/nginx/upload_tmp'

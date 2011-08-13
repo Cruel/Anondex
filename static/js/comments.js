@@ -156,10 +156,10 @@ function comment_onload() {
     });
 
     $('#imagedropframe').bind('dragenter', function(){
-        $('#imagedropframe').css('border','1px solid red');
+        $(this).css('border','1px solid red');
     });
     $('#imagedropframe').bind('dragleave drop', function(){
-        $('#imagedropframe').css('border','1px dashed black');
+        $(this).css('border','1px dashed black');
     });
 
     $('#commentform').fileupload({

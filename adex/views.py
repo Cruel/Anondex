@@ -15,6 +15,7 @@ def preview(request):
     return render_to_response('adex/base.html', {'user':request.user}, context_instance=RequestContext(request))
 
 def upload_file(request):
+    print "upload_file"
     if request.method == 'POST':
         VALID_EXTENSIONS = (
             'image/jpeg','image/png','image/gif',
