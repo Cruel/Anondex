@@ -48,23 +48,29 @@ ACCOUNT_ACTIVATION_DAYS = 7
 AUTH_PROFILE_MODULE = 'socialauth.Profile'
 #SOCIAL_AUTH_USER_MODEL = 'socialauth.CustomUser'
 
+SASS_FRAMEWORKS = (
+    'compass',
+    #'blueprint',
+)
+
 MEDIA_BUNDLES = (
     ('anondex.css',
-        'css/browse.css',
+        'css/global.sass',
+        'css/browse.sass',
         'css/code.css',
-        'css/comments.css',
-        'css/create.css',
-        'css/data.css',
-        'css/framer.css',
-        'css/hoverdiv.css',
-        'css/imprimis.css',
-        'css/index.css',
+        'css/comments.sass',
+        'css/create.sass',
+        #'css/data.sass',
+        'css/framer.sass',
+        'css/hoverdiv.sass',
+        'css/home.sass',
+        'css/index.sass',
         'css/jquery.cluetip.css',
         'css/jquery.fancybox-1.3.4.css',
         'css/jquery-ui-1.8.9.custom.css',
-        'css/layout.css',
-        'css/report.css',
-        'css/stars.css',
+        'css/layout.sass',
+        'css/report.sass',
+        'css/stars.sass',
     ),
     ('anondex.js',
         'js/jquery.fileupload.js',

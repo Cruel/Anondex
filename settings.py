@@ -1,4 +1,5 @@
 from os.path import abspath, dirname, basename, join
+import time
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -40,10 +41,13 @@ MEDIA_DEV_MODE = DEBUG
 DEV_MEDIA_URL = '/devstatic/'
 PRODUCTION_MEDIA_URL = '/static/'
 
-GLOBAL_MEDIA_DIRS = (join(ROOT_PATH, 'static'),)
+GLOBAL_MEDIA_DIRS = (
+    join(ROOT_PATH, 'static'),
+    join(ROOT_PATH, 'imported-sass-frameworks'),
+)
 
-#MEDIA_ROOT = join(ROOT_PATH, 'media')
-MEDIA_ROOT = 'C:/nginx/html/media/'
+MEDIA_ROOT = join(ROOT_PATH, 'media')
+#MEDIA_ROOT = 'C:/nginx/html/media/'
 MEDIA_URL = 'http://localhost/media/'
 ADMIN_MEDIA_PREFIX = 'http://localhost/static/admin/'
 

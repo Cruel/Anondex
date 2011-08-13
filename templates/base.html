@@ -1,16 +1,14 @@
 {% load media %}
 
 <!DOCTYPE html>
-<html class="{% block htmlclass %}htmlhome{% endblock %}" lang="en">
+<html lang="en" class="{% block htmlclass %}{% endblock %}">
 <head>
-
     <title>{% block title %}Anondex{% endblock %}</title>
     {% block meta %}{% endblock %}
     <meta charset="utf-8" />
     <meta name="description" content="{% block description %}Anondex is a completely anonymous service that allows for people to create/upload a single web page with some files to be indexed for commenting and rating.{% endblock %}" />
 
     <link rel="shortcut icon" type="image/png" href="/images/favicon.png">
-    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.2r1/build/reset/reset-min.css" />
     {% include_media 'anondex.css' %}
 
     <script type="text/javascript">var isbanned=false;</script>
