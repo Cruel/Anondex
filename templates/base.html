@@ -1,20 +1,22 @@
 {% load media %}
 
 <!DOCTYPE html>
-<html lang="en" class="{% block htmlclass %}{% endblock %}">
+<html lang="en" class="{% block htmlclass %}htmldefault{% endblock %}">
 <head>
     <title>{% block title %}Anondex{% endblock %}</title>
     {% block meta %}{% endblock %}
     <meta charset="utf-8" />
     <meta name="description" content="{% block description %}Anondex is a completely anonymous service that allows for people to create/upload a single web page with some files to be indexed for commenting and rating.{% endblock %}" />
 
-    <link rel="shortcut icon" type="image/png" href="/static/favicon.ico">
+    <link rel="shortcut icon" type="image/png" href="/static/favicon.png">
     {% include_media 'anondex.css' %}
 
     <script type="text/javascript">var isbanned=false;</script>
     {% block prescripts %}{% endblock %}
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
+    <script src="http://balupton.github.com/history.js/scripts/bundled/html4+html5/jquery.history.js"></script>
     {% include_media 'anondex.js' %}
     {% block postscripts %}{% endblock %}
 </head>

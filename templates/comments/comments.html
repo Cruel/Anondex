@@ -2,12 +2,16 @@
 {% for comment in comment_list %}
     <div {% if anchored %}id="{{ comment.id }}" {% endif %}class="comment {% cycle "commentodd" "commenteven" %}">
         <div class="header gravatar">
-            {% if comment.hash %}<span class="tripcode"><img src="http://www.gravatar.com/avatar/{{ comment.hash }}?d=wavatar&s=30" /></span>{% endif %}
-            {% if comment.name and comment.user %}
-                <a target="_parent" class="iframe" href="#browser/commenter/{{ comment.id }}">{{ comment.user_name }}</a>
+            {% if comment.is_anonymous %}
+                Anonymous
             {% else %}
-                {% if comment.name %}{{ comment.name }}{% else %}Anonymous{% endif %}
+                {% if comment.user_name %}
+                    {{ comment.user_name }}
+                {% else %}
+                    <a target="_parent" class="iframe" href="/user/{{ comment.user.username }}/">{{ comment.user.username }}</a>
+                {% endif %}
             {% endif %}
+
 			<div class="date">{{ comment.submit_date|timeago }}{% if modcontrols %} <a href="/admin/comments/adexcomment/{{ comment.id }}/">Mod</a>{% endif %}</div>
             <div class="commentrating"><span style="color:{% if comment.rating < 0 %}red{% else %}green{% endif %}">{% if comment.rating != 0 %}{{ comment.rating }}{% endif %}</span></div>
         </div>
@@ -16,7 +20,7 @@
                 {% if comment.file %}
                     <div class="imagediv">
                         <a target="_parent" class="iframe" href="/image/{{ comment.file.id }}">
-                            <img src="{{ THUMBNAIL_URL }}{{ comment.file.filename }}" alt="{{ comment.file.filename }}" class="cimg" />
+                            {{ comment.file.thumbnail|safe }}
                         </a>
                         <p>comment count</p>
                     </div>

@@ -11,10 +11,6 @@ function resetForm(){
 	loadTagHandler();
 }
 
-function testy(){
-	$(".progressbar").progressbar({value: 70});
-}
-
 function IsDefined(val){
 	return ((val !== '') && (val !== 'undefined') && (typeof(val) !== 'undefined'));
 }
@@ -24,6 +20,7 @@ function checkValues(valData) {
 	
 	if (!IsDefined(valData.title)) arrErrors.push("- 'Title' must be defined.");
 	if (!IsDefined(valData.description)) arrErrors.push("- 'Description' must be defined.");
+    if (!IsDefined(valData.tags)) arrErrors.push("- You must supply some tags.");
 	if (!IsDefined(valData.type)) arrErrors.push("- Must select a template.");
 	switch (valData.type) {
 		case 0: 
@@ -49,14 +46,13 @@ function checkValues(valData) {
 
 function makePOSTData(postdata, paramlist){
 	for (var x in paramlist)
-		//eval("postdata."+paramlist[x]+"= '"+ encodeURIComponent($("#"+paramlist[x]).val()).replace("'","%27") +"'");
 		postdata[paramlist[x]] = encodeURIComponent($("#"+paramlist[x]).val()).replace("'","%27");
 }
 
 function createPage(NotPreview){
 	$('#results').html('');
 	var content = {};
-	makePOSTData(content, ["duration","title","name","description","recaptcha_challenge_field","recaptcha_response_field","url","imageselect","musicselect","videoselect","flashselect","html","htmlselect"]);
+	makePOSTData(content, ["userid","duration","title","name","description","recaptcha_challenge_field","recaptcha_response_field","url","imageselect","musicselect","videoselect","flashselect","html","htmlselect"]);
     var tagNames = new Array();
     $("#taglist li.tagItem").each(function () {
         tagNames.push($(this).html());
@@ -79,7 +75,7 @@ function createPage(NotPreview){
 	//TODO: Fix preview winodow opener...?
 	if (!NotPreview) var wnd = window.open('loading', 'previewWin', '');
 	
-	$.post("../func/create.php", content,
+	$.post("/create", content,
 		function(data){
 			$('#results').html(data);
 			if (!NotPreview) {
@@ -167,10 +163,10 @@ function checkName(data){
 	if (data.indexOf("is a") > -1) $("#name").css("backgroundColor", "green");
 }
 
-function refreshFileList(removeid, uploadid) {
-	removeid = (typeof removeid == 'undefined') ? '' : '&d='+removeid;
-	//alert(removeid);
-	$('#filedata').load('/ajax/filelist'+removeid, {},
+function refreshFileList(removeid, obj) {
+	var remove_url = (typeof removeid == 'undefined') ? '' : '?d='+removeid;
+	//alert(remove_url);
+	$('#filedata').load('/ajax/filelist'+remove_url, {},
 		function(){
 			$('#imageselectspan').html($('#imagelist').remove().html());
 			$('#musicselectspan').html($('#musiclist').remove().html());
@@ -178,7 +174,7 @@ function refreshFileList(removeid, uploadid) {
 			$('#flashselectspan').html($('#flashlist').remove().html());
 			$('#htmlselectspan').html($('#htmllist').remove().html());
 			$("#uploader").css("display", ($('#maxfileval').remove().html() == '1') ? 'block' : 'none');
-			if (typeof uploadid != 'undefined') $('#log div#'+uploadid).remove();
+			if (obj) $(obj).remove();
 			//alert($('#imageselectspan').html());
 		});
 }
@@ -212,16 +208,17 @@ function loadCreateUploader(){
         sequentialUploads: true,
         maxFileSize: 50000,
         add: function (e, data) {
-                $.each(data.files, function (index, file) {
-                    var duplicate = false;
-                    for (i in filelist)
-                        if (filelist[i].name == file.name)
-                            duplicate = true;
-                    if (!duplicate){
-                        filelist.push(file);
-                        $('#filelist').append('<li>'+file.name+'</li>');
-                    }
-                });
+//                 $.each(data.files, function (index, file) {
+//                    var duplicate = false;
+//                    for (i in filelist)
+//                        if (filelist[i].name == file.name)
+//                            duplicate = true;
+//                    if (!duplicate){
+//                        filelist.push(file);
+//                        $('#filelist').append('<li>'+file.name+'</li>');
+//                    }
+//                });
+                data.submit();
             },
         'progress': function(e, data){
                 var progress = parseInt(data.loaded / data.total * 100, 10);
@@ -250,72 +247,6 @@ function loadCreateUploader(){
                 }
             }
     });
-
-    return;
-	$(function(){
-		$('#upload-controller').swfupload({
-			upload_url: "func/upload-file.php?i="+document.cookie.match(/PHPSESSID=[^;]+/),
-			file_post_name: 'uploadfile',
-			file_size_limit : "10024",
-			file_types : "*.jpg;*.png;*.gif;*.mp3;*.mid;*.flv;*.mp4;*.swf;*.html;*.htm",
-			file_types_description : "Allowed Files",
-			file_upload_limit : 15,
-			flash_url : "js/swfupload/swfupload.swf",
-			button_image_url : 'js/swfupload/wdp_buttons_upload_114x29.png',
-			button_width : 114,
-			button_height : 29,
-			button_placeholder : $('#swfupload_placeholder')[0],
-			debug: false
-		})
-			.bind('fileQueued', function(event, file){
-				var listitem='<div id="'+file.id+'" >'+
-					'<span class="progressbar" ></span><table class="fileinfo"><tr>'+
-					'<td class="filenamecell"><b>'+file.name+'</b></td>'+
-					'<td class="statuscell" >Queued</td>'+
-					'<td class="progressvalue">0% (0/'+Math.round(file.size/1024)+' KB)</td>'+
-					'<td class="cancelcell"><input type="button" value="Cancel" /></td>'+
-					'</tr></table></div>';
-				$('#log').append(listitem);
-				$('div#'+file.id+' input').bind('click', function(){
-					var swfu = $.swfupload.getInstance('#upload-controller');
-					swfu.cancelUpload(file.id);
-					$('div#'+file.id).slideUp('fast');
-				});
-				// start the upload since it's queued
-				$(this).swfupload('startUpload');
-			})
-			.bind('fileQueueError', function(event, file, errorCode, message){
-				alert('Size of the file '+file.name+' is greater than limit');
-			})
-			.bind('fileDialogComplete', function(event, numFilesSelected, numFilesQueued){
-				$('#queuestatus').text('Files Selected: '+numFilesSelected+' / Queued Files: '+numFilesQueued);
-			})
-			.bind('uploadStart', function(event, file){
-				$('#log div#'+file.id).find('.statuscell').text('Uploading...');
-				$('#log div#'+file.id).find('.progressvalue').text('0%');
-				//$('#log div#'+file.id).find('.cancelcell input').hide();
-				//disable cancel button?
-			})
-			.bind('uploadProgress', function(event, file, bytesLoaded){
-				//Show Progress
-				var percentage=Math.round((bytesLoaded/file.size)*100);
-				//$('#log div#'+file.id).find('span.progressbar').css('width', percentage+'%');
-				$('#log div#'+file.id+" .progressbar").progressbar({value: percentage});
-				$('#log div#'+file.id).find('.progressvalue').text(percentage+'% ('+Math.round(bytesLoaded/1024)+'/'+Math.round(file.size/1024)+' KB)');
-				//alert(percentage);
-			})
-			.bind('uploadSuccess', function(event, file, serverData){
-				if (serverData != '') alert(serverData);
-				//$('#log div#'+file.id).find('span.progressbar').css('width', '100%');
-				refreshFileList('',file.id);
-				//$('#log div#'+file.id).remove();
-			})
-			.bind('uploadComplete', function(event, file){
-				// upload has completed, try the next one in the queue
-				$(this).swfupload('startUpload');
-			});
-		
-	});	
 }
 
 function loadTagHandler(){

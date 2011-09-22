@@ -1,0 +1,15 @@
+{% for adex in adex_list %}
+    <div>
+        {{ adex.title }}
+        {{ adex.thumbnail|safe }}
+    </div>
+{% endfor %}
+<hr>
+
+    {% include "comments/comments.html" with anchored=0 stubbed=1 modcontrols=0 %}
+
+<hr>
+{% for file in rand_files %}
+    {{ file.thumbnail|safe }}
+{% endfor %}
+

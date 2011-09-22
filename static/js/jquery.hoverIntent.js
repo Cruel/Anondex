@@ -114,3 +114,4 @@
 		return this.bind('mouseover.cluetip', handleHover).bind('mouseout.cluetip', handleHover);
 	};
 })(jQuery);
+

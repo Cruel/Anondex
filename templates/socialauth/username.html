@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <h1>Choose Username</h1>
+    {% if duplicate_name %}
+        <h3>Username "{{ duplicate_name }}" is already taken.</h3>
+    {% endif %}
+    <form method="post">{% csrf_token %}
+        <input type="text" name="username" value="{{ username }}" />
+        <input type="submit" value="Login" />
+    </form>
+{% endblock %}

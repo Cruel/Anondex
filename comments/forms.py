@@ -9,18 +9,17 @@ class ImageUploadForm(forms.Form):
     image = forms.ImageField()
 
 class AdexCommentForm(CommentForm):
-    #title = forms.CharField(max_length=300)
     file = forms.ModelChoiceField(LibraryFile.objects.all(), required=False)
+    #is_anonymous = forms.BooleanField()
 
     def get_comment_model(self):
         return AdexComment
 
     def get_comment_create_data(self):
-        # Use the data of the superclass, and add in the title field
         data = super(AdexCommentForm, self).get_comment_create_data()
-        #data['title'] = self.cleaned_data['title']
         data['file'] = self.cleaned_data['file']
-        #data['name'] = self.cleaned_data['name_']
-        #print data['image']
-        #data['name'] = "herp"
+        data['is_anonymous'] = self.data['user'] == 'anon'
+        data['name'] = ''
+        if self.data['user'] == 'temp':
+            data['name'] = self.cleaned_data['name']
         return data

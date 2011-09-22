@@ -1,0 +1,18 @@
+<div style="display:none">
+    {% for files in files_list %}
+        {% if files %}
+            <div id="{{ files.0.type_name }}list"><b>{{ files.0.type_name|capfirst }} File:</b> <select id="{{ files.0.type_name }}select">
+                {% for file in files %}
+                    <option value="{{ file.id }}">{{ file.name }} [{{ file.filesize|filesizeformat }}]</option>
+                {% endfor %}
+            </select></div>
+        {% endif %}
+    {% endfor %}
+</div>
+
+{% for media in media_list %}
+    <div>
+        {{ media.thumbnail|safe }}
+        <div class="delicon" onclick="refreshFileList({{ media.id }}, this.parentNode);"></div>
+    </div>
+{% endfor %}

@@ -1,0 +1,25 @@
+{% extends "home/base.html" %}
+
+
+
+{% if not request.is_ajax %}
+    {% block postscripts %}
+        {{ block.super }}
+        <script>$(browse_onload);</script>
+    {% endblock %}
+{% endif %}
+
+{% block content %}
+    {% include "pagination.html" %}
+    <div>
+        {% if request.is_ajax %}
+            <div class="document-script">$(browse_onload);</div>
+        {% endif %}
+        {% for adex in page.object_list %}
+            <a class="no-ajaxy" href="/?{{ adex.item_code }}">
+                {{ adex.thumbnail|safe }}
+            </a>
+        {% endfor %}
+    </div>
+    {% include "pagination.html" %}
+{% endblock %}

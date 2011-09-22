@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block htmlclass %}htmlhome{% endblock %}
+{% block title %}Attach File - {{ block.super }}{% endblock %}
+
+{% block postscripts %}<script type="text/javascript">$(medialib_onload);</script>{% endblock %}
+
+{% block body %}
+    <h1>File List:</h1>
+    <div id="librarylist">
+    {% for file in files %}
+        <div title="{{ file.name }}" data-id="{{ file.id }}" data-thumburl="{{ file.thumbnail_url }}">{{ file.thumbnail|safe }}</div>
+    {% endfor %}
+    </div>
+{% endblock %}

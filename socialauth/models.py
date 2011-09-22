@@ -1,11 +1,9 @@
 # Define a custom User class to work with django-social-auth
 from django.db import models
 from django.contrib.auth.models import User
-#from profiles import views as profile_views
-#from socialauth.forms import ProfileForm
-
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.shortcuts import redirect
 
 @receiver(post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
@@ -34,10 +32,30 @@ class Profile(models.Model):
         return self.user.username
 
 
-from social_auth.signals import pre_update
+from social_auth.signals import pre_update, socialauth_registered, socialauth_not_registered
 from social_auth.backends.facebook import FacebookBackend
+from social_auth.models import UserSocialAuth
+UserSocial = UserSocialAuth._meta.get_field('user').rel.to
 
 def facebook_extra_values(sender, user, response, details, **kwargs):
-    return False
+    user.gender = response.get('gender')
+    return True
+
+def testy1(sender, user, response, details, **kwargs):
+    user.is_active = False
+    return True
+
+def testy2(sender, uid, response, details, **kwargs):
+    print "k2"
+    return True
+
+def user_test(sender, response, details, **kwargs):
+    name = sender.username(details)
+    user = UserSocial.objects.create_user(username=name, email=details['email'])
+    user.is_active = False
+    kwargs['request'].session['social_auth_new_username'] = details['username']
+    return user
 
 pre_update.connect(facebook_extra_values, sender=FacebookBackend)
+socialauth_registered.connect(testy1)
+socialauth_not_registered.connect(testy2)

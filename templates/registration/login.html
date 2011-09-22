@@ -1,12 +1,12 @@
 {% extends "registration/registration_base.html" %}
-{% block title %}Login{% endblock %}
-{% block content %}
+{% block title %}Login - {{ block.super }}{% endblock %}
+{% block body %}
 
 {% if form.errors %}
 <p>Your username and password didn't match. Please try again.</p>
 {% endif %}
 
-<form method="post" action="{% url django.contrib.auth.views.login %}">{% csrf_token %}
+<form method="post" action="{% url auth_login %}">{% csrf_token %}
 <table>
 <tr>
     <td>{{ form.username.label_tag }}</td>
@@ -17,10 +17,18 @@
     <td>{{ form.password }}</td>
 </tr>
 </table>
-<p><a href="{% url auth_password_reset %}">Forgot</a> your password?  <a href="{% url registration_register %}">Need an account</a>?</p>
+<p><a href="{% url auth_password_reset %}">Forgot</a> your password? {{ next }}  <a href="{% url registration_register %}">Need an account</a>?</p>
 
 <input type="submit" value="login" />
 <input type="hidden" name="next" value="{{ next }}" />
 </form>
+<div id="socialauths">
+    <a href="{% url socialauth_begin 'facebook' %}?next={{ next }}"><div id="facebook"></div></a>
+    <a href="{% url socialauth_begin 'twitter' %}?next={{ next }}"><div id="twitter"></div></a>
+    <a href="{% url socialauth_begin 'google' %}?next={{ next }}"><div id="google"></div></a>
+    <a href="{% url socialauth_begin 'linkedin' %}?next={{ next }}"><div id="linkedin"></div></a>
+    <a href="{% url socialauth_begin 'yahoo' %}?next={{ next }}"><div id="yahoo"></div></a>
+    <a href="{% url socialauth_begin 'openid' %}?next={{ next }}"><div id="openid"></div></a>
+</div>
 
 {% endblock %}

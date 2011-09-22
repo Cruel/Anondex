@@ -1,20 +1,10 @@
-var commentBox = {
-	//'autoDimensions':	false,
-	'width'			:	'90%',
-	'height'		:	'90%',
-	'padding'		:	0,
-	'centerOnScroll':	true,
-	'overlayColor'	:	'black',
-	'overlayOpacity':	0.6
-	//'onComplete'	:	reportWindowOnLoad	
-};
 
 function updateCharCount(src) {
 	var charlimit = 500;
 	if (src.value.length > charlimit)
 		src.value = src.value.substring(0, charlimit);
 	$('#charcounter').html('[Chars Left: ' + (charlimit - src.value.length) + ']');
-};
+}
 
 function addtag(stag){
 	var textarea = document.getElementById("comment");
@@ -34,12 +24,12 @@ function addtag(stag){
 		}
 		textarea.focus();
 	}
-};
+}
 
 function reply(id){
 	gotoDOM('.footerdiv');
 	addtag('[c]'+id+'[/c]');
-};
+}
 
 function vidseek(t) {
 	//alert(t);
@@ -47,7 +37,7 @@ function vidseek(t) {
 		parent.window.player['goto'](t);
 	else
 		alert('Video player not found.');
-};
+}
 
 function rate(rating, item, is_image){
 	$('#starset').attr('class','star-rating2');
@@ -56,7 +46,7 @@ function rate(rating, item, is_image){
 			function(data){
 				$('#current-rating').css('width',$('#rated_text #ratingval').html()+'%');
 			});
-};
+}
 
 function hltag(sTag){
 	if (!$('#'+sTag).length) return true;
@@ -65,7 +55,7 @@ function hltag(sTag){
 	//gotoDOM('a[name='+sTag+']');
 	gotoDOM('#'+sTag);
 	return false;
-};
+}
 
 function gotoDOM(sDOM){
 	//IE uses HTML tag for this... :/
@@ -74,7 +64,7 @@ function gotoDOM(sDOM){
 	var delay = Math.round(Math.abs(offset.top - scroll) / 4);
 	//alert(delay);
 	$('html, body').animate({scrollTop: offset.top}, delay);
-};
+}
 
 function postComment(){
 	$.post('/comment/post/', $('#commentform').serialize(),
@@ -82,7 +72,6 @@ function postComment(){
 				if (data.success) {
 					$('#submitbutton').val('Posted.');
                     $('.errdiv').html(data.html);
-					alert('done. refreshing page...');
 					//window.location.reload();
 				} else {
                     alert('errors sent');
@@ -92,7 +81,7 @@ function postComment(){
 				}
 			}
 		);
-};
+}
 
 var CommentImageFile = null;
 function submitComment(){
@@ -101,11 +90,11 @@ function submitComment(){
 		postCommentImage();
 	else
 		postComment();
-};
+}
 
 function postCommentImage(){
     $('#commentform').fileupload('send',{files: CommentImageFile});
-};
+}
 
 function drawImageFit(canvas, image, percentWidth){
     var p = typeof(percentWidth) != 'undefined' ? percentWidth/100 : 1;
@@ -122,10 +111,13 @@ function drawImageFit(canvas, image, percentWidth){
         0, 0, image.width*p, image.height,
         (canvas.width-w)/2, (canvas.height-h)/2, w*p, h
     );
-};
+}
 
 function loadImage(file){
-    //var file = $('#imagefile')[0].files[0];
+    if (file != null)
+        $('#attachpreview').show('fast');
+    else
+        canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
     var reader = new FileReader();
     reader.onload = function (event) {
         var ctx = canvas.getContext('2d');
@@ -147,25 +139,40 @@ var img, canvas;
 function comment_onload() {
     canvas = $('canvas')[0];
 	if (location.hash.substr(1)) hltag(location.hash.substr(1));
+
+    $("#fileselect").change(function(){
+        loadImage(null);
+        $('input[name=file]').val('');
+        $('#attachpreview').css('background-image','');
+        $("#imagefile").replaceWith('<input type="file" name="imagefile" id="imagefile" accept="image/png,image/jpeg,image/gif" />');
+        CommentImageFile = null;
+        $('#commentform').fileupload('option', 'fileInput', $('#imagefile'));
+        $('#attachpreview').hide('fast');
+        if ($(this).val() == "upload"){
+            $('#imagefile').click();
+        }
+        if ($(this).val() == "library")
+            $.fancybox(attachBox);
+    });
     
 	//if (parent.window.reportpage) alert('iframed');
 
-    $('#imagedropframe').click(function(e) {
-        e.preventDefault();
-        $('#imagefile').click();
-    });
+//    $('#imagedropframe').click(function(e) {
+//        e.preventDefault();
+//        $('#imagefile').click();
+//    });
 
-    $('#imagedropframe').bind('dragenter', function(){
+    $('.formtable').bind('dragenter', function(){
         $(this).css('border','1px solid red');
     });
-    $('#imagedropframe').bind('dragleave drop', function(){
+    $('.formtable').bind('dragleave drop', function(){
         $(this).css('border','1px dashed black');
     });
 
     $('#commentform').fileupload({
         url: '/upload_image',
         dataType: 'json',
-        'dropZone': $('#imagedropframe'),
+        'dropZone': $('.formtable'),
         'fileInput': $('#imagefile'),
         add: function () { },
         'progress': function(e, data){

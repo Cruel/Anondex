@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Login Successful - {{ block.super }}{% endblock %}
+
+{% block postscripts %}<script type="text/javascript">$(function(){LoginRedirect("{{ user.username }}");});</script>{% endblock %}
+
+{% block body %}
+    <h1>Login Successful</h1>
+    Thanks for logging in. <a href="/">Go Home</a>
+{% endblock %}

@@ -1,15 +1,27 @@
 {% extends "home/base.html" %}
 
-{% block postscripts %}
-    <script type="text/javascript" src="http://api.recaptcha.net/js/recaptcha_ajax.js"></script>
-    <script type="text/javascript">$(create_onload);</script>
-{% endblock %}
+{% if not request.is_ajax %}
+    {% block postscripts %}
+        {{ block.super }}
+        <script>$(create_onload);</script>
+    {% endblock %}
+{% endif %}
 
 {% block content %}
     <div id="creatediv">
+        {% if request.is_ajax %}
+            <div class="document-script">$(create_onload);</div>
+        {% endif %}
         <div>
             <label class="fieldlabel" for="userid">Create as</label>
-            <select id="userid"><option value=""> </option><option value="anon">Anonymous</option><option value="name">Name</option></select>
+            <select id="userid">
+                <option value="anon">Anonymous</option>
+                {% if user.is_authenticated %}
+                    <option value="name">{{ user.username }}</option>
+                {% else %}
+                    <option value="login">Login ...</option>
+                {% endif %}
+            </select>
         </div>
         <div>
             <label class="fieldlabel" for="duration">Duration:</label>
@@ -78,7 +90,7 @@
                 <div class="typeradio typehtml"><input id="htmlradio" name="type" type="radio" value="html" /><label for="htmlradio">HTML<b id="htmlimage"></b></label></div>
                 <div id="typeoptions">
                     <div id="urloptions">
-                        <input id="url" type="text" maxlength="200" value="http://" onFocus="if(value=='http://')value='';" onBlur="if(value=='')value='http://';" />
+                        <input id="url" type="text" maxlength="200" placeholder="http://" />
                     </div>
                     <div id="imageoptions">
                         <span id="imageoptionlist">
@@ -112,30 +124,24 @@
         </div>
 
         <div id="upload-controller">
-            <h1>File Uploads:</h1>
-            <span id="swfupload_placeholder"></span>
-            <span class="filetypes"><b>Supported types:</b> .jpg .gif .png .mp3 .mid .swf .flv</span>
-            <input type="button" id="btnAddFile" value="Add File" />
-            <ul id="filelist">
-                <li>file.jpg</li>
-            </ul>
-            <form id="fileuploader" method="post">
-                {% csrf_token %}
-                <input type="file" id="file" name="file" accept="image/png,image/jpeg,image/gif" multiple />
-            </form>
 
-            <p id="queuestatus" ></p>
-            <div id="filedata">
+                <h1>File Uploads:</h1>
+                <span class="filetypes"><b>Supported types:</b> .jpg .gif .png .mp3 .mid .swf .flv</span>
+                <input type="button" id="btnAddFile" value="Add File" />
 
-            </div>
-            <div id="log">
-                
+                <form id="fileuploader" method="post">
+                    {% csrf_token %}
+                    <input type="file" id="file" name="file" accept="image/png,image/jpeg,image/gif" multiple />
+                </form>
+            
+            <div id="filedata" class="librarylist">
+
             </div>
         </div>
 
         <div id="submitbuttons">
             <div id="recaptchadivframe"></div>
-            <input type="button" value="Create" onClick="createPage(true);" disabled />
+            <input type="button" value="Create" onClick="createPage(true);" />
             <input type="button" value="Preview" onClick="createPage(false);" />
             <input type="button" value="Reset" onclick="resetForm();" />
             <input type="button" value="Test" id="testylol" />

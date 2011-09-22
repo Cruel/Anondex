@@ -2,13 +2,17 @@
 
 {% block htmlclass %}htmlindex{% endblock %}
 
+{% load comments %}
+
+{% block title %}{{ adex.title }} - {{ block.super }}{% endblock %}
+
 {% block postscripts %}
     <script type="text/javascript">
 		var animating = false;
 		hoverbound = true;
 		var expiration = 0;
 		var showads = false;
-		var reportpage = 'http://lockhost/report?a=1&i=133';
+		var reportpage = 'http://localhost:8000/report/?a=1&i=133';
         $(indexLoad);
     </script>
 {% endblock %}
@@ -29,11 +33,21 @@
             </div>
             </div>
             <div id="headerdetails">
-                <a class="buttonwrapper viewbutton iframe" href="http://anondex.com/data/133" title="65 Views"><div class="buttonicon"></div><div class="buttoncount">65</div></a><a class="buttonwrapper commentbutton iframe" href="http://anondex.com/comments/133" title="0 Comments"><div class="buttonicon"></div><div class="buttoncount">0</div></a>		</div>
+                {% get_comment_count for adex as comment_count %}
+                <a class="buttonwrapper viewbutton iframe" href="/data/{{ adex.id }}" title="{{ adex.views }} Views"><div class="buttonicon"></div><div class="buttoncount">{{ adex.views }}</div></a>
+                <a class="buttonwrapper commentbutton iframe" href="/comments/{{ adex.id }}" title="{{ comment_count }} Comments"><div class="buttonicon"></div><div class="buttoncount">{{ comment_count }}</div></a>
+            </div>
             <div id="des" title="Click to show/hide full item description.">
                 <div>
-
-                    <span class="indextitle">Dustin Approves!</span><ul class="itemtags"><li title="There are 1 items tagged with 'dustin'"><a href="http://anondex.com/browse/tagged/dustin"><b>dustin</b> &times;1</a></li><li title="There are 1 items tagged with 'approves'"><a href="http://anondex.com/browse/tagged/approves"><b>approves</b> &times;1</a></li></ul><span id="desexpand" class="desexpandopen" title="Toggle full item description."></span><div class="destext">Dustin Horse</div>			</div>
+                    <span class="indextitle">{{ adex.title }}</span>
+                    <ul class="itemtags">
+                        
+                        {% for tag in tags %}
+                            <li title="There are {{ tag.count }} items tagged with '{{ tag.name }}'"><a href="http://anondex.com/browse/tagged/{{ tag.name }}"><b>{{ tag.name }}</b> &times;{{ tag.count }}</a></li>
+                        {% endfor %}
+                    </ul>
+                    <span id="desexpand" class="desexpandopen" title="Toggle full item description."></span><div class="destext">{{ adex.description|safe }}</div>
+                </div>
             </div>
                 </div>
 
@@ -58,7 +72,7 @@
                 <!--iframe id="comments" name="comments" frameborder="0" src="http://anondex.com/comments/133"></iframe-->
                 <script type="text/javascript">
                     var commentsopen=true;
-                    var commentframe='<iframe id="comments" name="comments" frameborder="0" src="http://anondex.com/comments/133"></iframe>';
+                    var commentframe='<iframe id="comments" name="comments" frameborder="0" src="/comments/{{ adex.id }}/"></iframe>';
                 </script>
             </div>
             <div id="sidebarindex">
@@ -66,7 +80,9 @@
                 <!-- <img src="images/tab2.gif" alt="Related" title="Related Items" class="tabimg" /> -->
                 <div id="relatedcaption">Related</div>
                 <div id="related" class="csshover">
-
+                    {% for item in related %}
+                        <div>{{ item.thumbnail|safe }}</div>
+                    {% endfor %}
                 </div>
             </div>
         </div>

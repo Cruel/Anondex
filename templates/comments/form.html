@@ -10,23 +10,29 @@
             <div>{{ field }}</div>
         {% endif %}
     {% endfor %}
-    <div style="display:none;"><label for="id_honeypot">This is secret</label> <input type="text" name="honeypot" id="id_honeypot" /></div>
+    <div style="display:none;"><label for="id_honeypot">Stop reading our HTML, hacker!</label> <input type="text" name="honeypot" id="id_honeypot" /></div>
     <div class="formtable">
-        <input name="name" type="text" maxlength="20" placeholder="Name" />
-        <input name="pass" type="text" maxlength="20" placeholder="Hash Password" />
+        <select id="userid" name="user">
+            <option value="anon">Anonymous</option>
+            <option value="temp">Temp Name</option>
+            {% if user.is_authenticated %}
+                <option value="name">{{ user.username }}</option>
+            {% else %}
+                <option value="login">Login ...</option>
+            {% endif %}
+        </select>
+        <input name="name" type="text" maxlength="20" style="display:none" placeholder="Name" />
 
             <div id="imguploadcell">
+                <select id="fileselect">
+                    <option value="">No Attachment</option>
+                    <option value="upload">From file</option>
+                    <option value="library">From library</option>
+                </select>
+                <input type="file" id="imagefile" />
+                <input type="hidden" name="file" />
 
-                <div id="imguploader">
-                    <input type="file" name="imagefile" id="imagefile" accept="image/png,image/jpeg,image/gif" />
-                    <input type="hidden" name="file" />
-
-                    <div id="imagedropframe"><canvas width="200" height="150" title="Click or drag a file here to upload."></canvas></div>
-
-                </div>
-                        <div id="progress_report_name"></div>
-                        <div id="progress_report_status" style="font-style: italic;"></div>
-                        <div id="progress_report_bar_container" style="width: 90%; height: 5px;"></div>
+                <div id="attachpreview" style="display:none"><canvas width="150" height="112" ></canvas></div>
             </div>
         <div id="charcounter">[Chars Left: 500]</div>
         <textarea id="comment" name="comment" placeholder="Comment [500 Character Limit]" onKeyDown="updateCharCount(this);" onKeyUp="updateCharCount(this);" required></textarea>

@@ -1,24 +1,59 @@
 from PIL import Image as pil
-from os.path import basename
-from django.core.files.move import file_move_safe
-from comments.utils import md5_file
-from medialibrary.models import LibraryFile
-import settings
+import os
+import subprocess, re
 
-def ProcessLibraryImage(tmpfile):
-    filename = basename(tmpfile)
-    im = pil.open(tmpfile)
-    (width, height) = im.size
-    md5 = md5_file(tmpfile)
-    # If image md5 doesn't already exist, make the image
-    try:
-        file = LibraryFile.objects.get(md5=md5)
-    except LibraryFile.DoesNotExist:
-        file = LibraryFile(type=1, width=width, height=width, md5=md5, name=filename)
-        file.save()
-        im.thumbnail((100,100), pil.ANTIALIAS)
-        file.filename = "adex%s_%s" % (file.id, filename)
-        im.save(settings.MEDIA_ROOT + "i/thumb/%s" % file.filename)
-        file_move_safe(tmpfile, settings.MEDIA_ROOT + "i/%s" % file.filename)
-        file.save()
-    return file.id
+video_size_pattern = re.compile(r'Stream.*Video.* ([0-9]{2,4})x([0-9]{2,4})')
+media_duration_pattern = re.compile(r'Duration: *([0-9]{2,}):([0-9]{2,}):([0-9]{2,}).')
+
+LIBRARYFILE_THUMB_WIDTH = 150
+LIBRARYFILE_THUMB_HEIGHT = 112
+
+def get_video_size(videofile):
+    p = subprocess.Popen(['ffmpeg', '-i', videofile], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout, stderr = p.communicate()
+    match = video_size_pattern.search(stderr)
+    if match:
+        x, y = map(int, match.groups()[0:2])
+    else:
+        x = y = 0
+    return x, y
+
+
+def get_media_duration(mediafile):
+    p = subprocess.Popen(['ffmpeg', '-i', mediafile], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout, stderr = p.communicate()
+    match = media_duration_pattern.search(stderr)
+    if match:
+        hours, minutes, seconds = map(int, match.groups()[0:3])
+    else:
+        return 0
+    return hours*60*60 + minutes*60 + seconds
+
+
+def genVideoThumb(videofile, imagefile):
+    THUMB_FRAME_COUNT = 5 # Must be save as in medialibrary.js
+    JPEG_QUALITY = 8 # From 0-10
+    #THUMB_WIDTH = 150
+    #THUMB_HEIGHT = 112
+
+    (width, height) = get_video_size(videofile)
+    frame_step = int(100/THUMB_FRAME_COUNT)
+    ratio = float(width) / float(height)
+    if width > LIBRARYFILE_THUMB_WIDTH:
+        width = LIBRARYFILE_THUMB_WIDTH
+        height = int(width / ratio)
+    if height > LIBRARYFILE_THUMB_HEIGHT:
+        height = LIBRARYFILE_THUMB_HEIGHT
+        width = int(height * ratio)
+    width_offset = (LIBRARYFILE_THUMB_WIDTH-width)/2
+    height_offset = int((LIBRARYFILE_THUMB_HEIGHT-height)/2)
+    new_image = pil.new("RGB", (LIBRARYFILE_THUMB_WIDTH*THUMB_FRAME_COUNT, LIBRARYFILE_THUMB_HEIGHT))
+    for i in range(THUMB_FRAME_COUNT):
+        framefile = '%s%d.jpg' % (imagefile, i)
+        # TODO: fix keyframing issue (perhaps flvtool2?)
+        os.system('ffmpegthumbnailer -i %s -o %s -t %d%% -q %d -s %d' % (videofile, framefile, i*frame_step, JPEG_QUALITY, width))
+        img = pil.open(framefile)
+        new_image.paste(img, (LIBRARYFILE_THUMB_WIDTH*i+width_offset, height_offset))
+        os.remove(framefile)
+    new_image.save(imagefile)
+    return True

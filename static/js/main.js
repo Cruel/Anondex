@@ -1,9 +1,18 @@
 
-var currentpage="home.php";
-//var changeinprogress = false;
 var enablehover = false;
 var hoverbound = false;
-document.domain = "localhost:8000";
+document.domain = "localhost";
+
+var commentBox = {
+	//'autoDimensions':	false,
+	'width'			:	'90%',
+	'height'		:	'90%',
+	'padding'		:	0,
+	'centerOnScroll':	true,
+	'overlayColor'	:	'black',
+	'overlayOpacity':	0.6
+	//'onComplete'	:	reportWindowOnLoad
+};
 
 function indexLoad() {
 	countdown();
@@ -18,7 +27,7 @@ function indexLoad() {
 	} else {
 		
 	}
-};
+}
 
 function countdown(){  
     //expiration = parseInt(Date.parse("Dec 21, 2012")/1000); //Test expiration  
@@ -34,23 +43,15 @@ function countdown(){
 	$("#ctimer").html("<div>This page expires in:</div><div class=\"ctimertime\">" + hrs + "h " + mins + "m " + secs + "s</div>");
 	if (expiration - current <= 0) return false;
 	setTimeout("countdown()", 1000);
-};
-
-function fadeScale(objselector){
-	$(objselector+' > *').not("script").fadeTo(0,0);
-	$(objselector).css('visibility','visible');
-	$(objselector+' > *').not("script").delay(200).each(function(index) {
-		$(this).delay(index*70).fadeTo(500,1);
-	});
-};
+}
 
 function IsNumeric(input){
    return (input - 0) == input && input.length > 0;
-};
+}
 
 function ratecomment(id, rating){
 	$('#'+id+' .commentrating').load('../func/ajax.php?a=ratecomment&i='+id+'&r='+rating);
-};
+}
 
 function ShowHideComments() {
 	if (animating) return;
@@ -77,7 +78,7 @@ function ShowHideComments() {
 						$('#commentcell').html(commentframe);
 				});
 	}
-};
+}
 
 function ShowHideDescription() {
 	if (animating) return;
@@ -94,19 +95,11 @@ function ShowHideDescription() {
 		$('#des').animate({height:h},300,'swing',
 				function(){ animating = false; });
 	}	
-};
-
-function LoadPage(tid, page){
-	if (currentpage == page) return false;
-	$('#content').load(page, function(){create_onload();});
-	$('#menu li').removeClass('active');
-	$(tid).parent().addClass('active');
-	currentpage = page;
-};
+}
 
 function LoadBrowseFilter(){
 	$('#content').load('browser/'+$('select[name=o]').val()+'/'+$('input[name=c]').val()+'/1');
-};
+}
 
 function rate(rating, item, is_image){
 	$('#starset').attr('class','star-rating2');
@@ -182,6 +175,24 @@ function SaveSettings(){
 	alert('Settings Saved.');
 }
 
+var loginBox = {
+	//'autoDimensions':	false,
+    'type'          :   'iframe',
+    'href'          :   '/login/?next=/login_redirect/',
+	'width'			:	400,
+	'height'		:	200,
+	'padding'		:	0,
+	'centerOnScroll':	true,
+	'overlayColor'	:	'black',
+	'overlayOpacity':	0.6
+	//'onComplete'	:	reportWindowOnLoad
+};
+
+function LoginRedirect(username){
+    parent.$('option[value=login]').attr('value','name').html(username);
+    parent.$.fancybox.close();
+}
+
 function moveMouse(e){
 	if (enablehover){
 		var newY = e.pageY ? e.pageY : e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
@@ -201,14 +212,19 @@ function moveMouse(e){
 			$('#hoverdiv').css('top',newY+"px");
 	}
 }
-	
-function do_onload(){
-    /*
-	var page = location.hash.substr(1);
-	if (page == '') page = 'home';
-	arrpage = page.split('/');
-	LoadPage($('#link'+arrpage[0]), ((arrpage[0]=='browser')? page : 'pages/'+page+'.php'));
-	*/
-}
 
-$(function(){$(document).mousemove(moveMouse);});
+
+$(function(){
+    $(document).mousemove(moveMouse);
+
+    $("select#userid").change(function(){
+        if ($(this).val() == "temp")
+            $('input[name=name]').show('fast')
+        else
+            $('input[name=name]').hide('fast')
+
+        if ($(this).val() == "login") {
+            $.fancybox(loginBox);
+        }
+    });
+});

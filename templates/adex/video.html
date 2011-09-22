@@ -1,0 +1,12 @@
+{% extends "adex/base.html" %}
+
+{% block adexcontent %}
+    {% for media in adex.media.all %}
+        {% if media.id == adex_data.video.id %}
+            <video width="100%" height="100%" controls="controls">
+              <source src="{{ MEDIA_URL }}v/{{ media.filename }}" type="{{ media.content_type }}" />
+              Your browser does not support this video ({{ media.content_type }}).
+            </video>
+        {% endif %}
+    {% endfor %}
+{% endblock %}

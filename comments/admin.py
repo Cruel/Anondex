@@ -1,4 +1,4 @@
-from comments.models import Comment, AdexComment
+from comments.models import AdexComment
 from django.contrib import admin
 
 class CommentAdmin(admin.ModelAdmin):

@@ -78,6 +78,12 @@ CACHES = {
 }
 CACHE_BACKEND = 'memcached://127.0.0.1:11211/'
 
+BROKER_HOST = "localhost"
+BROKER_PORT = 5672
+BROKER_USER = "guest"
+BROKER_PASSWORD = "guest"
+BROKER_VHOST = "/"
+
 # Additional locations of static files
 STATICFILES_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
@@ -107,6 +113,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
     'comments.context_processors.html_header_content',
     'django.core.context_processors.request',
+    'social_auth.context_processors.social_auth_by_type_backends',
 )
 
 AUTHENTICATION_BACKENDS = (
@@ -116,10 +123,11 @@ AUTHENTICATION_BACKENDS = (
     #'social_auth.backends.google.GoogleOAuth2Backend',
     'social_auth.backends.google.GoogleBackend',
     'social_auth.backends.yahoo.YahooBackend',
-    #'social_auth.backends.contrib.linkedin.LinkedinBackend',
-    #'social_auth.backends.contrib.livejournal.LiveJournalBackend',
+    'social_auth.backends.contrib.linkedin.LinkedinBackend',
+    #'social_auth.backends.contrib.LiveJournalBackend',
     #'social_auth.backends.contrib.orkut.OrkutBackend',
     #'social_auth.backends.contrib.foursquare.FoursquareBackend',
+    #'social_auth.backends.contrib.github.GithubBackend',
     'social_auth.backends.OpenIDBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
@@ -131,10 +139,10 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'pagination.middleware.PaginationMiddleware',
+    #'pagination.middleware.PaginationMiddleware',
 )
 
-if not DEBUG:
+if DEBUG:
     MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
 
 INSTALLED_APPS = (
@@ -154,10 +162,11 @@ INSTALLED_APPS = (
     'profiles',
     'social_auth',
     'pagination',
-    'gravatar',
+    #'gravatar',
     'tagging',
+    'djangoratings',
+    'djcelery',
     # Anondex Specific
-    'polls',
     'comments',
     'socialauth',
     'adex',
@@ -184,5 +193,8 @@ LOGGING = {
         },
     }
 }
+
+import djcelery
+djcelery.setup_loader()
 
 from local_settings import *

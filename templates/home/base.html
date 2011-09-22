@@ -8,7 +8,7 @@
 
 {% block postscripts %}
     <script type="text/javascript" src="http://api.recaptcha.net/js/recaptcha_ajax.js"></script>
-    <script type="text/javascript">$(do_onload);</script>
+    <script type="text/javascript">$(home_onload);</script>
 {% endblock %}
 
 {% block body %}
@@ -22,17 +22,17 @@
 				</div>
 				<div id="menu">
 					<ul>
-						<li class="{% active request "^/$" %}">
+						<li>
                             <a id="linkhome" href="/">Home<span class="elbow-left"><span></span></span><span class="elbow-right"><span></span></span></a>
                         </li>
-                        <li class="{% active request "^/home/create$" %}">
-                            <a id="linkcreate" href="/home/create">Create<span class="elbow-left"><span></span></span><span class="elbow-right"><span></span></span></a>
+                        <li>
+                            <a id="linkcreate" href="{% url home_create %}">Create<span class="elbow-left"><span></span></span><span class="elbow-right"><span></span></span></a>
                         </li>
-                        <li class="{% active request "^/browse$" %}">
-                            <a id="linkbrowser" href="/browse">Browse<span class="elbow-left"><span></span></span><span class="elbow-right"><span></span></span></a>
+                        <li>
+                            <a id="linkbrowser" href="{% url browse 1 %}">Browse<span class="elbow-left"><span></span></span><span class="elbow-right"><span></span></span></a>
                         </li>
-                        <li class="{% active request "^/home/mypage$" %}">
-                            <a id="linkmypage" href="/home/mypage">My Page<span class="elbow-left"><span></span></span><span class="elbow-right"><span></span></span></a>
+                        <li>
+                            <a id="linkmypage" href="{% url home_mypage %}">My Page<span class="elbow-left"><span></span></span><span class="elbow-right"><span></span></span></a>
                         </li>
 					</ul>
 				</div>
@@ -45,7 +45,7 @@
                 {% endblock %}
 			</div>
 			<!-- end div#content -->
-			<div id="sidebar">
+			<div id="sidebar" style="visibility:hidden">
 				{% block sidebar %}Sidebar{% endblock %}
 				<!-- end sideitems -->
 			</div>

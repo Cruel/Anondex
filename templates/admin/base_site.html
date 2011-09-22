@@ -1,7 +1,17 @@
 {% extends "admin/base.html" %}
-{% load i18n %}
+{% load i18n media %}
 
 {% block title %}{{ title }} | {% trans 'Anondex site admin' %}{% endblock %}
+
+{% block extrastyle %}
+    {% include_media 'anondex.css' %}
+{% endblock %}
+{% block extrahead %}
+    <link rel="shortcut icon" type="image/png" href="/static/favicon.png">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.js"></script>
+    {% include_media 'anondex.js' %}
+{% endblock %}
 
 {% block branding %}
 <h1 id="site-name">{% trans 'Anondex administration' %}</h1>
