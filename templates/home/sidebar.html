@@ -1,15 +1,17 @@
+{% load medialibrary %}
+
 {% for adex in adex_list %}
     <div>
         {{ adex.title }}
-        {{ adex.thumbnail|safe }}
+        {% mediathumb adex 98 %}
     </div>
 {% endfor %}
 <hr>
 
-    {% include "comments/comments.html" with anchored=0 stubbed=1 modcontrols=0 %}
+    {% include "comments/comments.html" with anchored=0 stubbed=1 modcontrols=0 thumb_width=98 %}
 
 <hr>
 {% for file in rand_files %}
-    {{ file.thumbnail|safe }}
+    {% mediathumb file 98 %}
 {% endfor %}
 

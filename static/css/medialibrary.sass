@@ -23,24 +23,13 @@
   line-height: $thumb_height - 2px //Dunno why...
   text-align: center
   vertical-align: middle
-  img
-    +border-radius(4px)
-    vertical-align: middle
-    &.width
-      //width: 100%
-    &.height
-      //margin: 0 auto
-      //height: 100%
   div
     width: 100%
     height: 100%
     background-repeat: no-repeat
-    background-position: center // Center video frame, for now
+    background-position: center center
     +border-radius(4px)
-    //+background-size(100% auto)
-    &.width
+    +background-size(contain)
+    &.video
+      +background-size(auto)
 
-    &.height
-      //+background-size(auto 100%)
-  &.video
-    //+background-size(auto)

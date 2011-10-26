@@ -15,13 +15,6 @@ import settings
 def adex_view(request, item_code):
     adex = get_object_or_404(Adex, item_code=item_code)
 
-    if adex.type == 0:
-        template_ = 'adex/image.html'
-    elif adex.type == 1:
-        template_ = 'adex/video.html'
-    else:
-        return HttpResponse(item_code)
-
     tags = Tag.objects.raw('''SELECT t.id, t.name, COUNT(*) as count
           FROM tagging_tag AS t
                   INNER JOIN tagging_taggeditem AS tt ON t.id = tt.tag_id
@@ -35,15 +28,16 @@ def adex_view(request, item_code):
                   )
           GROUP BY t.id
           ORDER BY count DESC''' % adex.id)
+    return adex_render(request, adex, tags)
 
+
+def adex_render(request, adex, tags, media=None):
+    if not media: media = adex.media.all()
     related = TaggedItem.objects.get_related(adex, Adex, num=10)
     adex_data = json.loads(adex.data)
 
-    return render_to_response(template_, {'user':request.user, 'adex':adex, 'adex_data':adex_data, 'tags':tags, 'related':related},
+    return render_to_response(adex.template(), {'user':request.user, 'adex':adex, 'media_list':media, 'adex_data':adex_data, 'tags':tags, 'related':related},
                                   context_instance=RequestContext(request))
-
-def browse(request):
-    pass
 
 def tagged(request, tag):
     pass
@@ -54,9 +48,40 @@ def filelist(request):
     items = ''
     return render_to_response('home/index.html', {'user':request.user, 'items':items}, context_instance=RequestContext(request))
 
+@csrf_exempt
+def preview(request):
+    if request.POST:
+        # (re)Verify input
+        v = request.POST.copy()
+        errors = processCreateVars(v)
+        data, media_list = genData(v)
+        if not errors:
+            adex = Adex(
+                user        = request.user,
+                ip          = request.META['REMOTE_ADDR'],
+                domain      = v.get('domain'),
+                title       = v.get('title'),
+                description = v.get('description'),
+                type        = v.get('type'),
+                tags        = v.get('tags'),
+                data        = data,
+            )
+            media = list()
+            tags = list()
+            for i in v.get('tags').split(','):
+                tags.append(Tag.objects.get(name=i))
+            if len(media_list) > 0:
+                for media_id in media_list:
+                    media.append(LibraryFile.objects.get(pk=media_id))
+            return adex_render(request, adex, tags, media)
+        else:
+            return HttpResponse('<div><ul><li>'+'</li><li>'.join(errors)+'</li></ul></div>')
+    else:
+        return redirect('/')
+
 import urlparse
 @condition(etag_func=None)
-def preview(request):
+def steam(request):
     #return render_to_response('adex/base.html', {'user':request.user}, context_instance=RequestContext(request))
     data = urllib2.urlopen('http://youtube.com/get_video_info?video_id=tc0Wtm180G4').read()
     v = urlparse.parse_qs(data)
@@ -78,7 +103,7 @@ def streamer():
 def processCreateVars(vars):
     errors = list()
     for i in vars.keys():
-        if vars[i] == 'null': vars[i] = ''
+        if vars[i] == 'undefined': vars[i] = ''
     if not vars.get('title'): errors.append('"Title" must be defined.')
     if not vars.get('description'): errors.append('"Description" must be defined.')
     if not vars.get('tags'): errors.append('You must supply some tags.')
@@ -114,8 +139,8 @@ def genData(vars):
         ret = {"image":{},"audio":{}}
         ret['image']['id'] = int(vars['imageselect'])
         media = [ret['image']['id']]
-        if vars.get('musicselect'):
-            ret['audio']['id'] = int(vars['musicselect'])
+        if vars.get('audioselect'):
+            ret['audio']['id'] = int(vars['audioselect'])
             media.append(ret['audio']['id'])
         if vars['imgtemplate'] == '1': ret['image']['style'] = 'center'
         elif vars['imgtemplate'] == '2': ret['image']['style'] = 'tile'
@@ -157,7 +182,7 @@ def create_adex(request):
 #            if media_list and len(media_list) > 0:
 #                for media_id in media_list:
 #                    if adex.type == '0':
-#                        if (media_id == v.get('imageselect')) or (media_id == v.get('musicselect')):
+#                        if (media_id == v.get('imageselect')) or (media_id == v.get('audioselect')):
 #                            adex.media.add(LibraryFile.objects.get(pk=media_id))
             try:
                 del request.session['uploaded_media']

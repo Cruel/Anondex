@@ -37,8 +37,8 @@ def taglist(request):
     return HttpResponse(simplejson.dumps({'availableTags':tuple(tags),'assignedTags':()}))
 
 def sidebar(request):
-    adex_list = Adex.objects.all().order_by('date')[:1]
-    comments = AdexComment.objects.all().order_by('submit_date')[:4]
-    files = LibraryFile.objects.all().order_by('date')[:4]
+    adex_list = Adex.objects.all().order_by('-date')[:1]
+    comments = AdexComment.objects.all().order_by('-submit_date')[:4]
+    files = LibraryFile.objects.all().order_by('-date')[:4]
     return render_to_response('home/sidebar.html', {'adex_list':adex_list, 'comment_list':comments, 'rand_files':files},
                     context_instance=RequestContext(request))

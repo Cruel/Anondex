@@ -52,7 +52,7 @@ function makePOSTData(postdata, paramlist){
 function createPage(NotPreview){
 	$('#results').html('');
 	var content = {};
-	makePOSTData(content, ["userid","duration","title","name","description","recaptcha_challenge_field","recaptcha_response_field","url","imageselect","musicselect","videoselect","flashselect","html","htmlselect"]);
+	makePOSTData(content, ["userid","duration","title","description","recaptcha_challenge_field","recaptcha_response_field","url","imageselect","audioselect","videoselect","flashselect","html","htmlselect"]);
     var tagNames = new Array();
     $("#taglist li.tagItem").each(function () {
         tagNames.push($(this).html());
@@ -73,27 +73,35 @@ function createPage(NotPreview){
 	if (!checkValues(content)) return false;
 	$('#results').html('<img border="0" src="images/working.gif" /> Loading... please wait...');
 	//TODO: Fix preview winodow opener...?
-	if (!NotPreview) var wnd = window.open('loading', 'previewWin', '');
-	
-	$.post("/create", content,
-		function(data){
-			$('#results').html(data);
-			if (!NotPreview) {
-				if (data == 'Preview Generated!') {
-					window.open('preview', 'previewWin');
-					$('#submitbuttons > input:disabled').removeAttr("disabled");
-				} else
-					wnd.close();
-			} else if (data.indexOf('<div id="createsuccess">') > -1) {
-				$('#content').load('includes/create.php',
-						function(){
-							//create_onload();
-							resetForm();
-							$('#results').html(data);
-						});
-			}
-			if (data.indexOf('<div id="createerrors">') > -1) wnd.close(); 
-		});
+	if (!NotPreview) {
+        $('body').append('<form id="tmpform" action="/preview" method="post" target="previewWin"></form>');
+        for(var i in content) {
+            $('#tmpform').append('<input name="'+i+'" value="'+content[i]+'" type="hidden" />');
+        }
+        window.open('', 'previewWin', '');
+        $('#tmpform').submit().remove();
+        //var wnd = window.open('loading', 'previewWin', '');
+    } else{
+        $.post("/create", content,
+            function(data){
+                $('#results').html(data);
+                if (!NotPreview) {
+                    if (data == 'Preview Generated!') {
+                        window.open('preview', 'previewWin');
+                        $('#submitbuttons > input:disabled').removeAttr("disabled");
+                    } else
+                        wnd.close();
+                } else if (data.indexOf('<div id="createsuccess">') > -1) {
+                    $('#content').load('includes/create.php',
+                            function(){
+                                //create_onload();
+                                resetForm();
+                                $('#results').html(data);
+                            });
+                }
+                if (data.indexOf('<div id="createerrors">') > -1) wnd.close();
+        });
+    }
 	return true;
 }
 
@@ -169,7 +177,7 @@ function refreshFileList(removeid, obj) {
 	$('#filedata').load('/ajax/filelist'+remove_url, {},
 		function(){
 			$('#imageselectspan').html($('#imagelist').remove().html());
-			$('#musicselectspan').html($('#musiclist').remove().html());
+			$('#audioselectspan').html($('#audiolist').remove().html());
 			$('#videoselectspan').html($('#videolist').remove().html());
 			$('#flashselectspan').html($('#flashlist').remove().html());
 			$('#htmlselectspan').html($('#htmllist').remove().html());
@@ -259,15 +267,12 @@ function loadTagHandler(){
 function create_onload() {
 	refreshFileList();
 	loadTagHandler();
-	//$(".tooltip").focus( function(){ this.parentNode.getElementsByTagName("span")[0].style.display = "inline"; } );
-	//$(".tooltip").blur( function(){ this.parentNode.getElementsByTagName("span")[0].style.display = "none"; } );
+
 	$(".tooltip").focus( function(){ $('#'+$(this).attr('id')+'hint').css('display','inline'); } );
 	$(".tooltip").blur( function(){ $('#'+$(this).attr('id')+'hint').css('display','none'); } );
-	//$(".typeradio input").click(function(){ selectTemplate(this); });
-	//$(".typeradio label").click(function(){ selectTemplate($(this).parent("input")); }); // IE correction
-	//$(".typeradio label").click(function(){ selectTemplate(this.parentNode.getElementsByTagName("input")[0]); }); // IE correction
+
 	$(".typeradio label").click(function(){ selectTemplate($("#"+$(this).attr('for'))[0]); });
-	//$("label[for='"+currTypeValue+"radio']").click();
+
 	if (!isbanned) {
 		loadCreateUploader();
 		Recaptcha.create("6LdKer0SAAAAAEj2Tu5XjFY2VajoSy8eltRpjfaN", "recaptchadivframe", 

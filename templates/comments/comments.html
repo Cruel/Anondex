@@ -1,4 +1,4 @@
-{% load adexcomments %}
+{% load adexcomments medialibrary %}
 {% for comment in comment_list %}
     <div {% if anchored %}id="{{ comment.id }}" {% endif %}class="comment {% cycle "commentodd" "commenteven" %}">
         <div class="header gravatar">
@@ -20,7 +20,11 @@
                 {% if comment.file %}
                     <div class="imagediv">
                         <a target="_parent" class="iframe" href="/image/{{ comment.file.id }}">
-                            {{ comment.file.thumbnail|safe }}
+                            {% if thumb_width %}
+                                {% mediathumb comment.file thumb_width %}
+                            {% else %}
+                                {{ comment.file.thumbnail|safe }}
+                            {% endif %}
                         </a>
                         <p>comment count</p>
                     </div>

@@ -20,7 +20,11 @@ function fadeScale(objSelector, fadeIn, callback){
     }
 }
 
-function browse_onload(){}
+function browse_onload(){
+    $('.browsetable > div').click(function(){
+        window.location = $(this).attr('rel');
+    });
+}
 
 // https://gist.github.com/854622
 function home_onload(){

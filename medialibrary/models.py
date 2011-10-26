@@ -13,7 +13,7 @@ from tagging.utils import parse_tag_input
 from os.path import basename
 from PIL import Image as pil
 from comments.utils import md5_file
-from medialibrary.utils import get_video_size, genVideoThumb, get_media_duration, LIBRARYFILE_THUMB_WIDTH, LIBRARYFILE_THUMB_HEIGHT
+from medialibrary.utils import get_video_size, genVideoThumb, get_media_duration, LIBRARYFILE_THUMB_WIDTH, LIBRARYFILE_THUMB_HEIGHT, THUMB_FRAME_COUNT, LIBRARYFILE_THUMB_RATIO
 import settings
 
 LIBRARYFILE_MAX_FILESIZE = 50000000
@@ -143,13 +143,10 @@ class LibraryFile(models.Model):
         elif self.type == 4: folder = 'f'
         return settings.MEDIA_URL + folder + '/thumb/' + filename
 
-    def thumbnail(self):
-        #return u'<img src="%s" />' % (self.thumbnail())
-        extra_class = 'height' if self.height >= self.width else 'width'
-        if self.type == 2:
-            return u'<div class="adexthumb"><div class="%s" style="background-image:url(%s)"></div></div>' % (extra_class, self.thumbnail_url())
-        else:
-            return u'<div class="adexthumb"><img class="%s" src="%s" /></div>' % (extra_class, self.thumbnail_url())
+    def thumbnail(self, width=LIBRARYFILE_THUMB_WIDTH):
+        extra_class = 'video' if self.type == 2 else ''
+        height = width / LIBRARYFILE_THUMB_RATIO
+        return u'<div class="adexthumb" style="width:%dpx;height:%dpx;"><div class="%s" style="background-image:url(%s)"></div></div>' % (width, height, extra_class, self.thumbnail_url())
 
     def type_name(self):
         return self.MEDIA_CHOICES[self.type-1][1]

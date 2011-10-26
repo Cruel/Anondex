@@ -7,6 +7,10 @@ media_duration_pattern = re.compile(r'Duration: *([0-9]{2,}):([0-9]{2,}):([0-9]{
 
 LIBRARYFILE_THUMB_WIDTH = 150
 LIBRARYFILE_THUMB_HEIGHT = 112
+LIBRARYFILE_THUMB_RATIO = float(LIBRARYFILE_THUMB_WIDTH) / float(LIBRARYFILE_THUMB_HEIGHT)
+
+THUMB_FRAME_COUNT = 5 # Must be save as in medialibrary.js
+JPEG_QUALITY = 8 # From 0-10
 
 def get_video_size(videofile):
     p = subprocess.Popen(['ffmpeg', '-i', videofile], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -31,11 +35,6 @@ def get_media_duration(mediafile):
 
 
 def genVideoThumb(videofile, imagefile):
-    THUMB_FRAME_COUNT = 5 # Must be save as in medialibrary.js
-    JPEG_QUALITY = 8 # From 0-10
-    #THUMB_WIDTH = 150
-    #THUMB_HEIGHT = 112
-
     (width, height) = get_video_size(videofile)
     frame_step = int(100/THUMB_FRAME_COUNT)
     ratio = float(width) / float(height)

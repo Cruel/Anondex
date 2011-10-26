@@ -11,14 +11,32 @@
 
 {% block content %}
     {% include "pagination.html" %}
-    <div>
+    <div class="browsetable">
         {% if request.is_ajax %}
             <div class="document-script">$(browse_onload);</div>
         {% endif %}
         {% for adex in page.object_list %}
-            <a class="no-ajaxy" href="/?{{ adex.item_code }}">
-                {{ adex.thumbnail|safe }}
-            </a>
+                <div class="{% cycle "browseodd" "browseeven" %}" rel="/?{{ adex.item_code }}">
+                        <div class="browseimagecell">
+                            <span class="browseimagespan">
+                                <a class="no-ajaxy" href="/?{{ adex.item_code }}">
+                                    {{ adex.thumbnail|safe }}
+                                </a>
+                            </span>
+                        </div>
+                        <div class="browsedescription">
+                            <div class="itemtitle">{{ adex.title }}</div>
+                            <div class="itemdescription">{{ adex.description }}</div>
+                        </div>
+                        <div class="browsedetails" nowrap>
+                            <div><b>Date:</b> 03/24/2011</div>
+                            <span class="rated_text">Rated <span class="out5Class">0</span><span class="votesClass"> - 0 Votes</span></span>
+                            <span><ul class="star-rating2"><li class="current-rating" style="width:0%"></li><li></li><li></li><li></li><li></li><li></li></ul></span>
+                            <div style="padding:3px;">No Comments</div>
+                            <div style="padding:3px;"><a class="iframe" href="http://anondex.com/data/122"><b>237</b> Views</a></div>
+                        </div>
+                        <div class="browseicons"></div>
+                </div>
         {% endfor %}
     </div>
     {% include "pagination.html" %}

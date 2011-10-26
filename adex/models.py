@@ -6,6 +6,7 @@ from tagging.fields import TagField
 from tagging.models import Tag
 from medialibrary.models import LibraryFile
 import simplejson as json
+from medialibrary.utils import LIBRARYFILE_THUMB_WIDTH
 
 class Adex(models.Model):
     CONTENT_RATING = (
@@ -23,8 +24,8 @@ class Adex(models.Model):
         (0, 'Image'),
         (1, 'Video'),
     )
-    item_code       = models.CharField(max_length=12, unique=True)
-    domain          = models.CharField(max_length=90, null=True, blank=True)
+    item_code       = models.CharField(max_length=5, unique=True)
+    domain          = models.CharField(max_length=40, null=True, blank=True)
     title           = models.CharField(max_length=90)
     description     = models.TextField()
     date            = models.DateTimeField(default=datetime.now)
@@ -38,7 +39,7 @@ class Adex(models.Model):
     media           = models.ManyToManyField(LibraryFile)
     data            = models.TextField()
     tags            = TagField()
-    def thumbnail(self):
+    def thumbnail(self, width=LIBRARYFILE_THUMB_WIDTH):
         data = json.loads(self.data)
         if self.type == 0:
             media_id = data['image']['id']
@@ -48,9 +49,17 @@ class Adex(models.Model):
             media_id = data['video']['id']
         try:
             file = LibraryFile.objects.get(pk=media_id)
-            return file.thumbnail()
+            return file.thumbnail(width)
         except LibraryFile.DoesNotExist:
             return 'Error'
+        
+    def template(self):
+        if self.type == 0:
+            return 'adex/image.html'
+        elif self.type == 1:
+            return 'adex/video.html'
+        else:
+            return 'adex/image.html'
         
     def __unicode__(self):
         return self.title

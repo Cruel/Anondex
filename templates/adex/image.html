@@ -1,16 +1,19 @@
 {% extends "adex/base.html" %}
 
 {% block adexcontent %}
-    {% for media in adex.media.all %}
+    {% for media in media_list %}
         {% if media.id == adex_data.image.id %}
-            <div
-                data-style="{{ adex_data.image.style }}"
-                {% if adex_data.image.proportional %}data-proportional{% endif %}
-                style="background-image:url('{{ MEDIA_URL }}i/{{ media.filename }}'); width:100%; height:100%; background-size:cover"
-            ></div>
+            <div class="image {{ adex_data.image.style }}{% if adex_data.image.proportional %} proportional{% endif %}"
+                 style="background-image:url('{{ MEDIA_URL }}i/{{ media.filename }}');">
+            </div>
         {% endif %}
         {% if media.id == adex_data.audio.id %}
-            AUDIO!
+            <div id="audio"></div>
+            <script>
+                swfobject.embedSWF("{{ MEDIA_URL }}audioplayer.swf", "audio", "300", "25", "9.0.0","files/expressInstall.swf",
+				    {autostart:"yes", loop:"yes", initialvolume:100, soundFile:"{{ MEDIA_URL }}a/{{ media.filename }}"}, {wmode:"transparent"}, {});
+            
+            </script>
         {% endif %}
     {% endfor %}
 {% endblock %}

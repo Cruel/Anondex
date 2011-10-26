@@ -40,24 +40,6 @@
             </div>
         </div>
 
-        <div id="namediv">
-            <label class="fieldlabel" for="name">Name:</label>
-            <div id="namefield">
-                <input id="name" type="text" size="25" maxlength="30" class="textskin tooltip" onkeyup="$.get('func/ajax.php', {a: 'checkname', n: 'i'+ this.value +'i'}, checkName);" autocomplete="off" />
-                <span id="namehint" class="hint">
-                    <b><u>Name requirements</u>:</b>
-                    <ul>
-                        <li>Must be unique</li>
-                        <li>30 characters maximum</li>
-                        <li>Valid characters:<br>a-z, 0-9, -, _ (no space)</li>
-                    </ul>
-                    <p>This will allow for links such as: http://<strong>name</strong>.anondex.com</p>
-                    <div id="namecheck"></div>
-                    <span class="hint-pointer"></span>
-                </span>
-            </div>
-        </div>
-
         <div id="tagsdiv">
             <label class="fieldlabel" for="tags">Tags:</label>
             <div id="tagsfield">
@@ -100,7 +82,7 @@
                         </span>
                         <span id="propcheckspan"><input type="checkbox" name="proportion" checked /> Keep proportions</span>
                         <span id="imageselectspan"></span>
-                        <span id="musicselectspan"></span>
+                        <span id="audioselectspan"></span>
                     </div>
                     <div id="videooptions">
                         <span id="videoselectspan"></span>
