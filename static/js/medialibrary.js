@@ -1,31 +1,49 @@
 
-var THUMB_FRAME_COUNT = 5 // Must be same as in /medialibrary/utils.py
+var THUMB_FRAME_COUNT = 5; // Must be same as in /medialibrary/utils.py
 var attach_file_id = null;
 var attach_file_thumb = null;
 var attachBox = {
     'type'          :   'iframe',
     'href'          :   '/lib/attach',
-	'width'			:	600,
+	'width'			:	700,
 	'height'		:	400,
 	'padding'		:	0,
 	'centerOnScroll':	true,
 	'overlayColor'	:	'black',
-	'overlayOpacity':	0.6,
-	'onClosed'	    :	attachWindowOnClose
+	'overlayOpacity':	0.6
+	//'onClosed'	    :	attachWindowOnClose
 };
 
 function attachWindowOnClose(){
-    if (attach_file_id == null){
+    //var obj = ($('#comments').length == 0) ? $(document).contents() : $('#comments').contents();
+    if (parent.attach_file_id == null){
         $('#fileselect').val('');
     } else {
-        $('input[name=file]').val(attach_file_id);
-        $('#attachpreview').css('background-image','url('+attach_file_thumb+')');
+        $('input[name=file]').val(parent.attach_file_id);
+        $('#attachpreview').css('background-image','url('+parent.attach_file_thumb+')');
         $('#attachpreview').show('fast');
     }
 }
 
+function addFromLibWindowOnClose(){
+    if (attach_file_id != null){
+        $('#upload-controller').blockEx();
+        $.getJSON('/ajax/addlibfile/'+attach_file_id,
+                function(data){
+                    if (data.success) {
+                        //$.growlUI('lol Posted.');
+                        refreshFileList();
+                    } else {
+                        $('#upload-controller').unblock();
+                        alert(data.error);
+                    }
+                }
+           );
+    }
+}
+
 function medialib_onload(){
-    $('#librarylist > div').click(function(){
+    $('.librarylist > div').click(function(){
         LibFileSelect(this);
     });
 }

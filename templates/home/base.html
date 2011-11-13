@@ -38,8 +38,13 @@
 				</div>
                 <div id="loginmenu">
                     {% if user.is_authenticated %}
-                        <a href="/user/{{ user.username }}">{{ user.username }}</a> - <a href="/account/logout">logout</a>
+                        <a href="/user/{{ user.username }}">{{ user.username }}</a> &middot; <a class="no-ajaxy" href="{% url logout %}">logout</a>
+                    {% else %}
+                        <a class="no-ajaxy login" href="{% url login %}">login</a>
                     {% endif %}
+                </div>
+                <div id="searchbar">
+                    <input type="text" placeholder="Search disabled" disabled />
                 </div>
 			</div>
 		</div>

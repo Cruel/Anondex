@@ -1,26 +1,45 @@
-{% extends "base.html" %}
+{% extends "home/base.html" %}
 {% load comments %}
 
-{% block htmlclass %}comments{% endblock %}
 {% block title %}{{ profile.user.username }} - {{ block.super }}{% endblock %}
 
-{% block postscripts %}<script type="text/javascript">$(comment_onload);</script>{% endblock %}
+{% if not request.is_ajax %}
+    {% block postscripts %}
+        {{ block.super }}
+        <script>$(comment_onload);</script>
+    {% endblock %}
+{% endif %}
 
 {% block content %}
-    {% if profile %}
-        {% comment %}{% if user.is_authenticated %}{% endcomment %}
-        <h1>{{ profile.user.username }}{% ifequal user profile.user %} [<a href="{% url profiles_edit_profile %}">edit</a>]{% endifequal %}</h1>
-        <p>{{ profile.user.email }}</p>
-        <p>{{ profile.user.first_name }} {{ profile.user.last_name }}</p>
-        <p>{{ profile.gender }}</p>
-        {% get_comment_count for profile as comment_count %}
-        <p>{{ comment_count }} comments have been posted.</p>
-        
-        {% get_comment_list for profile as comment_list %}
-        {% include "comments/comments.html" with anchored=1 stubbed=0 modcontrols=1 %}
-        {% get_comment_form for profile as form %}
-        {% include "comments/form.html" %}
-    {% else %}
-        <p>This profile is not publicly accessible</p>
-    {% endif %}
+    <div id="profile">
+        {% if profile %}
+            {% if request.is_ajax %}
+                <script>$(comment_onload); $(userid_load);</script>
+            {% endif %}
+            {% comment %}{% if user.is_authenticated %}{% endcomment %}
+            <h1>{{ profile.user.username }}{% ifequal user profile.user %} [<a href="{% url profiles_edit_profile %}">edit</a>]{% endifequal %}</h1>
+            <p>{{ profile.user.email }}</p>
+            <p>{{ profile.user.first_name }} {{ profile.user.last_name }}</p>
+            <p>{{ profile.gender }}</p>
+            <h1>Recent comments from {{ profile.user.username }}:</h1>
+            <div>
+                {% with comment_list=comments %}
+                    {% include "comments/comments.html" with anchored=0 stubbed=1 modcontrols=1 %}
+                {% endwith %}
+            </div>
+            <h1>Adexs created by {{ profile.user.username }}:</h1>
+            <div>
+                {% for adex in adexs %}
+                    <a class="no-ajaxy" href="/?{{ adex.item_code }}">{{ adex.thumbnail|safe }}</a>
+                {% endfor %}
+            </div>
+
+            {% get_comment_list for profile as comment_list %}
+            {% include "comments/comments.html" with anchored=1 stubbed=0 modcontrols=1 %}
+            {% get_comment_form for profile as form %}
+            {% include "comments/form.html" %}
+        {% else %}
+            <p>This profile is not publicly accessible.</p>
+        {% endif %}
+    </div>
 {% endblock %}

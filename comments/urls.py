@@ -1,6 +1,5 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('comments.views',
-    (r'^$', 'index'),
-    (r'^(?P<item_id>\d+)/$', 'detail'),
+    url(r'^(?P<item_id>\d+)/$', 'detail', name='adex_details'),
 )

@@ -1,4 +1,5 @@
 # Define a custom User class to work with django-social-auth
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -28,6 +29,8 @@ class Profile(models.Model):
         verbose_name = 'Profiles'
         verbose_name_plural = 'Profiles'
         #ordering = ('last_name', 'first_name',)
+    def url(self):
+        return reverse('profiles_profile_detail', args=[self.user.username])
     def __unicode__(self):
         return self.user.username
 

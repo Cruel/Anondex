@@ -2,7 +2,7 @@
 
 {% block htmlclass %}htmlindex{% endblock %}
 
-{% load comments %}
+{% load comments hitcount_tags %}
 
 {% block title %}{{ adex.title }} - {{ block.super }}{% endblock %}
 
@@ -22,7 +22,15 @@
         <div id="headerindex" class="clearfix">
             <div id="logoindex"><a target="_parent" title="Anondex home page." href="/">Anondex</a></div>
             <div id="headerrating">
-                <span id="rated_text" class="rated_text"><span class="out5Class">0</span><span class="votesClass"> - 0 Votes</span></span><ul id="starset" class="star-rating"><li id="current-rating" class="current-rating" style="width:0%"></li><li onclick="rate('1','133',false); "title="1 star out of 5" class="star1">1</li><li onclick="rate('2','133',false); "title="2 star out of 5" class="star2">2</li><li onclick="rate('3','133',false); "title="3 star out of 5" class="star3">3</li><li onclick="rate('4','133',false); "title="4 star out of 5" class="star4">4</li><li onclick="rate('5','133',false); "title="5 star out of 5" class="star5">5</li></ul>
+                <span id="rated_text" class="rated_text"><span class="out5Class">{{ adex.rating.get_rating }}</span><span class="votesClass"> &middot; {{ adex.rating.votes }} Vote{{ adex.rating.votes|pluralize }}</span></span>
+                <ul id="starset" class="star-rating">
+                    <li id="current-rating" class="current-rating" style="width:{% widthratio adex.rating.get_rating 5 100 %}%"></li>
+                    <li onclick="rate('1','{{ adex.id }}','adex'); "title="1 star out of 5" class="star1">1</li>
+                    <li onclick="rate('2','{{ adex.id }}','adex'); "title="2 star out of 5" class="star2">2</li>
+                    <li onclick="rate('3','{{ adex.id }}','adex'); "title="3 star out of 5" class="star3">3</li>
+                    <li onclick="rate('4','{{ adex.id }}','adex'); "title="4 star out of 5" class="star4">4</li>
+                    <li onclick="rate('5','{{ adex.id }}','adex'); "title="5 star out of 5" class="star5">5</li>
+                </ul>
 
             <div id="addthis">
                 <div class="addthis_toolbox addthis_default_style " addthis:title="Dustin Approves!" addthis:description="Dustin Horse">
@@ -34,7 +42,9 @@
             </div>
             <div id="headerdetails">
                 {% get_comment_count for adex as comment_count %}
-                <a class="buttonwrapper viewbutton iframe" href="/data/{{ adex.id }}" title="{{ adex.views }} Views"><div class="buttonicon"></div><div class="buttoncount">{{ adex.views }}</div></a>
+                {% get_hit_count for adex as views %}
+                            <div></div>
+                <a class="buttonwrapper viewbutton iframe" href="/" title="{{ views }} View{{ views|pluralize }}"><div class="buttonicon"></div><div class="buttoncount">{{ views }}</div></a>
                 <a class="buttonwrapper commentbutton iframe" href="/comments/{{ adex.id }}" title="{{ comment_count }} Comments"><div class="buttonicon"></div><div class="buttoncount">{{ comment_count }}</div></a>
             </div>
             <div id="des" title="Click to show/hide full item description.">
@@ -86,5 +96,13 @@
                 </div>
             </div>
         </div>
+
+        {% if adex.id %}
+            <script type="text/javascript"><!--
+                $(document).ready(function() {
+                    {% get_hit_count_javascript for adex %}
+                });
+            --></script>
+        {% endif %}
     </div>
 {% endblock %}

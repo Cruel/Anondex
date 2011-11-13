@@ -1,0 +1,39 @@
+{% extends "home/base.html" %}
+{% load comments %}
+
+{% block title %}Video - {{ block.super }}{% endblock %}
+
+{% if not request.is_ajax %}
+    {% block postscripts %}
+        {{ block.super }}
+        <script>$(comment_onload);</script>
+    {% endblock %}
+{% endif %}
+
+
+{% block content %}
+    <div id="videopage">
+        {% if request.is_ajax %}
+            <script>$(comment_onload); $(userid_load);</script>
+        {% endif %}
+        {% if video %}
+            <div id="video">
+                <video width="{{ video_width }}" height="{{ video_height }}" controls>
+                  <source src="{{ MEDIA_URL }}v/{{ video.filename }}" type="{{ video.content_type }}" />
+                  Your browser does not support this video ({{ video.content_type }}).
+                </video>
+            </div>
+
+            {% get_comment_list for video as comment_list %}
+            {% include "comments/comments.html" with anchored=1 stubbed=0 modcontrols=1 %}
+            {% comment %}
+                {% render_comment_list for profile %}
+                {% render_comment_form for profile %}
+            {% endcomment %}
+            {% get_comment_form for video as form %}
+            {% include "comments/form.html" %}
+        {% else %}
+            <p>Video does not exist.</p>
+        {% endif %}
+    </div>
+{% endblock %}

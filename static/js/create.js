@@ -28,11 +28,11 @@ function checkValues(valData) {
 			if (!IsDefined(valData.imageselect)) arrErrors.push("- Must upload an image.");
 			break;
 		case 1: if (!IsDefined(valData.videoselect)) arrErrors.push("- Must upload a video."); break;
-		case 2: if (!IsDefined(valData.url)) arrErrors.push("- Must define a URL."); break;
-		case 3:
-			if ((!IsDefined(valData.htmlselect)) && (!IsDefined(valData.html))) arrErrors.push("- Must upload an HTML file, or input custom HTML.");
-			break;
-		case 4: if (!IsDefined(valData.flashselect)) arrErrors.push("- Must upload a flash (.swf) file."); break;
+        case 2: if (!IsDefined(valData.flashselect)) arrErrors.push("- Must upload a flash (.swf) file."); break;
+		case 3: if (!IsDefined(valData.url)) arrErrors.push("- Must define a URL."); break;
+//		case 4:
+//			if ((!IsDefined(valData.htmlselect)) && (!IsDefined(valData.html))) arrErrors.push("- Must upload an HTML file, or input custom HTML.");
+//			break;
 	}
 	if ((!IsDefined(valData.recaptcha_response_field)) && (valData.preview == '0')) arrErrors.push("- 'Captcha' must be completed.");
 	
@@ -46,13 +46,14 @@ function checkValues(valData) {
 
 function makePOSTData(postdata, paramlist){
 	for (var x in paramlist)
-		postdata[paramlist[x]] = encodeURIComponent($("#"+paramlist[x]).val()).replace("'","%27");
+		//postdata[paramlist[x]] = encodeURIComponent($("#"+paramlist[x]).val()).replace("'","%27");
+        postdata[paramlist[x]] = $("#"+paramlist[x]).val();
 }
 
 function createPage(NotPreview){
 	$('#results').html('');
 	var content = {};
-	makePOSTData(content, ["userid","duration","title","description","recaptcha_challenge_field","recaptcha_response_field","url","imageselect","audioselect","videoselect","flashselect","html","htmlselect"]);
+	makePOSTData(content, ["userid","duration","title","description","recaptcha_challenge_field","recaptcha_response_field","url","imageselect","audioselect","videoselect","flashselect"]);
     var tagNames = new Array();
     $("#taglist li.tagItem").each(function () {
         tagNames.push($(this).html());
@@ -66,9 +67,8 @@ function createPage(NotPreview){
 	switch(content.type){
 		case "image": content.type = 0; break;
 		case "video": content.type = 1; break;
-		case "url": content.type = 2; break;
-		case "html": content.type = 3; break;
-		case "flash": content.type = 4; break;
+        case "flash": content.type = 2; break;
+		case "url": content.type = 3; break;
 	}
 	if (!checkValues(content)) return false;
 	$('#results').html('<img border="0" src="images/working.gif" /> Loading... please wait...');
@@ -172,10 +172,12 @@ function checkName(data){
 }
 
 function refreshFileList(removeid, obj) {
+    $('#upload-controller').blockEx();
 	var remove_url = (typeof removeid == 'undefined') ? '' : '?d='+removeid;
 	//alert(remove_url);
 	$('#filedata').load('/ajax/filelist'+remove_url, {},
 		function(){
+            $('#upload-controller').unblock();
 			$('#imageselectspan').html($('#imagelist').remove().html());
 			$('#audioselectspan').html($('#audiolist').remove().html());
 			$('#videoselectspan').html($('#videolist').remove().html());
@@ -199,6 +201,11 @@ function loadCreateUploader(){
     });
     $('#testylol').click(function(e) {
         startCreateUpload();
+    });
+
+    $('#btnAddFileLib').click(function(e) {
+        attachBox.onClosed = addFromLibWindowOnClose;
+        $.fancybox(attachBox);
     });
 
     $('#upload-controller').bind('dragenter', function(){
@@ -226,6 +233,7 @@ function loadCreateUploader(){
 //                        $('#filelist').append('<li>'+file.name+'</li>');
 //                    }
 //                });
+                $('#upload-controller').blockEx();
                 data.submit();
             },
         'progress': function(e, data){
@@ -248,6 +256,7 @@ function loadCreateUploader(){
                     //$('input[name=image]').val(data.result.value);
                     //postComment();
                     //alert('Success: '+data.result.error);
+                    refreshFileList();
                 } else {
                     //$('.errdiv').html('Error: '+data.result.error);
                     //alert('Error: '+data.result.error);

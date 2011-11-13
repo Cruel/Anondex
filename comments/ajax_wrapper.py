@@ -31,7 +31,7 @@ def jsonify_if_ajax(func, request):
             comment_html = None
             if 'c' in kwargs:
                 comment_html = render_to_string('comments/comments.html',
-                    {'comment_list': [AdexComment.objects.get(pk=kwargs['c'])] },
+                    {'comment_list': [AdexComment.objects.get(pk=kwargs['c'])], 'stubbed':True },
                     context_instance=RequestContext(request))
             
             json_response = simplejson.dumps({

@@ -1,1 +1,19 @@
 Will update README later.
+
+
+== Installation (Debian 6 Squeeze) ==
+Debian source.list:
+deb http://nginx.org/packages/debian/ squeeze nginx
+deb-src http://nginx.org/packages/debian/ squeeze nginx
+
+sudo apt-get install nginx python-dev python-mysqldb rubygems openjdk-6-jdk icedtea6-plugin mysql-server mysql-client
+
+http://pypi.python.org/pypi/setuptools
+sudo python setup.py install
+
+sudo easy_install django flup selenium pil simplejson python-memcached pyvirtualdisplay postmarkup pygments django-mediagenerator django-tagging django-celery django-ratings django-social-auth django-profiles django-registration django-debug-toolbar
+
+https://github.com/thornomad/django-hitcount
+setup.py install
+
+sudo gem install sass compass

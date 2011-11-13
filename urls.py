@@ -1,7 +1,7 @@
 import os
 from django.conf.urls.defaults import *
 from django.views.generic.simple import direct_to_template
-from anondex.socialauth.forms import ProfileForm, RegistrationFormTest
+from socialauth.forms import ProfileForm, RegistrationFormTest
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
@@ -26,7 +26,10 @@ urlpatterns = patterns('',
     # Comments
     url(r'^comment/', include('django.contrib.comments.urls')),
     url(r'^comments/', include('comments.urls')),
-    url(r'^image/(?P<image_id>\d+)$', 'comments.views.image_page'),
+    url(r'^image/(?P<file_id>\d+)$', 'comments.views.image_page', name='image'),
+    url(r'^video/(?P<file_id>\d+)$', 'comments.views.video_page', name='video'),
+    url(r'^audio/(?P<file_id>\d+)$', 'comments.views.audio_page', name='audio'),
+    url(r'^flash/(?P<file_id>\d+)$', 'comments.views.flash_page', name='flash'),
 
     # Admin
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
@@ -35,13 +38,15 @@ urlpatterns = patterns('',
     # Login / Auth
     #url(r'auth/', include('social_auth.urls')),
     url(r'^auth/', include('socialauth.urls')),
-    url(r'^login/$', 'socialauth.views.login', name='auth_login'),
+    url(r'^login/$', 'socialauth.views.login', name='login'),
+    url(r'^logout/$', 'socialauth.views.logout', name='logout'),
     url(r'^account/register/$', 'registration.views.register',
          {'backend': 'registration.backends.default.DefaultBackend', 'form_class': RegistrationFormTest}, 'registration_register'),
     url(r'^account/', include('registration.urls')),
 
     url(r'^profiles/edit/', 'profiles.views.edit_profile', {'form_class': ProfileForm,}),
     #(r'^profiles/edit/', 'profiles.views.edit_profile', {'form_class': ProfileForm,'success_url':'/my/custom/url',}),
+    url(r'^user/(?P<username>\w+)/$', 'home.views.profile', name='profiles_profile_detail'),
     url(r'^user/', include('profiles.urls')),
 
     # Misc
@@ -50,6 +55,7 @@ urlpatterns = patterns('',
     url(r'^ajax/', include('home.ajax_urls')),
     url(r'^lib/', include('medialibrary.urls')),
     url(r'^login_redirect/$', direct_to_template, {'template': 'socialauth/login_redirect.html'}),
+    url(r'^flashview/', 'comments.views.flashview'),
 
     url(r'^vid/$', 'adex.views.test_video'),
 

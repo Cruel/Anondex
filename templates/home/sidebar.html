@@ -1,17 +1,23 @@
-{% load medialibrary %}
+{% load medialibrary adexcomments %}
 
+<h1>Latest Adex</h1>
 {% for adex in adex_list %}
-    <div>
-        {{ adex.title }}
-        {% mediathumb adex 98 %}
-    </div>
+    <a class="latestitem no-ajaxy" href="/?{{ adex.item_code }}">
+        <div class="thumb">{% mediathumb adex 98 %}</div>
+        <div class="itemtitle">{{ adex.title }}</div>
+        <div class="stat">{{ adex.date|timeago }}</div>
+    </a>
 {% endfor %}
-<hr>
 
-    {% include "comments/comments.html" with anchored=0 stubbed=1 modcontrols=0 thumb_width=98 %}
+<h1>Latest Comments</h1>
+{% include "comments/comments.html" with anchored=0 stubbed=1 modcontrols=0 thumb_width=98 %}
 
-<hr>
+<h1>Random Images</h1>
 {% for file in rand_files %}
-    {% mediathumb file 98 %}
+    <span class="randomimage">
+        <a href="{% url image file.id %}">
+            {% mediathumb file 98 %}
+        </a>
+    </span>
 {% endfor %}
 

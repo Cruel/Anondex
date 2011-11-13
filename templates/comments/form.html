@@ -1,49 +1,53 @@
 {% load comments i18n %}
 
-<h1>Add Comment</h1>
-<div class="errdiv"></div>
-<form id="commentform" method="post" enctype="multipart/form-data" action="{% comment_form_target %}">
-    {% csrf_token %}
-    {% if next %}<div><input type="hidden" name="next" value="{{ next }}" /></div>{% endif %}
-    {% for field in form %}
-        {% if field.is_hidden %}
-            <div>{{ field }}</div>
-        {% endif %}
-    {% endfor %}
-    <div style="display:none;"><label for="id_honeypot">Stop reading our HTML, hacker!</label> <input type="text" name="honeypot" id="id_honeypot" /></div>
-    <div class="formtable">
-        <select id="userid" name="user">
-            <option value="anon">Anonymous</option>
-            <option value="temp">Temp Name</option>
-            {% if user.is_authenticated %}
-                <option value="name">{{ user.username }}</option>
-            {% else %}
-                <option value="login">Login ...</option>
+<div id="newcomment"></div>
+<div id="commentformdiv">
+    <h1>Add Comment</h1>
+    <div class="errdiv"></div>
+    <form id="commentform" method="post" enctype="multipart/form-data" action="{% comment_form_target %}">
+        {% csrf_token %}
+        {% if next %}<div><input type="hidden" name="next" value="{{ next }}" /></div>{% endif %}
+        {% for field in form %}
+            {% if field.is_hidden %}
+                <div>{{ field }}</div>
             {% endif %}
-        </select>
-        <input name="name" type="text" maxlength="20" style="display:none" placeholder="Name" />
+        {% endfor %}
+        <div style="display:none;"><label for="id_honeypot">Stop reading our HTML, hacker!</label> <input type="text" name="honeypot" id="id_honeypot" /></div>
+        <div class="formtable">
+            <select id="userid" name="user">
+                <option value="anon">Anonymous</option>
+                <option value="temp">Temp Name</option>
+                {% if user.is_authenticated %}
+                    <option value="name">{{ user.username }}</option>
+                {% else %}
+                    <option value="login">Login ...</option>
+                {% endif %}
+            </select>
+            <input name="name" type="text" maxlength="20" style="display:none" placeholder="Name" />
 
-            <div id="imguploadcell">
-                <select id="fileselect">
-                    <option value="">No Attachment</option>
-                    <option value="upload">From file</option>
-                    <option value="library">From library</option>
-                </select>
-                <input type="file" id="imagefile" />
-                <input type="hidden" name="file" />
+                <div id="imguploadcell">
+                    <select id="fileselect">
+                        <option value="">No Attachment</option>
+                        <option value="upload">From file</option>
+                        <option value="library">From library</option>
+                    </select>
+                    <input type="file" id="imagefile" />
+                    <input type="hidden" name="file" />
 
-                <div id="attachpreview" style="display:none"><canvas width="150" height="112" ></canvas></div>
-            </div>
-        <div id="charcounter">[Chars Left: 500]</div>
-        <textarea id="comment" name="comment" placeholder="Comment [500 Character Limit]" onKeyDown="updateCharCount(this);" onKeyUp="updateCharCount(this);" required></textarea>
-        <input id="submitbutton" type="button" value="Post Comment" onclick="submitComment();" />
-    </div>
+                    <div id="attachpreview" style="display:none"><canvas width="150" height="112" ></canvas></div>
+                </div>
+            <div id="charcounter">[Chars Left: 500]</div>
+            <textarea id="comment" name="comment" placeholder="Comment [500 Character Limit]" onKeyDown="updateCharCount(this);" onKeyUp="updateCharCount(this);" required></textarea>
+            <input id="submitbutton" type="button" value="Post Comment" />
+        <input type="buttom" value="test" onclick="$.growlUI('Comment Posted.'); " />
+        </div>
 
-    <!--
-    <input type="hidden" name="info" value="" />
+        <!--
+        <input type="hidden" name="info" value="" />
 
-    <input type="hidden" name="title" value="hiddentest" /-->
-    <input type="submit" value="submit non-ajax" />
+        <input type="hidden" name="title" value="hiddentest" />
+        <input type="submit" value="submit non-ajax" /-->
 
-</form>
-<div class="footerdiv">* The comment is the only required field. (500 character limit)</div>
+    </form>
+    <div class="footerdiv">* The comment is the only required field. (500 character limit)</div>
+</div>

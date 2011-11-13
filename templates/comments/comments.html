@@ -1,4 +1,9 @@
-{% load adexcomments medialibrary %}
+{% load comments adexcomments medialibrary %}
+{% if not stubbed and comment_list %}
+    <div id="commenthead">
+        <h1>Comments</h1>
+    </div>
+{% endif %}
 {% for comment in comment_list %}
     <div {% if anchored %}id="{{ comment.id }}" {% endif %}class="comment {% cycle "commentodd" "commenteven" %}">
         <div class="header gravatar">
@@ -12,21 +17,27 @@
                 {% endif %}
             {% endif %}
 
-			<div class="date">{{ comment.submit_date|timeago }}{% if modcontrols %} <a href="/admin/comments/adexcomment/{{ comment.id }}/">Mod</a>{% endif %}</div>
+			<div class="date">
+                {{ comment.submit_date|timeago|default:"Just Now" }}
+                {% if user.is_staff %} [<a class="no-ajaxy" href="/admin/comments/adexcomment/{{ comment.id }}/">edit</a>]{% endif %}
+            </div>
             <div class="commentrating"><span style="color:{% if comment.rating < 0 %}red{% else %}green{% endif %}">{% if comment.rating != 0 %}{{ comment.rating }}{% endif %}</span></div>
         </div>
         <div class="content">
             <div class="contentdiv">
                 {% if comment.file %}
                     <div class="imagediv">
-                        <a target="_parent" class="iframe" href="/image/{{ comment.file.id }}">
+                        <a target="_parent" class="iframe" href="{{ comment.file.url }}">
                             {% if thumb_width %}
                                 {% mediathumb comment.file thumb_width %}
                             {% else %}
                                 {{ comment.file.thumbnail|safe }}
                             {% endif %}
                         </a>
-                        <p>comment count</p>
+                        {% get_comment_count for comment.file as comment_count %}
+                        {% if comment_count > 0 %}
+                            <p>{{ comment_count }} Comment{{ comment_count|pluralize }}</p>
+                        {% endif %}
                     </div>
                 {% endif %}
                 {{ comment.comment|bbcode|safe }}
@@ -34,11 +45,13 @@
         </div>
         <div class="commentcontrols">
             {% if stubbed %}
-                stubbed
+                {% if comment.content_object.url %}
+                    <a class="no-ajaxy" href="{{ comment.content_object.url }}#{{ comment.pk }}">open</a>
+                {% endif %}
             {% else %}
                 <a href="javascript:ratecomment('{{ comment.id }}',1)">Up</a> <a href="javascript:ratecomment('{{ comment.id }}',0)">Down</a> <a onclick="hltag('{{ comment.id }}');" href="#{{ comment.id }}">Perm</a> <a href="/comments/flag/{{ comment.id }}/">Flag</a> <a href="javascript:reply('{{ comment.id }}');">Reply</a>
             {% endif %}
         </div>
     </div>
-    <div class="divider"></div>
+    <div class="commentdivider"></div>
 {% endfor %}

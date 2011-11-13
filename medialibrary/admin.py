@@ -1,3 +1,4 @@
+from adex.models import Adex
 from medialibrary.models import LibraryFile
 from django.contrib import admin
 
@@ -12,6 +13,7 @@ class LibraryFileAdmin(admin.ModelAdmin):
 
     def really_delete_selected(self, request, queryset):
         for obj in queryset:
+            Adex.objects.filter(media=obj).delete()
             obj.delete()
 
         if queryset.count() == 1:
@@ -22,3 +24,4 @@ class LibraryFileAdmin(admin.ModelAdmin):
     really_delete_selected.short_description = "Delete selected entries"
 
 admin.site.register(LibraryFile, LibraryFileAdmin)
+#admin.site.register(LibraryFile)

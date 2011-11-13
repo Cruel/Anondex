@@ -39,15 +39,6 @@ function vidseek(t) {
 		alert('Video player not found.');
 }
 
-function rate(rating, item, is_image){
-	$('#starset').attr('class','star-rating2');
-	$('#starset li').attr('onclick','return false;'); //.click( function(){alert('ok'); return false;});
-	$('#rated_text').load('../func/ajax.php?a=rate&i=' + item + '&v=' + rating + '&img=' + is_image,
-			function(data){
-				$('#current-rating').css('width',$('#rated_text #ratingval').html()+'%');
-			});
-}
-
 function hltag(sTag){
 	if (!$('#'+sTag).length) return true;
 	$('.comment').removeClass('commentselected');
@@ -71,8 +62,8 @@ function postComment(){
 			function(data){
 				if (data.success) {
 					$('#submitbutton').val('Posted.');
-                    $('.errdiv').html(data.html);
-					//window.location.reload();
+                    $('#newcomment').html(data.html);
+                    $.growlUI('Comment Posted.');
 				} else {
                     alert('errors sent');
                     for (var error in data.errors)
@@ -85,7 +76,7 @@ function postComment(){
 
 var CommentImageFile = null;
 function submitComment(){
-	$('#submitbutton').attr("disabled", "true").css('color','#555').val('Posting...');
+	$('#submitbutton').attr("disabled", "disabled").css('color','#555').val('Posting...');
 	if (CommentImageFile && ($('input[name=file]').val() == ''))
 		postCommentImage();
 	else
@@ -140,6 +131,11 @@ function comment_onload() {
     canvas = $('canvas')[0];
 	if (location.hash.substr(1)) hltag(location.hash.substr(1));
 
+    $('#submitbutton').click(function(){
+        $('.errdiv').html('');
+        submitComment();
+    });
+
     $("#fileselect").change(function(){
         loadImage(null);
         $('input[name=file]').val('');
@@ -151,8 +147,10 @@ function comment_onload() {
         if ($(this).val() == "upload"){
             $('#imagefile').click();
         }
-        if ($(this).val() == "library")
-            $.fancybox(attachBox);
+        if ($(this).val() == "library"){
+            attachBox.onClosed = attachWindowOnClose;
+            parent.$.fancybox(attachBox);
+        }
     });
     
 	//if (parent.window.reportpage) alert('iframed');
@@ -195,23 +193,26 @@ function comment_onload() {
                     postComment();
                 } else {
                     $('.errdiv').html('Error: '+data.result.error);
+                    $('#submitbutton').removeAttr("disabled").css('color','').val('Post Comment');
                 }
             }
     });
 
 	$('a.reply').each(function(i){
-		if (!$($(this).attr('rel')).length) {
-			//var hostdir = window.location.href;
-			//var pos = hostdir.indexOf('/comments/');
-			//if (pos < 0) pos = hostdir.indexOf('/image/');
-			if (document.domain)
-				$(this).attr('rel','http://'+document.domain+'/func/ajax.php?a=comment&i='+$(this).attr('rel').substring(1));
-			//alert($(this).attr('rel'));
-			$(this).cluetip({cluetipClass:'rounded', dropShadow:true, arrows:true, showTitle:false, fx:{open:'fadeIn',openSpeed:200}});
-			$(this).addClass('iframe');
-		} else
-			$(this).cluetip({width:400, local:true, hideLocal:false, cluetipClass:'rounded', dropShadow:true, arrows:true, showTitle:false, fx:{open:'fadeIn',openSpeed:200}});
-	});
+        if (!$(this).hasClass('cluetiplink')) {
+            if (!$($(this).attr('rel')).length) {
+                //if (document.domain)
+                    $(this).attr('rel','/ajax/comment/'+$(this).attr('rel').substring(1));
+                //alert($(this).attr('rel'));
+                $(this).cluetip({cluetipClass:'rounded', dropShadow:true, arrows:true, showTitle:false, fx:{open:'fadeIn',openSpeed:200}});
+                //$(this).addClass('iframe');
+                $(this).addClass('cluetiplink');
+
+            } else
+                $(this).cluetip({width:400, local:true, hideLocal:false, cluetipClass:'rounded', dropShadow:true, arrows:true, showTitle:false, fx:{open:'fadeIn',openSpeed:200}});
+        }
+    });
 	//$('.commentcontrols a').cluetip({positionBy:'bottomTop', splitTitle:'|', showTitle:false});
-	parent.jQuery('a.iframe', window.document).fancybox(commentBox);
+	//parent.jQuery('a.iframe', window.document).fancybox(commentBox);
+
 };

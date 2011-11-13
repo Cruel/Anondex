@@ -1,6 +1,6 @@
 
 var fadeScaleLock = false;
-function fadeScale(objSelector, fadeIn, callback){
+function fadeScale2(objSelector, fadeIn, callback){
     if (fadeIn)
         $(objSelector+' > *').fadeTo(0,0);
     else
@@ -20,6 +20,14 @@ function fadeScale(objSelector, fadeIn, callback){
     }
 }
 
+function fadeScale(objSelector, fadeIn, callback){
+    if (!fadeIn)
+        $(objSelector+' .document-script').remove(); // Correct layout transition problem due to script <div>
+	$(objSelector).css('visibility','visible');
+    if (callback) callback();
+
+}
+
 function browse_onload(){
     $('.browsetable > div').click(function(){
         window.location = $(this).attr('rel');
@@ -36,15 +44,9 @@ function home_onload(){
     //fadeScale('#creatediv', true);
     $('#sidebar').load('/ajax/sidebar',function(){
         fadeScale('#sidebar', true);
+        $('#sidebar').ajaxify();
+        comment_onload();
     });
-//}
-
-
-//(function(window,undefined){
-//$(function(){
-	
-	// Prepare our Variables
-
 
 	// Check to see if History.js is enabled for our Browser
 	if ( !History.enabled ) {
@@ -168,7 +170,7 @@ function home_onload(){
 			//$content.animate({opacity:0},800);
             //$(contentSelector+' > div').fadeOut(300, function(){
             fadeScale(contentSelector+' > div', false, function(){
-			
+
                 // Ajax Request the Traditional Page
                 $.ajax({
                     url: url,

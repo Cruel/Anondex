@@ -2,7 +2,9 @@ from os.path import abspath, dirname, basename, join
 import time
 
 DEBUG = True
+PRODUCTION = False
 TEMPLATE_DEBUG = DEBUG
+MEDIA_DEV_MODE = DEBUG
 
 #VERSION = '2.0.0'
 
@@ -35,9 +37,8 @@ SITE_ID = 1
 USE_I18N = True
 USE_L10N = True
 
-ROOT_URLCONF = 'anondex.urls'
+ROOT_URLCONF = 'urls'
 
-MEDIA_DEV_MODE = DEBUG
 DEV_MEDIA_URL = '/devstatic/'
 PRODUCTION_MEDIA_URL = '/static/'
 
@@ -48,11 +49,15 @@ GLOBAL_MEDIA_DIRS = (
 
 MEDIA_ROOT = join(ROOT_PATH, 'media/')
 #MEDIA_ROOT = 'C:/nginx/html/media/'
-MEDIA_URL = 'http://localhost/media/'
-ADMIN_MEDIA_PREFIX = 'http://localhost/static/admin/'
-
 STATIC_ROOT = join(ROOT_PATH, 'static/')
-STATIC_URL = 'http://localhost:8000/static/'
+if not PRODUCTION:
+    MEDIA_URL = 'http://localhost/media/'
+    ADMIN_MEDIA_PREFIX = 'http://localhost/static/admin/'
+    STATIC_URL = 'http://localhost:8000/static/'
+else:
+    MEDIA_URL = 'http://anondex.com/media/'
+    ADMIN_MEDIA_PREFIX = 'http://anondex.com/static/admin/'
+    STATIC_URL = 'http://anondex.com/static/'
 
 #FILE_UPLOAD_TEMP_DIR = 'C:/nginx/upload_tmp'
 
@@ -161,11 +166,13 @@ INSTALLED_APPS = (
     'registration',
     'profiles',
     'social_auth',
-    'pagination',
+    #'pagination',
     #'gravatar',
     'tagging',
     'djangoratings',
-    'djcelery',
+    #'djcelery',
+    'hitcount',
+    #'tracking',
     # Anondex Specific
     'comments',
     'socialauth',

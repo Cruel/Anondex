@@ -7,13 +7,14 @@ import string
 from django.contrib.auth.models import User
 from django.core.files.move import file_move_safe
 from django.core.files.uploadedfile import UploadedFile
+from django.core.urlresolvers import reverse
 from django.db import models
 from tagging.fields import TagField
 from tagging.utils import parse_tag_input
 from os.path import basename
-from PIL import Image as pil
+import Image as pil
 from comments.utils import md5_file
-from medialibrary.utils import get_video_size, genVideoThumb, get_media_duration, LIBRARYFILE_THUMB_WIDTH, LIBRARYFILE_THUMB_HEIGHT, THUMB_FRAME_COUNT, LIBRARYFILE_THUMB_RATIO
+from medialibrary.utils import get_video_size, genVideoThumb, get_media_duration, LIBRARYFILE_THUMB_WIDTH, LIBRARYFILE_THUMB_HEIGHT, THUMB_FRAME_COUNT, LIBRARYFILE_THUMB_RATIO, webthumb
 import settings
 
 LIBRARYFILE_MAX_FILESIZE = 50000000
@@ -73,13 +74,18 @@ class LibraryFile(models.Model):
 
     def save_flash(self, filename):
         self.type = 4
-        im = pil.open(filename)
-        (self.width, self.height) = im.size
         super(LibraryFile, self).save() # Intermediate save to get new ID
         self.filename = "adex%s_%s" % (self.id, self.name)
-        im.thumbnail((LIBRARYFILE_THUMB_WIDTH,LIBRARYFILE_THUMB_HEIGHT), pil.ANTIALIAS)
-        im.save(settings.MEDIA_ROOT + "i/thumb/%s" % self.filename)
-        file_move_safe(filename, settings.MEDIA_ROOT + "i/%s" % self.filename)
+        webthumb(
+            'http://localhost/flashview/?'+settings.MEDIA_URL+'tmp/'+self.name,
+            settings.MEDIA_ROOT+"f/thumb/%s.jpg"%self.filename,
+            is_flash=True,
+        )
+        file_move_safe(filename, settings.MEDIA_ROOT + "f/%s" % self.filename)
+        if settings.DEBUG:
+            return
+
+
 
     def save_file(self, file):
         if isinstance(file, UploadedFile):
@@ -120,39 +126,53 @@ class LibraryFile(models.Model):
             super(LibraryFile, self).save()
 
     def delete(self):
+        def delfile(filepath):
+            if os.path.isfile(filepath):
+                os.remove(filepath)
         if self.type == 1: # Image
-            os.remove("%si/thumb/%s" % (settings.MEDIA_ROOT, self.filename))
-            os.remove("%si/%s" % (settings.MEDIA_ROOT, self.filename))
+            delfile("%si/thumb/%s" % (settings.MEDIA_ROOT, self.filename))
+            delfile("%si/%s" % (settings.MEDIA_ROOT, self.filename))
         elif self.type == 2: # Video
-            os.remove("%sv/thumb/%s.jpg" % (settings.MEDIA_ROOT, self.filename))
-            os.remove("%sv/%s" % (settings.MEDIA_ROOT, self.filename))
+            delfile("%sv/thumb/%s.jpg" % (settings.MEDIA_ROOT, self.filename))
+            delfile("%sv/%s" % (settings.MEDIA_ROOT, self.filename))
         elif self.type == 3: # Audio
-            os.remove("%sa/%s" % (settings.MEDIA_ROOT, self.filename))
+            delfile("%sa/%s" % (settings.MEDIA_ROOT, self.filename))
         elif self.type == 4: # Flash
-            os.remove("%sf/thumb/%s.jpg" % (settings.MEDIA_ROOT, self.filename))
-            os.remove("%sf/%s" % (settings.MEDIA_ROOT, self.filename))
+            delfile("%sf/thumb/%s.jpg" % (settings.MEDIA_ROOT, self.filename))
+            delfile("%sf/%s" % (settings.MEDIA_ROOT, self.filename))
         super(LibraryFile, self).delete()
 
     def thumbnail_url(self):
-        filename = self.filename
+        filename = self.filename if self.type == 1 else self.filename + '.jpg'
         if self.type == 1: folder = 'i'
-        elif self.type == 2:
-            folder = 'v'
-            filename += '.jpg'
-        elif self.type == 3: folder = 'a'
+        elif self.type == 2: folder = 'v'
+        elif self.type == 3:
+            return settings.MEDIA_URL + 'audio.jpg'
         elif self.type == 4: folder = 'f'
         return settings.MEDIA_URL + folder + '/thumb/' + filename
 
     def thumbnail(self, width=LIBRARYFILE_THUMB_WIDTH):
         extra_class = 'video' if self.type == 2 else ''
         height = width / LIBRARYFILE_THUMB_RATIO
-        return u'<div class="adexthumb" style="width:%dpx;height:%dpx;"><div class="%s" style="background-image:url(%s)"></div></div>' % (width, height, extra_class, self.thumbnail_url())
+        return u'<div class="adexthumb" style="width:%dpx;height:%dpx;"><div class="%s" style="background-image:url(%s);"></div></div>' % (width, height, extra_class, self.thumbnail_url())
 
     def type_name(self):
         return self.MEDIA_CHOICES[self.type-1][1]
 
     def content_type(self):
         return mimetypes.guess_type(self.filename)[0]
+
+    def url(self):
+        if self.type == 1:
+            return reverse('image', args=[self.pk])
+        elif self.type == 2:
+            return reverse('video', args=[self.pk])
+        elif self.type == 3:
+            return reverse('audio', args=[self.pk])
+        elif self.type == 4:
+            return reverse('flash', args=[self.pk])
+        else:
+            return False
     
     thumbnail.short_description = 'Thumbnail'
     thumbnail.allow_tags = True

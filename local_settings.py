@@ -95,6 +95,7 @@ MEDIA_BUNDLES = (
         'js/jquery.cluetip.js',
         'js/jquery.hoverIntent.js',
         'js/jquery.scrollto.js',
+        'js/jquery.blockUI.js',
         'js/main.js',
         'js/home.js',
         'js/create.js',
@@ -107,4 +108,10 @@ MEDIA_BUNDLES = (
 )
 
 # django-ratings Setting
-RATINGS_VOTES_PER_IP = 2
+RATINGS_VOTES_PER_IP = 4
+
+
+# django-hitcount Settings
+HITCOUNT_KEEP_HIT_ACTIVE = { 'days': 1 }
+HITCOUNT_HITS_PER_IP_LIMIT = 0
+#HITCOUNT_EXCLUDE_USER_GROUP = ( 'Editor', )

@@ -7,7 +7,7 @@
 
 {% block body %}
     <h1>File List:</h1>
-    <div id="librarylist">
+    <div class="librarylist">
     {% for file in files %}
         <div title="{{ file.name }}" data-id="{{ file.id }}" data-thumburl="{{ file.thumbnail_url }}">{{ file.thumbnail|safe }}</div>
     {% endfor %}

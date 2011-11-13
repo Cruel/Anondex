@@ -1,7 +1,7 @@
 
 var enablehover = false;
 var hoverbound = false;
-document.domain = "localhost";
+//document.domain = "localhost";
 
 var commentBox = {
 	//'autoDimensions':	false,
@@ -101,18 +101,23 @@ function LoadBrowseFilter(){
 	$('#content').load('browser/'+$('select[name=o]').val()+'/'+$('input[name=c]').val()+'/1');
 }
 
-function rate(rating, item, is_image){
+function rate(score, item, model){
+    //TODO: show loading icon
 	$('#starset').attr('class','star-rating2');
-	$('#starset li').attr('onclick','return false;'); //.click( function(){alert('ok'); return false;});
-	$('#rated_text').load('../func/ajax.php?a=rate&i=' + item + '&v=' + rating + '&img=' + is_image,
-			function(data){
-				$('#current-rating').css('width',$('#rated_text #ratingval').html()+'%');
-			});
+	$('#starset li').attr('onclick','return false;');
+//	$('#rated_text').load('../func/ajax.php?a=rate&i=' + item + '&v=' + rating + '&img=' + is_image,
+//			function(data){
+//				$('#current-rating').css('width',$('#rated_text #ratingval').html()+'%');
+//			});
+    $.post("/ajax/rate", {"id":item, "model":model, "score":score},
+        function(data){
+            alert(data);
+    });
 }
 
 function CloseAjaxDiv(obj){
     $(obj).remove();
-    alert($(obj).html());
+    //alert($(obj).html());
 }
 
 function AddErrorDiv(container, msg){
@@ -184,13 +189,20 @@ var loginBox = {
 	'padding'		:	0,
 	'centerOnScroll':	true,
 	'overlayColor'	:	'black',
-	'overlayOpacity':	0.6
-	//'onComplete'	:	reportWindowOnLoad
+	'overlayOpacity':	0.6,
+	'onClosed'	    :	loginBoxOnClosed
 };
 
+function loginBoxOnClosed(){
+    if ($('#userid').val()=='login')
+        $('#userid').val('anon');
+}
+
 function LoginRedirect(username){
-    parent.$('option[value=login]').attr('value','name').html(username);
+    parent.$('option[value=login]').val('name').html(username);
+    parent.$('#loginmenu').html('<a href="/user/'+username+'">'+username+'</a> &middot; <a class="no-ajaxy" href="/logout/">logout</a>').ajaxify();
     parent.$.fancybox.close();
+    parent.$.growlUI('Logged in. Welcome, '+username+'!');
 }
 
 function moveMouse(e){
@@ -213,10 +225,7 @@ function moveMouse(e){
 	}
 }
 
-
-$(function(){
-    $(document).mousemove(moveMouse);
-
+function userid_load(){
     $("select#userid").change(function(){
         if ($(this).val() == "temp")
             $('input[name=name]').show('fast')
@@ -227,4 +236,50 @@ $(function(){
             $.fancybox(loginBox);
         }
     });
+}
+
+function ajaxCSRF(){
+    $(document).ajaxSend(function(event, xhr, settings) {
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        function sameOrigin(url) {
+            // url could be relative or scheme relative or absolute
+            var host = document.location.host; // host + port
+            var protocol = document.location.protocol;
+            var sr_origin = '//' + host;
+            var origin = protocol + sr_origin;
+            // Allow absolute or scheme relative URLs to same origin
+            return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+                (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+                // or any other URL that isn't scheme relative or absolute i.e relative.
+                !(/^(\/\/|http:|https:).*/.test(url));
+        }
+        function safeMethod(method) {
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        }
+    });
+}
+
+$(function(){
+    $(document).mousemove(moveMouse);
+    userid_load();
+    $('#loginmenu .login').fancybox(loginBox);
+    ajaxCSRF();
 });

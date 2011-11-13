@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<head>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
+    <style>
+        body,html{padding:0;margin:0;width:100%;height:100%;}
+    </style>
+</head>
+<body>
+    <div id="flashview"></div>
+    <script>
+        swfobject.embedSWF("{{ flashurl }}", "flashview", "100%", "100%", "9.0.0","files/expressInstall.swf",
+            {}, {wmode:"transparent"}, {});
+    </script>
+</body>
+</html>

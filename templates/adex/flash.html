@@ -1,0 +1,14 @@
+{% extends "adex/base.html" %}
+
+{% block adexcontent %}
+    {% for media in media_list %}
+        {% if media.id == adex_data.flash.id %}
+            <div id="flashadex"></div>
+            <script>
+                swfobject.embedSWF("{{ MEDIA_URL }}f/{{ media.filename }}", "flashadex", "100%", "100%", "9.0.0","files/expressInstall.swf",
+				    {}, {wmode:"transparent"}, {});
+            
+            </script>
+        {% endif %}
+    {% endfor %}
+{% endblock %}

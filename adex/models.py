@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
@@ -6,7 +7,8 @@ from tagging.fields import TagField
 from tagging.models import Tag
 from medialibrary.models import LibraryFile
 import simplejson as json
-from medialibrary.utils import LIBRARYFILE_THUMB_WIDTH
+from medialibrary.utils import LIBRARYFILE_THUMB_WIDTH, LIBRARYFILE_THUMB_RATIO
+import settings
 
 class Adex(models.Model):
     CONTENT_RATING = (
@@ -23,6 +25,9 @@ class Adex(models.Model):
     CONTENT_TYPE = (
         (0, 'Image'),
         (1, 'Video'),
+        (2, 'Flash'),
+        (3, 'URL'),
+        (4, 'HTML'),
     )
     item_code       = models.CharField(max_length=5, unique=True)
     domain          = models.CharField(max_length=40, null=True, blank=True)
@@ -31,7 +36,6 @@ class Adex(models.Model):
     date            = models.DateTimeField(default=datetime.now)
     user            = models.ForeignKey(User, null=True, blank=True)
     ip              = models.IPAddressField()
-    views           = models.IntegerField(default=0)
     content_rating  = models.PositiveSmallIntegerField(choices=CONTENT_RATING, default=0)
     status          = models.PositiveSmallIntegerField(choices=STATUS, default=0)
     type            = models.PositiveSmallIntegerField(choices=CONTENT_TYPE)
@@ -43,10 +47,15 @@ class Adex(models.Model):
         data = json.loads(self.data)
         if self.type == 0:
             media_id = data['image']['id']
-                #if x.type == 1:
-                    #return x.thumbnail()
         elif self.type == 1:
             media_id = data['video']['id']
+        elif self.type == 2:
+            media_id = data['flash']['id']
+        elif self.type >= 3:
+            height = width / LIBRARYFILE_THUMB_RATIO
+            return u'<div class="adexthumb webthumb" style="width:%dpx;height:%dpx;"><img style="width:%dpx;" src="%s" /></div>' %\
+                   (width, height, width, settings.MEDIA_URL+'webthumb/%d.jpg'%self.id)
+
         try:
             file = LibraryFile.objects.get(pk=media_id)
             return file.thumbnail(width)
@@ -58,8 +67,16 @@ class Adex(models.Model):
             return 'adex/image.html'
         elif self.type == 1:
             return 'adex/video.html'
+        elif self.type == 2:
+            return 'adex/flash.html'
+        elif self.type == 3:
+            return 'adex/url.html'
         else:
             return 'adex/image.html'
+
+    def url(self):
+        #return '/?%s' % self.item_code
+        return reverse('adex_details', args=[self.pk])
         
     def __unicode__(self):
         return self.title

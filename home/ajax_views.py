@@ -1,7 +1,8 @@
+from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.template.context import RequestContext
-from django.utils import simplejson
+from django.utils import simplejson as json
 from django.views.decorators.csrf import csrf_exempt
 from tagging.models import Tag
 from adex.models import Adex
@@ -34,11 +35,41 @@ def filelist(request):
 
 def taglist(request):
     tags = Tag.objects.all().order_by('name').values_list('name', flat=True)
-    return HttpResponse(simplejson.dumps({'availableTags':tuple(tags),'assignedTags':()}))
+    return HttpResponse(json.dumps({'availableTags':tuple(tags),'assignedTags':()}))
+
+def comment(request, comment_id):
+    comment = get_object_or_404(AdexComment.objects, pk = comment_id)
+    return render_to_response('comments/comments.html', {'comment_list':[comment],'stubbed':True}, RequestContext(request))
+
+def addlibfile(request, media_id):
+    media = request.session.get('uploaded_media') or []
+    media.append(unicode(media_id))
+    request.session['uploaded_media'] = media
+    return HttpResponse(json.dumps({'success':True, 'value':media_id}))
 
 def sidebar(request):
-    adex_list = Adex.objects.all().order_by('-date')[:1]
-    comments = AdexComment.objects.all().order_by('-submit_date')[:4]
-    files = LibraryFile.objects.all().order_by('-date')[:4]
+    adex_list = Adex.objects.all().order_by('-date')[:2]
+    comments = AdexComment.objects.all().order_by('-submit_date')[:3]
+    files = LibraryFile.objects.filter(type=1).order_by('-date')[:4]
     return render_to_response('home/sidebar.html', {'adex_list':adex_list, 'comment_list':comments, 'rand_files':files},
                     context_instance=RequestContext(request))
+
+def rate(request):
+    from djangoratings.views import AddRatingView
+
+    if request.POST:
+        content_type = ContentType.objects.get(model=request.POST.get('model'))
+        response = AddRatingView()(request,
+            content_type_id = content_type.id,
+            object_id = request.POST.get('id'),
+            field_name = 'rating',
+            score = request.POST.get('score')
+        )
+        if response.status_code == 200:
+            if response.content == 'Vote recorded.':
+    #            request.user.add_xp(settings.XP_BONUSES['submit-rating'])
+                print "mmk"
+            return HttpResponse(json.dumps({'success':True, 'value':response.content}))
+        return HttpResponse(json.dumps({'success':False, 'value':response.content}))
+    else:
+        return redirect('/')

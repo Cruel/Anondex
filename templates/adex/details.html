@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% load comments %}
+
+{% block htmlclass %}home{% endblock %}
+
+{% if not request.is_ajax %}
+    {% block postscripts %}
+        {{ block.super }}
+        <script>$(comment_onload);</script>
+    {% endblock %}
+{% endif %}
+
+{% block body %}
+
+    <div id="content">
+        <div>
+            {% if request.is_ajax %}
+                <script>$(comment_onload); $(userid_load);</script>
+            {% endif %}
+            <h1>{{ item.title }}</h1>
+
+            {% get_comment_list for item as comment_list %}
+            {% if comment_list %}
+                <div class="wrapper">
+                    <div class="divider"></div>
+                    {% include "comments/comments.html" with anchored=1 stubbed=0 modcontrols=1 %}
+                </div>
+            {% else %}
+                <p align="center">No comments yet.</p><div class="divider"></div>
+            {% endif %}
+
+            {% get_comment_form for item as form %}
+            {% include "comments/form.html" %}
+        </div>
+    </div>
+{% endblock %}

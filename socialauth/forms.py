@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django import forms
-from anondex.socialauth.models import Profile
+from socialauth.models import Profile
 from registration.forms import RegistrationFormUniqueEmail, attrs_dict
 
 class RegistrationFormTest(RegistrationFormUniqueEmail):
