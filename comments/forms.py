@@ -10,7 +10,14 @@ class ImageUploadForm(forms.Form):
 
 class AdexCommentForm(CommentForm):
     file = forms.ModelChoiceField(LibraryFile.objects.all(), required=False)
-    #is_anonymous = forms.BooleanField()
+    name = forms.CharField(required=False)
+    email = forms.EmailField(required=False)
+    is_anonymous = forms.BooleanField(required=False)
+
+#    def __init__(self, target_object, data=None, initial=None):
+#        if initial is None:
+#            initial = {}
+#        super(AdexCommentForm, self).__init__(data=data, initial=initial)
 
     def get_comment_model(self):
         return AdexComment
@@ -22,4 +29,5 @@ class AdexCommentForm(CommentForm):
         data['name'] = ''
         if self.data['user'] == 'temp':
             data['name'] = self.cleaned_data['name']
+            if data['name'] == '': data['is_anonymous'] = True
         return data

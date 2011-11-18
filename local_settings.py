@@ -86,6 +86,7 @@ MEDIA_BUNDLES = (
         'css/stars.sass',
         'css/login.sass',
         'css/medialibrary.sass',
+        'css/profile.sass',
     ),
     ('anondex.js',
         'js/jquery.fileupload.js',

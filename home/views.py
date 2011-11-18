@@ -19,7 +19,7 @@ def index(request):
 
 def browse(request, page):
     #adex_list = Adex.objects.all()
-    paginator = Paginator(Adex.objects.all(), 5)
+    paginator = Paginator(Adex.objects.all().order_by('-date'), 5)
     try:
         p = paginator.page(page)
     except PageNotAnInteger:
@@ -33,6 +33,6 @@ def user_home(request):
 
 def profile(request, username):
     user = get_object_or_404(User, username=username)
-    adexs = Adex.objects.filter(user=user)
-    comments = AdexComment.objects.filter(user=user, is_anonymous=False)
+    adexs = Adex.objects.filter(user=user).order_by('-date')[:4]
+    comments = AdexComment.objects.filter(user=user, is_anonymous=False).order_by('-submit_date')[:2]
     return profile_detail(request, username, extra_context={'adexs':adexs, 'comments':comments})

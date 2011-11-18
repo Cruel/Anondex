@@ -45,7 +45,7 @@ function home_onload(){
     $('#sidebar').load('/ajax/sidebar',function(){
         fadeScale('#sidebar', true);
         $('#sidebar').ajaxify();
-        comment_onload();
+        comment_cluetips();
     });
 
 	// Check to see if History.js is enabled for our Browser

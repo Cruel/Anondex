@@ -12,11 +12,11 @@
 <h1>Latest Comments</h1>
 {% include "comments/comments.html" with anchored=0 stubbed=1 modcontrols=0 thumb_width=98 %}
 
-<h1>Random Images</h1>
+<h1>Random Media</h1>
 {% for file in rand_files %}
     <span class="randomimage">
-        <a href="{% url image file.id %}">
-            {% mediathumb file 98 %}
+        <a href="{{ file.url }}">
+            {% mediathumb file 70 %}
         </a>
     </span>
 {% endfor %}

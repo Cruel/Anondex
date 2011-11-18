@@ -45,6 +45,9 @@
                             </div>
                             {% get_hit_count for adex as views %}
                             <div>{{ views }} View{{ views|pluralize }}</div>
+                            {% if adex.user %}
+                                <div><a href="{% url profiles_profile_detail adex.user.username %}">{{ adex.user.username }}</a></div>
+                            {% endif %}
                         </div>
                         <div class="browseicons"></div>
                 </div>

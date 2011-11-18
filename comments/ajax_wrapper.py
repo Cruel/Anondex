@@ -27,6 +27,8 @@ def jsonify_if_ajax(func, request):
                     success = False
             except TypeError:
                 pass
+                #success = False
+                #json_errors = {error:'Unknown Comment Error'}
             
             comment_html = None
             if 'c' in kwargs:

@@ -44,10 +44,10 @@ urlpatterns = patterns('',
          {'backend': 'registration.backends.default.DefaultBackend', 'form_class': RegistrationFormTest}, 'registration_register'),
     url(r'^account/', include('registration.urls')),
 
-    url(r'^profiles/edit/', 'profiles.views.edit_profile', {'form_class': ProfileForm,}),
     #(r'^profiles/edit/', 'profiles.views.edit_profile', {'form_class': ProfileForm,'success_url':'/my/custom/url',}),
     url(r'^user/(?P<username>\w+)/$', 'home.views.profile', name='profiles_profile_detail'),
-    url(r'^user/', include('profiles.urls')),
+    #url(r'^user/', include('profiles.urls')),
+    url(r'^profile/edit/', 'profiles.views.edit_profile', {'form_class': ProfileForm,}, name='profiles_edit_profile'),
 
     # Misc
     url(r'^upload_image$', 'comments.views.upload_image'),
@@ -59,5 +59,5 @@ urlpatterns = patterns('',
 
     url(r'^vid/$', 'adex.views.test_video'),
 
-    #url(r'^static/(?P<path>.*)$', 'django.views.static.serve',  {'document_root': settings.STATIC_ROOT, 'show_indexes': True}),
+    url(r'^static/(?P<path>.*)$', 'django.views.static.serve',  {'document_root': settings.ROOT_PATH+'/_generated_media/', 'show_indexes': True}),
 )

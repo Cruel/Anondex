@@ -4,7 +4,7 @@ import time
 DEBUG = True
 PRODUCTION = False
 TEMPLATE_DEBUG = DEBUG
-MEDIA_DEV_MODE = DEBUG
+MEDIA_DEV_MODE = True
 
 #VERSION = '2.0.0'
 
@@ -182,6 +182,7 @@ INSTALLED_APPS = (
 )
 
 COMMENTS_APP = 'comments'
+COMMENT_MAX_LENGTH = 1000
 
 LOGGING = {
     'version': 1,

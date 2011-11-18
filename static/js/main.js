@@ -49,10 +49,6 @@ function IsNumeric(input){
    return (input - 0) == input && input.length > 0;
 }
 
-function ratecomment(id, rating){
-	$('#'+id+' .commentrating').load('../func/ajax.php?a=ratecomment&i='+id+'&r='+rating);
-}
-
 function ShowHideComments() {
 	if (animating) return;
 	if ($('#commentcell').css('display') == 'block') {
@@ -101,27 +97,33 @@ function LoadBrowseFilter(){
 	$('#content').load('browser/'+$('select[name=o]').val()+'/'+$('input[name=c]').val()+'/1');
 }
 
-function rate(score, item, model){
+function rateadex(score, item){
     //TODO: show loading icon
-	$('#starset').attr('class','star-rating2');
-	$('#starset li').attr('onclick','return false;');
+    $('#starset').attr('class','star-rating2');
+    $('#starset li').attr('onclick','return false;');
 //	$('#rated_text').load('../func/ajax.php?a=rate&i=' + item + '&v=' + rating + '&img=' + is_image,
 //			function(data){
 //				$('#current-rating').css('width',$('#rated_text #ratingval').html()+'%');
 //			});
-    $.post("/ajax/rate", {"id":item, "model":model, "score":score},
+    $.post("/ajax/rate", {"id":item, "model":"adex", "score":score},
         function(data){
-            alert(data);
-    });
+            if (data.success){
+
+            } else {
+
+            }
+    }, "json");
 }
 
 function CloseAjaxDiv(obj){
-    $(obj).remove();
+    $(obj).slideUp('fast', function(){
+        $(this).remove();
+    });
     //alert($(obj).html());
 }
 
-function AddErrorDiv(container, msg){
-    $(container).prepend('<div class="error_ajax">Error: '+msg+' <a href="#" onclick="CloseAjaxDiv(this.parentNode); return false;">Close</a></div>');
+function AddAjaxDiv(container, classname, msg){
+    $(container).prepend('<div class="ajax_msg '+classname+'">'+msg+'<div onclick="CloseAjaxDiv(this.parentNode);" class="delicon"></div></div>');
 }
 
 function ShowHoverDiv(){
@@ -184,9 +186,9 @@ var loginBox = {
 	//'autoDimensions':	false,
     'type'          :   'iframe',
     'href'          :   '/login/?next=/login_redirect/',
-	'width'			:	400,
-	'height'		:	200,
-	'padding'		:	0,
+	'width'			:	360,
+	'height'		:	140,
+	'padding'		:	10,
 	'centerOnScroll':	true,
 	'overlayColor'	:	'black',
 	'overlayOpacity':	0.6,

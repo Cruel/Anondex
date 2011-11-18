@@ -1,11 +1,10 @@
-{% extends "base.html" %}
+{% extends "home/base.html" %}
 
 {% block title %}Edit Profile - {{ block.super }}{% endblock %}
 
 {% block content %}
-    <h1>Edit Profile for {{ user }} </h1>
-
     <div id="edit_profile">
+        <h1>Edit Profile for {{ user }} </h1>
         <form method="POST" action="" enctype="multipart/form-data">
         {% csrf_token %}
             <dl>

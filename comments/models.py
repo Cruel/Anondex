@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.comments.models import Comment
 from django.contrib.comments.signals import comment_will_be_posted
 from django.dispatch.dispatcher import receiver
+from djangoratings.fields import AnonymousRatingField, RatingField, RatingManager
 from medialibrary.models import LibraryFile
 
 
@@ -34,6 +35,7 @@ class AdexComment(Comment):
     is_anonymous = models.BooleanField(u'is anonymous',
                 help_text=u'This marks an anonymous post, even with it being linked to a user.')
     file = models.ForeignKey(LibraryFile, null=True, blank=True)
+    rating = RatingField(range=2, can_change_vote=True, allow_delete=True)
 
 @receiver(comment_will_be_posted, sender=AdexComment)
 def my_callback(sender, comment, request, **kwargs):

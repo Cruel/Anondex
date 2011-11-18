@@ -51,7 +51,6 @@ function makePOSTData(postdata, paramlist){
 }
 
 function createPage(NotPreview){
-	$('#results').html('');
 	var content = {};
 	makePOSTData(content, ["userid","duration","title","description","recaptcha_challenge_field","recaptcha_response_field","url","imageselect","audioselect","videoselect","flashselect"]);
     var tagNames = new Array();
@@ -60,7 +59,6 @@ function createPage(NotPreview){
     });
     content.tags = tagNames.join(',');
 	content.preview = NotPreview ? '0' : '1';
-	if (content.url == 'http%3A%2F%2F') content.url = '';
 	content.type = $("input[name='type']:checked").val();
 	content.imgtemplate = $("input[name='imgtemplate']:checked").val();
 	content.proportional = ($("input[name='proportion']:checked").length == 1) ? 'yes' : 'no';
@@ -71,7 +69,6 @@ function createPage(NotPreview){
 		case "url": content.type = 3; break;
 	}
 	if (!checkValues(content)) return false;
-	$('#results').html('<img border="0" src="images/working.gif" /> Loading... please wait...');
 	//TODO: Fix preview winodow opener...?
 	if (!NotPreview) {
         $('body').append('<form id="tmpform" action="/preview" method="post" target="previewWin"></form>');
@@ -79,28 +76,23 @@ function createPage(NotPreview){
             $('#tmpform').append('<input name="'+i+'" value="'+content[i]+'" type="hidden" />');
         }
         window.open('', 'previewWin', '');
+        $('#submitbuttons > input:disabled').removeAttr("disabled");
         $('#tmpform').submit().remove();
         //var wnd = window.open('loading', 'previewWin', '');
     } else{
+        $.blockUI();
         $.post("/create", content,
             function(data){
-                $('#results').html(data);
-                if (!NotPreview) {
-                    if (data == 'Preview Generated!') {
-                        window.open('preview', 'previewWin');
-                        $('#submitbuttons > input:disabled').removeAttr("disabled");
-                    } else
-                        wnd.close();
-                } else if (data.indexOf('<div id="createsuccess">') > -1) {
-                    $('#content').load('includes/create.php',
-                            function(){
-                                //create_onload();
-                                resetForm();
-                                $('#results').html(data);
-                            });
+                $.unblockUI();
+                if (data.success) {
+                    resetForm();
+                    refreshFileList();
+                    AddAjaxDiv('#upload-controller', "ajax_msg_success", 'Adex successfully created: <input type="text" value="'+data.value+'" onclick="this.select();" />');
+                } else {
+                    AddAjaxDiv('#upload-controller', "ajax_msg_error", data.value);
                 }
-                if (data.indexOf('<div id="createerrors">') > -1) wnd.close();
-        });
+                //if (data.indexOf('<div id="createerrors">') > -1) wnd.close();
+        }, "json");
     }
 	return true;
 }
@@ -189,18 +181,15 @@ function refreshFileList(removeid, obj) {
 		});
 }
 
-function startCreateUpload(){
-    for (i in filelist)
-        $('#fileuploader').fileupload('send',{files: filelist[i]});
-}
+//function startCreateUpload(){
+//    for (i in filelist)
+//        $('#fileuploader').fileupload('send',{files: filelist[i]});
+//}
 
 var filelist = new Array();
 function loadCreateUploader(){
     $('#btnAddFile').click(function(e) {
         $('#file').click();
-    });
-    $('#testylol').click(function(e) {
-        startCreateUpload();
     });
 
     $('#btnAddFileLib').click(function(e) {
@@ -239,7 +228,7 @@ function loadCreateUploader(){
         'progress': function(e, data){
                 var progress = parseInt(data.loaded / data.total * 100, 10);
                 //drawImageFit(canvas, img, progress);
-                $('#results').append('<p>'+progress+'-'+data.files[0].name+'</p>');
+                //$('#results').append('<p>'+progress+'-'+data.files[0].name+'</p>');
             },
         change: function (e, data) {
                 //loadImage(data.files[0]);
@@ -253,14 +242,10 @@ function loadCreateUploader(){
             },
         done: function (e, data) {
                 if (data.result.success) {
-                    //$('input[name=image]').val(data.result.value);
-                    //postComment();
-                    //alert('Success: '+data.result.error);
                     refreshFileList();
                 } else {
-                    //$('.errdiv').html('Error: '+data.result.error);
-                    //alert('Error: '+data.result.error);
-                    AddErrorDiv('#upload-controller', data.result.error);
+                    $('#upload-controller').unblock();
+                    AddAjaxDiv('#upload-controller', "ajax_msg_error", data.result.error);
                 }
             }
     });

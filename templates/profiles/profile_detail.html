@@ -17,10 +17,12 @@
                 <script>$(comment_onload); $(userid_load);</script>
             {% endif %}
             {% comment %}{% if user.is_authenticated %}{% endcomment %}
-            <h1>{{ profile.user.username }}{% ifequal user profile.user %} [<a href="{% url profiles_edit_profile %}">edit</a>]{% endifequal %}</h1>
+            <h1 class="title">{{ profile.user.username }} - User Profile{% ifequal user profile.user %} [<a href="{% url profiles_edit_profile %}">edit</a>]{% endifequal %}</h1>
             <p>{{ profile.user.email }}</p>
             <p>{{ profile.user.first_name }} {{ profile.user.last_name }}</p>
-            <p>{{ profile.gender }}</p>
+            {% if profile.gender %}
+                <p>{% if profile.gender == 1 %}Male{% else %}Female{% endif %}</p>
+            {% endif %}
             <h1>Recent comments from {{ profile.user.username }}:</h1>
             <div>
                 {% with comment_list=comments %}

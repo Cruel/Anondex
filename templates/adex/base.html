@@ -42,9 +42,9 @@
             </div>
             <div id="headerdetails">
                 {% get_comment_count for adex as comment_count %}
-                {% get_hit_count for adex as views %}
+                {% if adex.id %}{% get_hit_count for adex as views %}{% endif %}
                             <div></div>
-                <a class="buttonwrapper viewbutton iframe" href="/" title="{{ views }} View{{ views|pluralize }}"><div class="buttonicon"></div><div class="buttoncount">{{ views }}</div></a>
+                <a class="buttonwrapper viewbutton iframe" href="#" title="{{ views }} View{{ views|pluralize }}"><div class="buttonicon"></div><div class="buttoncount">{{ views|default:"0" }}</div></a>
                 <a class="buttonwrapper commentbutton iframe" href="/comments/{{ adex.id }}" title="{{ comment_count }} Comments"><div class="buttonicon"></div><div class="buttoncount">{{ comment_count }}</div></a>
             </div>
             <div id="des" title="Click to show/hide full item description.">

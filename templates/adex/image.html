@@ -8,12 +8,16 @@
             </div>
         {% endif %}
         {% if media.id == adex_data.audio.id %}
-            <div id="audio"></div>
+            <!--div id="audio"></div>
             <script>
                 swfobject.embedSWF("{{ MEDIA_URL }}audioplayer.swf", "audio", "300", "25", "9.0.0","files/expressInstall.swf",
 				    {autostart:"yes", loop:"yes", initialvolume:100, soundFile:"{{ MEDIA_URL }}a/{{ media.filename }}"}, {wmode:"transparent"}, {});
             
-            </script>
+            </script-->
+            <audio id="audio" width="300" height="25" controls autoplay loop>
+              <source src="{{ MEDIA_URL }}a/{{ media.filename }}" type="{{ media.content_type }}" />
+              Your browser does not support this audio ({{ media.content_type }}).
+            </audio>
         {% endif %}
     {% endfor %}
 {% endblock %}

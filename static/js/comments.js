@@ -1,4 +1,35 @@
 
+function ratecomment(score, item){
+    //TODO: show loading icon
+    var upvote = "#"+item+" .upvote"
+    var downvote = "#"+item+" .downvote"
+    $(downvote+","+upvote).attr('onclick','').removeClass('voted');
+    if (score=='2') $(upvote).addClass('voted');
+    if (score=='1') $("#"+item+" .downvote").addClass('voted');
+    $.post("/ajax/rate", {"id":item, "model":"adexcomment", "score":score},
+        function(data){
+            if (data.success){
+                if (score=='2' || score=='0')
+                    $(downvote).attr('onclick',"ratecomment('1','"+item+"');");
+                if (score=='1' || score=='0')
+                    $(upvote).attr('onclick',"ratecomment('2','"+item+"');");
+                if (score=='2')
+                    $(upvote).attr('onclick',"ratecomment('0','"+item+"');");
+                if (score=='1')
+                    $(downvote).attr('onclick',"ratecomment('0','"+item+"');");
+                $("#"+item+" .commentrating").html((data.rating==0)?'':data.rating).css('color',(data.rating>0)?'green':'red');
+            } else {
+                $(downvote).attr('onclick',"ratecomment('1','"+item+"');").removeClass('voted');
+                $(upvote).attr('onclick',"ratecomment('2','"+item+"');").removeClass('voted');
+                if (data.value=="You must be logged in to vote.") {
+                    $.fancybox(loginBox);
+                } else {
+                    alert(data.value);
+                }
+            }
+    }, "json");
+}
+
 function updateCharCount(src) {
 	var charlimit = 500;
 	if (src.value.length > charlimit)
@@ -60,18 +91,19 @@ function gotoDOM(sDOM){
 function postComment(){
 	$.post('/comment/post/', $('#commentform').serialize(),
 			function(data){
+                $("#commentformdiv").unblock();
 				if (data.success) {
 					$('#submitbutton').val('Posted.');
                     $('#newcomment').html(data.html);
                     $.growlUI('Comment Posted.');
 				} else {
-                    alert('errors sent');
+                    //alert('errors sent');
                     for (var error in data.errors)
-					    $('.errdiv').append(error);
+					    //$('.errdiv').append(error);
+                        AddAjaxDiv('.errdiv', 'ajax_msg_error', 'Error: '+error);
 					$('#submitbutton').removeAttr("disabled").css('color','').val('Post Comment');
 				}
-			}
-		);
+        }, "json" );
 }
 
 var CommentImageFile = null;
@@ -126,13 +158,33 @@ function loadImage(file){
     CommentImageFile = file;
 }
 
+function comment_cluetips(){
+	$('a.reply').each(function(i){
+        if (!$(this).hasClass('cluetiplink')) {
+            if (!$($(this).attr('rel')).length) {
+                //if (document.domain)
+                    $(this).attr('rel','/ajax/comment/'+$(this).attr('rel').substring(1));
+                //alert($(this).attr('rel'));
+                $(this).cluetip({cluetipClass:'rounded', dropShadow:true, arrows:true, showTitle:false, fx:{open:'fadeIn',openSpeed:200}});
+                //$(this).addClass('iframe');
+                $(this).addClass('cluetiplink');
+
+            } else
+                $(this).cluetip({width:400, local:true, hideLocal:false, cluetipClass:'rounded', dropShadow:true, arrows:true, showTitle:false, fx:{open:'fadeIn',openSpeed:200}});
+        }
+    });
+	//$('.commentcontrols a').cluetip({positionBy:'bottomTop', splitTitle:'|', showTitle:false});
+	//parent.jQuery('a.iframe', window.document).fancybox(commentBox);
+}
+
 var img, canvas;
 function comment_onload() {
     canvas = $('canvas')[0];
 	if (location.hash.substr(1)) hltag(location.hash.substr(1));
 
     $('#submitbutton').click(function(){
-        $('.errdiv').html('');
+        $("#commentformdiv").blockEx();
+        $('.errdiv *').slideUp('fast');
         submitComment();
     });
 
@@ -143,15 +195,24 @@ function comment_onload() {
         $("#imagefile").replaceWith('<input type="file" name="imagefile" id="imagefile" accept="image/png,image/jpeg,image/gif" />');
         CommentImageFile = null;
         $('#commentform').fileupload('option', 'fileInput', $('#imagefile'));
-        $('#attachpreview').hide('fast');
+        $('#attachpreview').hide('fast').unbind('click');
         if ($(this).val() == "upload"){
-            $('#imagefile').click();
+            $("#attachpreview").click(function(){
+                $('#imagefile').click();
+            });
+
         }
         if ($(this).val() == "library"){
-            attachBox.onClosed = attachWindowOnClose;
-            parent.$.fancybox(attachBox);
+            $("#attachpreview").click(function(){
+                attachBox.onClosed = attachWindowOnClose;
+                parent.$.fancybox(attachBox);
+            });
+
         }
+        $("#attachpreview").click();
     });
+
+
     
 	//if (parent.window.reportpage) alert('iframed');
 
@@ -192,27 +253,12 @@ function comment_onload() {
                     $('input[name=file]').val(data.result.value);
                     postComment();
                 } else {
-                    $('.errdiv').html('Error: '+data.result.error);
+                    AddAjaxDiv('.errdiv', 'ajax_msg_error', 'Error: '+data.result.error);
                     $('#submitbutton').removeAttr("disabled").css('color','').val('Post Comment');
                 }
             }
     });
 
-	$('a.reply').each(function(i){
-        if (!$(this).hasClass('cluetiplink')) {
-            if (!$($(this).attr('rel')).length) {
-                //if (document.domain)
-                    $(this).attr('rel','/ajax/comment/'+$(this).attr('rel').substring(1));
-                //alert($(this).attr('rel'));
-                $(this).cluetip({cluetipClass:'rounded', dropShadow:true, arrows:true, showTitle:false, fx:{open:'fadeIn',openSpeed:200}});
-                //$(this).addClass('iframe');
-                $(this).addClass('cluetiplink');
-
-            } else
-                $(this).cluetip({width:400, local:true, hideLocal:false, cluetipClass:'rounded', dropShadow:true, arrows:true, showTitle:false, fx:{open:'fadeIn',openSpeed:200}});
-        }
-    });
-	//$('.commentcontrols a').cluetip({positionBy:'bottomTop', splitTitle:'|', showTitle:false});
-	//parent.jQuery('a.iframe', window.document).fancybox(commentBox);
+    comment_cluetips();
 
 };

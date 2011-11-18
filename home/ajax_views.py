@@ -1,3 +1,4 @@
+import random
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, redirect, get_object_or_404
@@ -7,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from tagging.models import Tag
 from adex.models import Adex
 from comments.models import AdexComment
+from comments.templatetags.adexcomments import get_thumb_rating
 from medialibrary.models import LibraryFile
 
 @csrf_exempt
@@ -39,7 +41,7 @@ def taglist(request):
 
 def comment(request, comment_id):
     comment = get_object_or_404(AdexComment.objects, pk = comment_id)
-    return render_to_response('comments/comments.html', {'comment_list':[comment],'stubbed':True}, RequestContext(request))
+    return render_to_response('comments/comments.html', {'comment_list':[comment],'anchored':False}, RequestContext(request))
 
 def addlibfile(request, media_id):
     media = request.session.get('uploaded_media') or []
@@ -50,7 +52,7 @@ def addlibfile(request, media_id):
 def sidebar(request):
     adex_list = Adex.objects.all().order_by('-date')[:2]
     comments = AdexComment.objects.all().order_by('-submit_date')[:3]
-    files = LibraryFile.objects.filter(type=1).order_by('-date')[:4]
+    files = random.sample(LibraryFile.objects.exclude(type=3), 6)
     return render_to_response('home/sidebar.html', {'adex_list':adex_list, 'comment_list':comments, 'rand_files':files},
                     context_instance=RequestContext(request))
 
@@ -69,7 +71,8 @@ def rate(request):
             if response.content == 'Vote recorded.':
     #            request.user.add_xp(settings.XP_BONUSES['submit-rating'])
                 print "mmk"
-            return HttpResponse(json.dumps({'success':True, 'value':response.content}))
+            comment = AdexComment.objects.get(id = request.POST.get('id'))
+            return HttpResponse(json.dumps({'success':True, 'value':response.content, 'rating':get_thumb_rating(comment.rating)}))
         return HttpResponse(json.dumps({'success':False, 'value':response.content}))
     else:
         return redirect('/')

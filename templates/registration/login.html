@@ -15,11 +15,12 @@
 <tr>
     <td>{{ form.password.label_tag }}</td>
     <td>{{ form.password }}</td>
+    <td><input type="submit" value="login" /></td>
 </tr>
 </table>
-<p><a href="{% url auth_password_reset %}">Forgot</a> your password? {{ next }}  <a href="{% url registration_register %}">Need an account</a>?</p>
+<p><a href="{% url auth_password_reset %}">Forgot</a> your password?  <a href="{% url registration_register %}">Need an account</a>?</p>
 
-<input type="submit" value="login" />
+
 <input type="hidden" name="next" value="{{ next }}" />
 </form>
 <div id="socialauths">

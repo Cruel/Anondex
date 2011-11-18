@@ -106,30 +106,26 @@
         </div>
 
         <div id="upload-controller">
+            <!--div class="ajax_msg ajax_msg_success">Adex successfully created: <input type="text" onclick="this.select();" value="http://anondex.com/?test"><div onclick="CloseAjaxDiv(this.parentNode);" class="delicon"></div></div-->
+            <h1>File Uploads:</h1>
+            <span class="filetypes"><b>Supported types:</b> .jpg .gif .png .mp3 .swf .webm .mp4</span>
+            <input type="button" id="btnAddFile" value="New Upload" />
+            <input type="button" id="btnAddFileLib" value="From Library" />
 
-                <h1>File Uploads:</h1>
-                <span class="filetypes"><b>Supported types:</b> .jpg .gif .png .mp3 .mid .swf .flv</span>
-                <input type="button" id="btnAddFile" value="New Upload" />
-                <input type="button" id="btnAddFileLib" value="From Library" />
+            <form id="fileuploader" method="post">
 
-                <form id="fileuploader" method="post">
-                    {% csrf_token %}
-                    <input type="file" id="file" name="file" accept="image/png,image/jpeg,image/gif" multiple />
-                </form>
+                <input type="file" id="file" name="file" accept="image/png,image/jpeg,image/gif" multiple />
+            </form>
             
-            <div id="filedata" class="librarylist">
-
-            </div>
+            <div id="filedata" class="librarylist"></div>
         </div>
-
+<div id="results"></div>
         <div id="submitbuttons">
             <div id="recaptchadivframe"></div>
-            <input type="button" value="Create" onClick="createPage(true);" />
+            <input type="button" value="Create" onClick="createPage(true);" disabled />
             <input type="button" value="Preview" onClick="createPage(false);" />
             <input type="button" value="Reset" onclick="resetForm();" />
-            <input type="button" value="Test" id="testylol" />
         </div>
-        <div id="results"></div>
 
     </div>
 {% endblock %}

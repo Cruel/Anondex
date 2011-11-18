@@ -1,3 +1,4 @@
+from __future__ import division
 from django import template
 from comments.models import AdexComment
 from comments.utils import get_fancy_time, GetInHMS
@@ -11,6 +12,14 @@ def timeago(value):
 @register.filter
 def bbcode(value):
     return adex_bbcode(value)
+
+@register.filter
+def get_thumb_rating(ratingmanager):
+    if ratingmanager.votes == 0: return 0
+    percent_upvote = (ratingmanager.score - ratingmanager.votes) / ratingmanager.votes
+    upvotes = (percent_upvote) * ratingmanager.votes
+    downvotes = ratingmanager.votes - upvotes
+    return int(upvotes - downvotes)
 
 class CommentTag(postmarkup.ImgTag):
     def render_open(self, parser, node_index, **kwargs):

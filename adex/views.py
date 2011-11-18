@@ -1,6 +1,7 @@
 import random
 import string
 import urllib2
+from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template.context import RequestContext
@@ -18,7 +19,7 @@ import settings
 
 def adex_view(request, item_code):
     adex = get_object_or_404(Adex, item_code=item_code)
-
+    ctype = ContentType.objects.get(model="adex")
     tags = Tag.objects.raw('''SELECT t.id, t.name, COUNT(*) as count
           FROM tagging_tag AS t
                   INNER JOIN tagging_taggeditem AS tt ON t.id = tt.tag_id
@@ -27,11 +28,11 @@ def adex_view(request, item_code):
 
             SELECT t.id FROM tagging_tag AS t
         INNER JOIN tagging_taggeditem AS tt ON t.id = tt.tag_id
-          WHERE tt.content_type_id = 20 AND tt.object_id = %d
+          WHERE tt.content_type_id = %d AND tt.object_id = %d
 
                   )
           GROUP BY t.id
-          ORDER BY count DESC''' % adex.id)
+          ORDER BY count DESC''' % (ctype.id, adex.id))
     return adex_render(request, adex, tags)
 
 
@@ -53,6 +54,7 @@ def filelist(request):
     return render_to_response('home/index.html', {'user':request.user, 'items':items}, context_instance=RequestContext(request))
 
 
+@csrf_exempt
 def preview(request):
     if request.POST:
         # (re)Verify input
@@ -114,9 +116,9 @@ def create_adex(request):
                 del request.session['uploaded_media']
             except KeyError: pass
 
-            return HttpResponse('Success!')
+            return HttpResponse(json.dumps({'success':True, 'value':'http://anondex.com/?'+adex.item_code}))
         else:
-            return HttpResponse('<div><ul><li>'+'</li><li>'.join(errors)+'</li></ul></div>')
+            return HttpResponse(json.dumps({'success':False, 'error':'<div><ul><li>'+'</li><li>'.join(errors)+'</li></ul></div>'}))
     else:
         return redirect('/')
 

@@ -31,7 +31,7 @@
                         <option value="upload">From file</option>
                         <option value="library">From library</option>
                     </select>
-                    <input type="file" id="imagefile" />
+                    <input type="file" name="imagefile" id="imagefile" accept="image/png,image/jpeg,image/gif" />
                     <input type="hidden" name="file" />
 
                     <div id="attachpreview" style="display:none"><canvas width="150" height="112" ></canvas></div>
@@ -39,7 +39,7 @@
             <div id="charcounter">[Chars Left: 500]</div>
             <textarea id="comment" name="comment" placeholder="Comment [500 Character Limit]" onKeyDown="updateCharCount(this);" onKeyUp="updateCharCount(this);" required></textarea>
             <input id="submitbutton" type="button" value="Post Comment" />
-        <input type="buttom" value="test" onclick="$.growlUI('Comment Posted.'); " />
+            <!--input type="button" value="test" onclick="$.growlUI('Comment Posted.'); " /-->
         </div>
 
         <!--

@@ -19,9 +19,13 @@
 
 			<div class="date">
                 {{ comment.submit_date|timeago|default:"Just Now" }}
-                {% if user.is_staff %} [<a class="no-ajaxy" href="/admin/comments/adexcomment/{{ comment.id }}/">edit</a>]{% endif %}
+                {% if user.is_staff %} <a class="no-ajaxy" href="/admin/comments/adexcomment/{{ comment.id }}/">edit</a>{% endif %}
             </div>
-            <div class="commentrating"><span style="color:{% if comment.rating < 0 %}red{% else %}green{% endif %}">{% if comment.rating != 0 %}{{ comment.rating }}{% endif %}</span></div>
+
+            {% with rating=comment.rating|get_thumb_rating %}
+                <div class="commentrating" style="color:{% if rating < 0 %}red{% else %}green{% endif %}">{% if rating != 0 %}{{ rating }}{% endif %}</div>
+            {% endwith %}
+
         </div>
         <div class="content">
             <div class="contentdiv">
@@ -49,7 +53,7 @@
                     <a class="no-ajaxy" href="{{ comment.content_object.url }}#{{ comment.pk }}">open</a>
                 {% endif %}
             {% else %}
-                <a href="javascript:ratecomment('{{ comment.id }}',1)">Up</a> <a href="javascript:ratecomment('{{ comment.id }}',0)">Down</a> <a onclick="hltag('{{ comment.id }}');" href="#{{ comment.id }}">Perm</a> <a href="/comments/flag/{{ comment.id }}/">Flag</a> <a href="javascript:reply('{{ comment.id }}');">Reply</a>
+                <span class="upvote" onclick="ratecomment('2','{{ comment.pk }}');">Up</span><span class="downvote" onclick="ratecomment('1','{{ comment.pk }}');">Down</span> <a onclick="hltag('{{ comment.id }}');" href="#{{ comment.id }}">Permalink</a> <a href="javascript:reply('{{ comment.id }}');">Reply</a>
             {% endif %}
         </div>
     </div>
