@@ -16,7 +16,7 @@ SOCIAL_AUTH_FORCE_RANDOM_USERNAME = False
 
 SOCIAL_AUTH_DEFAULT_USERNAME = 'NewUser'
 # If a custom redirect URL is needed that must be different to LOGIN_URL
-#SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/another-login-url/'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/auth_redirect/'
 # Different URL for newly registered users
 SOCIAL_AUTH_NEW_USER_REDIRECT_URL = '/welcome/'
 # URL for newly registered users w/o username set
@@ -44,7 +44,8 @@ ORKUT_CONSUMER_SECRET        = 'XFmDOokC9oguQfrrjv32tXbf'
 GOOGLE_CONSUMER_KEY          = 'anondex.com'
 GOOGLE_CONSUMER_SECRET       = 'aCJWoaSaE_fldzIkUl60w7MP'
 GOOGLE_DISPLAY_NAME          = 'Anondex'
-GOOGLE_OAUTH2_CLIENT_KEY     = 'AIzaSyCUMKqhtCcJwahh4a4Robw600R_s_jQweM'
+GOOGLE_OAUTH2_CLIENT_ID      = '546567997214.apps.googleusercontent.com'
+#GOOGLE_OAUTH2_CLIENT_KEY     = 'AIzaSyA51dAcRrA-vhK_-9_pLbOaP1gBNzbxMtY'
 GOOGLE_OAUTH2_CLIENT_SECRET  = 'XeYMV_E02MgHXlhrrfozVkZ7'
 FOURSQUARE_CONSUMER_KEY      = ''
 FOURSQUARE_CONSUMER_SECRET   = ''

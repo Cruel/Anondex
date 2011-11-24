@@ -7,6 +7,7 @@ from profiles.views import profile_detail
 from adex.models import Adex
 from adex.views import adex_view
 from comments.models import AdexComment
+from medialibrary.models import LibraryFile
 
 def index(request):
     #if request.user.is_authenticated():
@@ -35,4 +36,7 @@ def profile(request, username):
     user = get_object_or_404(User, username=username)
     adexs = Adex.objects.filter(user=user).order_by('-date')[:4]
     comments = AdexComment.objects.filter(user=user, is_anonymous=False).order_by('-submit_date')[:2]
-    return profile_detail(request, username, extra_context={'adexs':adexs, 'comments':comments})
+    media = LibraryFile.objects.filter(user=user).order_by('-date')[:6]
+#    if media.count() >= 6:
+#        media = media[:6]
+    return profile_detail(request, username, extra_context={'adexs':adexs, 'comments':comments, 'media':media})

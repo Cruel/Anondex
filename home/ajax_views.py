@@ -52,7 +52,8 @@ def addlibfile(request, media_id):
 def sidebar(request):
     adex_list = Adex.objects.all().order_by('-date')[:2]
     comments = AdexComment.objects.all().order_by('-submit_date')[:3]
-    files = random.sample(LibraryFile.objects.exclude(type=3), 6)
+    files = LibraryFile.objects.exclude(type=3)
+    if files.count() > 6: files = random.sample(files, 6)
     return render_to_response('home/sidebar.html', {'adex_list':adex_list, 'comment_list':comments, 'rand_files':files},
                     context_instance=RequestContext(request))
 

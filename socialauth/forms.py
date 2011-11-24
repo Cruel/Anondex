@@ -23,8 +23,9 @@ class ProfileForm(forms.ModelForm):
             pass
 
     #email = forms.EmailField(label="Primary email",help_text='')
-    first_name = forms.CharField()
-    last_name = forms.CharField()
+    first_name = forms.CharField(required=False)
+    last_name = forms.CharField(required=False)
+    avatar = forms.ImageField(required=False)
 
     class Meta:
       model = Profile

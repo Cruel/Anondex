@@ -14,22 +14,24 @@
 		var showads = false;
 		var reportpage = 'http://localhost:8000/report/?a=1&i=133';
         $(indexLoad);
+        $(comment_onload);
+        $(userid_load);
     </script>
 {% endblock %}
 
 {% block body %}
-    <div style="height:100%; width:100%;">
+    <div class="webkit-scrollbars" style="height:100%; width:100%;">
         <div id="headerindex" class="clearfix">
             <div id="logoindex"><a target="_parent" title="Anondex home page." href="/">Anondex</a></div>
             <div id="headerrating">
                 <span id="rated_text" class="rated_text"><span class="out5Class">{{ adex.rating.get_rating }}</span><span class="votesClass"> &middot; {{ adex.rating.votes }} Vote{{ adex.rating.votes|pluralize }}</span></span>
                 <ul id="starset" class="star-rating">
                     <li id="current-rating" class="current-rating" style="width:{% widthratio adex.rating.get_rating 5 100 %}%"></li>
-                    <li onclick="rate('1','{{ adex.id }}','adex'); "title="1 star out of 5" class="star1">1</li>
-                    <li onclick="rate('2','{{ adex.id }}','adex'); "title="2 star out of 5" class="star2">2</li>
-                    <li onclick="rate('3','{{ adex.id }}','adex'); "title="3 star out of 5" class="star3">3</li>
-                    <li onclick="rate('4','{{ adex.id }}','adex'); "title="4 star out of 5" class="star4">4</li>
-                    <li onclick="rate('5','{{ adex.id }}','adex'); "title="5 star out of 5" class="star5">5</li>
+                    <li onclick="rateadex('1','{{ adex.id }}'); "title="1 star out of 5" class="star1">1</li>
+                    <li onclick="rateadex('2','{{ adex.id }}'); "title="2 star out of 5" class="star2">2</li>
+                    <li onclick="rateadex('3','{{ adex.id }}'); "title="3 star out of 5" class="star3">3</li>
+                    <li onclick="rarateadexte('4','{{ adex.id }}'); "title="4 star out of 5" class="star4">4</li>
+                    <li onclick="rateadex('5','{{ adex.id }}'); "title="5 star out of 5" class="star5">5</li>
                 </ul>
 
             <div id="addthis">
@@ -81,9 +83,26 @@
             <div id="commentcell" style="display:block;width:430px;">
                 <!--iframe id="comments" name="comments" frameborder="0" src="http://anondex.com/comments/133"></iframe-->
                 <script type="text/javascript">
-                    var commentsopen=true;
+                    var commentsopen=false;
                     var commentframe='<iframe id="comments" name="comments" frameborder="0" src="/comments/{{ adex.id }}/"></iframe>';
                 </script>
+
+                    <div id="comments">
+                        <h1>{{ adex.title }}</h1>
+
+                        {% get_comment_list for adex as comment_list %}
+                        {% if comment_list %}
+                            <div class="wrapper">
+                                <div class="divider"></div>
+                                {% include "comments/comments.html" with anchored=1 stubbed=0 modcontrols=1 %}
+                            </div>
+                        {% else %}
+                            <p align="center">No comments yet.</p><div class="divider"></div>
+                        {% endif %}
+
+                        {% get_comment_form for adex as form %}
+                        {% include "comments/form.html" %}
+                    </div>
             </div>
             <div id="sidebarindex">
                 <a href="http://anondex.com/report.php?a=1&i=133" class="reportbutton"></a>

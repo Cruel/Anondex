@@ -53,7 +53,7 @@ class Adex(models.Model):
             media_id = data['flash']['id']
         elif self.type >= 3:
             height = width / LIBRARYFILE_THUMB_RATIO
-            return u'<div class="adexthumb webthumb" style="width:%dpx;height:%dpx;"><img style="width:%dpx;" src="%s" /></div>' %\
+            return u'<span class="webkit-scrollbars"><div class="adexthumb webthumb" style="width:%dpx;height:%dpx;"><img style="width:%dpx;" src="%s" /></div></span>' %\
                    (width, height, width, settings.MEDIA_URL+'webthumb/%d.jpg'%self.id)
 
         try:

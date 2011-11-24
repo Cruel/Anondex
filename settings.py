@@ -4,7 +4,7 @@ import time
 DEBUG = True
 PRODUCTION = False
 TEMPLATE_DEBUG = DEBUG
-MEDIA_DEV_MODE = True
+MEDIA_DEV_MODE = False
 
 #VERSION = '2.0.0'
 
@@ -22,7 +22,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'anondex2',
+        'NAME': 'anondex',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': '',
@@ -119,14 +119,15 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'comments.context_processors.html_header_content',
     'django.core.context_processors.request',
     'social_auth.context_processors.social_auth_by_type_backends',
+    'socialauth.context_processors.auth_context',
 )
 
 AUTHENTICATION_BACKENDS = (
     'social_auth.backends.twitter.TwitterBackend',
     'social_auth.backends.facebook.FacebookBackend',
     #'social_auth.backends.google.GoogleOAuthBackend',
-    #'social_auth.backends.google.GoogleOAuth2Backend',
-    'social_auth.backends.google.GoogleBackend',
+    'social_auth.backends.google.GoogleOAuth2Backend',
+    #'social_auth.backends.google.GoogleBackend',
     'social_auth.backends.yahoo.YahooBackend',
     'social_auth.backends.contrib.linkedin.LinkedinBackend',
     #'social_auth.backends.contrib.LiveJournalBackend',

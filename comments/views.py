@@ -19,7 +19,7 @@ import settings
 def detail(request, item_id):
     adex = get_object_or_404(Adex, pk=item_id)
     #comments = get_list_or_404(AdexComment.objects.select_related().order_by('date'), item_id=comment_id, in_image=0)
-    return render_to_response('adex/details.html', {'item':adex}, context_instance=RequestContext(request))
+    return render_to_response('adex/details.html', {'adex':adex}, context_instance=RequestContext(request))
 
 #def test(request):
 #    c = get_list_or_404(AdexComment.objects.select_related().order_by('date'), item_id=comment_id, in_image=0)

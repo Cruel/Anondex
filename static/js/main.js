@@ -70,8 +70,8 @@ function ShowHideComments() {
 				function(){
 					SetCookieValue('CommentsClosed','');
 					animating = false;
-					if (!$('#comments')[0])
-						$('#commentcell').html(commentframe);
+//					if (!$('#comments')[0])
+//						$('#commentcell').html(commentframe);
 				});
 	}
 }

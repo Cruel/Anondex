@@ -24,12 +24,31 @@
 <input type="hidden" name="next" value="{{ next }}" />
 </form>
 <div id="socialauths">
-    <a href="{% url socialauth_begin 'facebook' %}?next={{ next }}"><div id="facebook"></div></a>
+    <!--a href="{% url socialauth_begin 'facebook' %}?next={{ next }}"><div id="facebook"></div></a>
     <a href="{% url socialauth_begin 'twitter' %}?next={{ next }}"><div id="twitter"></div></a>
-    <a href="{% url socialauth_begin 'google' %}?next={{ next }}"><div id="google"></div></a>
+    <a href="{% url socialauth_begin 'google-oauth2' %}?next={{ next }}"><div id="google"></div></a>
     <a href="{% url socialauth_begin 'linkedin' %}?next={{ next }}"><div id="linkedin"></div></a>
     <a href="{% url socialauth_begin 'yahoo' %}?next={{ next }}"><div id="yahoo"></div></a>
-    <a href="{% url socialauth_begin 'openid' %}?next={{ next }}"><div id="openid"></div></a>
+    <a href="{% url socialauth_begin 'openid' %}?next={{ next }}"><div id="openid"></div></a-->
+
+    <div onclick="login('{% url socialauth_begin 'facebook' %}')" id="facebook"></div>
+    <div onclick="login('{% url socialauth_begin 'twitter' %}')" id="twitter"></div>
+    <div onclick="login('{% url socialauth_begin 'google-oauth2' %}')" id="google"></div>
+    <div onclick="login('{% url socialauth_begin 'linkedin' %}')" id="linkedin"></div>
+    <div onclick="login('{% url socialauth_begin 'yahoo' %}')" id="yahoo"></div>
+    <div onclick="login('{% url socialauth_begin 'openid' %}')" id="openid"></div>
 </div>
+
+<script>
+    function login(url){
+        var w = 800; var h = 500;
+        var left = (screen.width/2)-(w/2);
+        var top = (screen.height/2)-(h/2);
+        window.open(url, "authWnd", 'width='+w+',height='+h+',top='+top+',left='+left);
+    }
+    function gotoNext(){
+        window.location = "{% if next %}{{ next }}{% else %}{{ LOGIN_REDIRECT_URL }}{% endif %}";
+    }
+</script>
 
 {% endblock %}

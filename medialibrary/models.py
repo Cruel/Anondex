@@ -16,15 +16,16 @@ import Image as pil
 from comments.utils import md5_file
 from medialibrary.utils import get_video_size, genVideoThumb, get_media_duration, LIBRARYFILE_THUMB_WIDTH, LIBRARYFILE_THUMB_HEIGHT, THUMB_FRAME_COUNT, LIBRARYFILE_THUMB_RATIO, webthumb
 import settings
+from django.template.defaultfilters import slugify
 
 LIBRARYFILE_MAX_FILESIZE = 50000000
 
 class LibraryFile(models.Model):
     MEDIA_CHOICES = (
-        (1, 'image'),
-        (2, 'video'),
-        (3, 'audio'),
-        (4, 'flash'),
+        (1, 'Image'),
+        (2, 'Video'),
+        (3, 'Audio'),
+        (4, 'Flash'),
     )
     IMAGE_EXTENSIONS = ('image/jpeg','image/png','image/gif')
     VIDEO_EXTENSIONS = ('video/webm','video/x-flv','video/mpeg','video/mp4')
@@ -90,8 +91,7 @@ class LibraryFile(models.Model):
     def save_file(self, file):
         if isinstance(file, UploadedFile):
             base, ext = os.path.splitext(file.name)
-            filename = base[:40] + ext
-            filename = settings.MEDIA_ROOT + 'tmp/' + string.replace(filename, ' ', '_')
+            filename = settings.MEDIA_ROOT + 'tmp/' + slugify(base[:40] + ext)
             content_type = file.content_type
             destination = open(filename, 'wb+')
             print "Opened %s for writing as %s..." % (filename, content_type)
@@ -154,7 +154,9 @@ class LibraryFile(models.Model):
     def thumbnail(self, width=LIBRARYFILE_THUMB_WIDTH):
         extra_class = 'video' if self.type == 2 else ''
         height = width / LIBRARYFILE_THUMB_RATIO
-        return u'<div class="adexthumb" style="width:%dpx;height:%dpx;"><div class="%s" style="background-image:url(%s);"></div></div>' % (width, height, extra_class, self.thumbnail_url())
+        return u'<div title="%s" class="adexthumb" style="width:%dpx;height:%dpx;"><div class="%s" style="background-image:url(%s);"></div></div>' %\
+               ('%s - %s' % (self.type_name(), self.name or self.filename),
+                width, height, extra_class, self.thumbnail_url())
 
     def type_name(self):
         return self.MEDIA_CHOICES[self.type-1][1]

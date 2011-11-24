@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Login Successful - {{ block.super }}{% endblock %}
+
+{% block postscripts %}
+    <script type="text/javascript">
+        $(function(){
+            opener.gotoNext();
+            window.close();
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+    <h1>Redirecting...</h1>
+    <p>If this doesn't close by itself, something screwed up big time.</p>
+    <p>Sorry about that.</p>
+{% endblock %}
