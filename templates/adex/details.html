@@ -14,7 +14,7 @@
 
     <div  id="content">
         {% if request.is_ajax %}
-            <script>$(comment_onload); $(userid_load);</script>
+            <script>$(userid_load); $(comment_onload);</script>
         {% endif %}
         <h1>{{ adex.title }}</h1>
 
@@ -22,7 +22,7 @@
         {% if comment_list %}
             <div class="wrapper">
                 <div class="divider"></div>
-                {% include "comments/comments.html" with anchored=1 stubbed=0 modcontrols=1 %}
+                {% include "comments/comments.html" with anchored=1 stubbed=0 modcontrols=1 title=1 %}
             </div>
         {% else %}
             <p align="center">No comments yet.</p><div class="divider"></div>

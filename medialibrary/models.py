@@ -18,14 +18,16 @@ from medialibrary.utils import get_video_size, genVideoThumb, get_media_duration
 import settings
 from django.template.defaultfilters import slugify
 
+mimetypes.add_type('video/webm','.webm')
+
 LIBRARYFILE_MAX_FILESIZE = 50000000
 
 class LibraryFile(models.Model):
     MEDIA_CHOICES = (
-        (1, 'Image'),
-        (2, 'Video'),
-        (3, 'Audio'),
-        (4, 'Flash'),
+        (1, 'image'),
+        (2, 'video'),
+        (3, 'audio'),
+        (4, 'flash'),
     )
     IMAGE_EXTENSIONS = ('image/jpeg','image/png','image/gif')
     VIDEO_EXTENSIONS = ('video/webm','video/x-flv','video/mpeg','video/mp4')
@@ -78,7 +80,7 @@ class LibraryFile(models.Model):
         super(LibraryFile, self).save() # Intermediate save to get new ID
         self.filename = "adex%s_%s" % (self.id, self.name)
         webthumb(
-            'http://localhost/flashview/?'+settings.MEDIA_URL+'tmp/'+self.name,
+            'http://anondex.com/flashview/?'+settings.MEDIA_URL+'tmp/'+self.name,
             settings.MEDIA_ROOT+"f/thumb/%s.jpg"%self.filename,
             is_flash=True,
         )
@@ -91,7 +93,7 @@ class LibraryFile(models.Model):
     def save_file(self, file):
         if isinstance(file, UploadedFile):
             base, ext = os.path.splitext(file.name)
-            filename = settings.MEDIA_ROOT + 'tmp/' + slugify(base[:40] + ext)
+            filename = settings.MEDIA_ROOT + 'tmp/' + slugify(base[:40]) + ext
             content_type = file.content_type
             destination = open(filename, 'wb+')
             print "Opened %s for writing as %s..." % (filename, content_type)

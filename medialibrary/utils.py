@@ -72,9 +72,11 @@ def webthumb(url, filename, is_flash=False):
     display.start()
     browser = webdriver.Firefox()
     browser.get(url)
-    #time.sleep(1)
-    browser.execute_script(script)
-    time.sleep(6)
+    if is_flash:
+        time.sleep(1)
+    else:
+        browser.execute_script(script)
+        time.sleep(6)
     tmpfile = '%s.tmp' % filename
     browser.get_screenshot_as_file(tmpfile)
     img = pil.open(tmpfile)

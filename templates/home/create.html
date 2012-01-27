@@ -10,7 +10,7 @@
 {% block content %}
     <div id="creatediv">
         {% if request.is_ajax %}
-            <script>$(create_onload); $(userid_load);</script>
+            <script>$(userid_load); $(create_onload);</script>
         {% endif %}
         <div id="useriddiv" class="create_field">
             <label class="fieldlabel" for="userid">Create as</label>
@@ -122,7 +122,7 @@
 <div id="results"></div>
         <div id="submitbuttons">
             <div id="recaptchadivframe"></div>
-            <input type="button" value="Create" onClick="createPage(true);" disabled />
+            <input type="button" id="createbutton" value="Create" onClick="createPage(true);" disabled />
             <input type="button" value="Preview" onClick="createPage(false);" />
             <input type="button" value="Reset" onclick="resetForm();" />
         </div>

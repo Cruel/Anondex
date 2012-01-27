@@ -55,7 +55,8 @@ def flashview(request):
 def upload_image(request):
     if request.method == 'POST':
         try:
-            file = LibraryFile(user=request.user, ip=request.META['REMOTE_ADDR'])
+            user = request.user if request.user.id else None
+            file = LibraryFile(user=user, ip=request.META['REMOTE_ADDR'])
             file.save_file(request.FILES['imagefile'])
             return HttpResponse(simplejson.dumps({'success':True, 'value':file.id}))
         except Exception, e:

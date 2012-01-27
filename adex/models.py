@@ -43,6 +43,11 @@ class Adex(models.Model):
     media           = models.ManyToManyField(LibraryFile)
     data            = models.TextField()
     tags            = TagField()
+
+    expiration      = models.IntegerField(null=True)
+    dead            = models.BooleanField(default=False)
+    redeemval       = models.IntegerField(default=0)
+
     def thumbnail(self, width=LIBRARYFILE_THUMB_WIDTH):
         data = json.loads(self.data)
         if self.type == 0:
@@ -55,10 +60,25 @@ class Adex(models.Model):
             height = width / LIBRARYFILE_THUMB_RATIO
             return u'<span class="webkit-scrollbars"><div class="adexthumb webthumb" style="width:%dpx;height:%dpx;"><img style="width:%dpx;" src="%s" /></div></span>' %\
                    (width, height, width, settings.MEDIA_URL+'webthumb/%d.jpg'%self.id)
-
         try:
             file = LibraryFile.objects.get(pk=media_id)
             return file.thumbnail(width)
+        except LibraryFile.DoesNotExist:
+            return 'Error'
+
+    def thumbnail_url(self):
+        data = json.loads(self.data)
+        if self.type == 0:
+            media_id = data['image']['id']
+        elif self.type == 1:
+            media_id = data['video']['id']
+        elif self.type == 2:
+            media_id = data['flash']['id']
+        elif self.type >= 3:
+            return settings.MEDIA_URL+'webthumb/%d.jpg' % self.id
+        try:
+            file = LibraryFile.objects.get(pk=media_id)
+            return file.thumbnail_url()
         except LibraryFile.DoesNotExist:
             return 'Error'
         
@@ -82,10 +102,10 @@ class Adex(models.Model):
         return self.title
 
 
-class AdexTempInfo(models.Model):
-    adex = models.ForeignKey(Adex)
-    expiration = models.IntegerField()
-    dead = models.IntegerField()
-    redeemval = models.IntegerField()
-    def __unicode__(self):
-        return self.adex.title
+#class AdexTempInfo(models.Model):
+#    adex = models.ForeignKey(Adex)
+#    expiration = models.IntegerField()
+#    dead = models.IntegerField()
+#    redeemval = models.IntegerField()
+#    def __unicode__(self):
+#        return self.adex.title

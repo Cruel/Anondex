@@ -1,9 +1,7 @@
-import os
 from django.conf.urls.defaults import *
 from django.views.generic.simple import direct_to_template
 from socialauth.forms import ProfileForm, RegistrationFormTest
 from django.conf import settings
-from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 #from django import template
 #template.add_to_builtins('project.app.templatetags.custom_tag_module')
@@ -16,11 +14,13 @@ urlpatterns = patterns('',
     # Home
     url(r'^$', 'home.views.index', name='home'),
 
-    url(r'^home/', include('home.urls')),
+    url(r'^', include('home.urls')),
     url(r'^browse/(?P<page>\d+)$', 'home.views.browse', name='browse'),
+    url(r'^browse/tag/(?P<tag>\w+)/(?P<page>\d+)$', 'home.views.tagged', name='tagged'),
+    url(r'^rss.xml$', 'home.views.rss', name='rss_feed'),
 
     # Adex
-    url(r'^create$', 'adex.views.create_adex'),
+    url(r'^create/post$', 'adex.views.create_adex'),
     url(r'^preview$', 'adex.views.preview'),
 
     # Comments

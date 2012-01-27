@@ -14,7 +14,7 @@
         {% endfor %}
         <div style="display:none;"><label for="id_honeypot">Stop reading our HTML, hacker!</label> <input type="text" name="honeypot" id="id_honeypot" /></div>
         <div class="formtable">
-            <select id="userid" name="user">
+            <select id="userid" name="user" class="cookify">
                 <option value="anon">Anonymous</option>
                 <option value="temp">Temp Name</option>
                 {% if user.is_authenticated %}
@@ -23,7 +23,7 @@
                     <option value="login">Login ...</option>
                 {% endif %}
             </select>
-            <input name="name" type="text" maxlength="20" style="display:none" placeholder="Name" />
+            <input name="name" type="text" maxlength="20" style="display:none" class="cookify" placeholder="Name" />
 
                 <div id="imguploadcell">
                     <select id="fileselect">

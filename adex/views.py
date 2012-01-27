@@ -1,5 +1,3 @@
-import random
-import string
 import urllib2
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponse
@@ -40,12 +38,11 @@ def adex_render(request, adex, tags, media=None):
     if adex.pk: media = adex.media.all()
     related = TaggedItem.objects.get_related(adex, Adex, num=10)
     adex_data = json.loads(adex.data)
+    adex.expired = False if (not adex.expiration) or (adex.expiration > time.time()) else True
 
     return render_to_response(adex.template(), {'user':request.user, 'adex':adex, 'media_list':media, 'adex_data':adex_data, 'tags':tags, 'related':related},
                                   context_instance=RequestContext(request))
 
-def tagged(request, tag):
-    pass
 
 def filelist(request):
     #if request.user.is_authenticated():
@@ -72,6 +69,7 @@ def preview(request):
                 type        = v.get('type'),
                 tags        = v.get('tags'),
                 data        = data,
+                expiration  = v.get('expiration'),
             )
             media = list()
             tags = list()
@@ -105,6 +103,7 @@ def create_adex(request):
                 type        = v.get('type'),
                 tags        = v.get('tags'),
                 data        = data,
+                expiration  = v.get('expiration'),
             )
             if len(media_list) > 0:
                 for media_id in media_list:

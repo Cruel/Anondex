@@ -9,7 +9,7 @@ urlpatterns = patterns('socialauth.views',
     url(r'^welcome/$', 'welcome', name='newly_registered'),
     url(r'^complete/(?P<backend>[^/]+)/$', 'complete', name='socialauth_complete'),
     url(r'^associate/complete/(?P<backend>[^/]+)/$', 'associate_complete_wrapper'),
-    url(r'^username/$', 'username', name='socialauth_username'),
+#    url(r'^username/$', 'username', name='socialauth_username'),
     #url(r'^login/(?P<backend>[^/]+)/$', 'auth_register', name='socialauth_begin'),
     url(r'', include('social_auth.urls')),
 )

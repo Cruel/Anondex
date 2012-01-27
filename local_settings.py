@@ -1,5 +1,5 @@
-THUMBNAIL_URL = 'http://localhost/media/i/thumb/'
-IMAGE_URL = 'http://localhost/media/i/'
+THUMBNAIL_URL = 'http://anondex.com/media/i/thumb/'
+IMAGE_URL = 'http://anondex.com/media/i/'
 
 # Interval limitation
 INTERVAL_ANON_ADEX = 1500
@@ -90,6 +90,7 @@ MEDIA_BUNDLES = (
         'css/profile.sass',
     ),
     ('anondex.js',
+        'js/jquery.cookies.2.2.0.js',
         'js/jquery.fileupload.js',
         'js/jquery.fancybox-1.3.4.js',
         'js/jquery.jmc_resizr.js',

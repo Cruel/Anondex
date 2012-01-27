@@ -22,8 +22,10 @@ function indexLoad() {
 	$('#des').click(function(){ShowHideDescription();});
 	$('.itemtags a').addClass('iframe');
 	$('.iframe').fancybox(commentBox);
-	if (commentsopen) {
-		$('#commentcell').html(commentframe);
+	if (!$.cookies.get('CommentsClosed')) {
+		//$('#commentcell').html(commentframe);
+        //$('#commentcell').css('display','block');
+        ShowHideComments(true);
 	} else {
 		
 	}
@@ -49,29 +51,28 @@ function IsNumeric(input){
    return (input - 0) == input && input.length > 0;
 }
 
-function ShowHideComments() {
+function ShowHideComments(instant) {
 	if (animating) return;
+    var delay = (instant) ? 0 : 500;
 	if ($('#commentcell').css('display') == 'block') {
 		animating = true;
 		$('#sliderbutton div').removeClass().addClass('slideropen');
-		$('#commentcell').animate({width:'0'},500,'swing');
-		$('#itemcell').animate({right:'121px'},500,'swing',
+		$('#commentcell').animate({width:'0'},delay,'swing');
+		$('#itemcell').animate({right:'121px'},delay,'swing',
 				function(){
 					$('#commentcell').css('display','none');
-					SetCookieValue('CommentsClosed','on');
+                    $.cookies.set('CommentsClosed', 'true');
 					animating = false;
 				});
 	} else {
 		animating = true;
 		$('#sliderbutton div').removeClass().addClass('sliderclose');
 		$('#commentcell').css('display','block');
-		$('#commentcell').animate({width:'430px'},500,'swing');
-		$('#itemcell').animate({right:'550px'},500,'swing',
+		$('#commentcell').animate({width:'430px'},delay,'swing');
+		$('#itemcell').animate({right:'550px'},delay,'swing',
 				function(){
-					SetCookieValue('CommentsClosed','');
+                    $.cookies.del('CommentsClosed');
 					animating = false;
-//					if (!$('#comments')[0])
-//						$('#commentcell').html(commentframe);
 				});
 	}
 }

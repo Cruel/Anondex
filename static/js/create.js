@@ -9,6 +9,7 @@ function resetForm(){
 	$('.tagHandler').remove();
 	$('#tagsfield').prepend('<ul id="taglist"></ul>');
 	loadTagHandler();
+    $('#createbutton').attr("disabled", "disabled");
 }
 
 function IsDefined(val){
@@ -76,12 +77,12 @@ function createPage(NotPreview){
             $('#tmpform').append('<input name="'+i+'" value="'+content[i]+'" type="hidden" />');
         }
         window.open('', 'previewWin', '');
-        $('#submitbuttons > input:disabled').removeAttr("disabled");
+        $('#createbutton').removeAttr("disabled");
         $('#tmpform').submit().remove();
         //var wnd = window.open('loading', 'previewWin', '');
     } else{
         $.blockUI();
-        $.post("/create", content,
+        $.post("/create/post", content,
             function(data){
                 $.unblockUI();
                 if (data.success) {

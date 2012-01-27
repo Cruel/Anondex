@@ -1,23 +1,25 @@
 {% load adexhome %}
 
 <ul class="pagination">
-    {% if page.has_previous %}
-        <a href="{{ page.previous_page_number }}"><li>&lt;&lt;</li></a>
-    {% else %}
-        <li>&lt;&lt;</li>
-    {% endif %}
-
-    {% for i in page.paginator.num_pages|get_range %}
-        {% ifequal page.number i %}
-            <li class="current">{{ i }}</li>
+    {% if page.paginator.num_pages > 1 %}
+        {% if page.has_previous %}
+            <a href="{{ page.previous_page_number }}"><li>&lt;&lt;</li></a>
         {% else %}
-            <a href="{{ i }}"><li>{{ i }}</li></a>
-        {% endifequal %}
-    {% endfor %}
+            <li>&lt;&lt;</li>
+        {% endif %}
 
-    {% if page.has_next %}
-        <a href="{{ page.next_page_number }}"><li>&gt;&gt;</li></a>
-    {% else %}
-        <li>&gt;&gt;</li>
+        {% for i in page.paginator.num_pages|get_range %}
+            {% ifequal page.number i %}
+                <li class="current">{{ i }}</li>
+            {% else %}
+                <a href="{{ i }}"><li>{{ i }}</li></a>
+            {% endifequal %}
+        {% endfor %}
+
+        {% if page.has_next %}
+            <a href="{{ page.next_page_number }}"><li>&gt;&gt;</li></a>
+        {% else %}
+            <li>&gt;&gt;</li>
+        {% endif %}
     {% endif %}
 </ul>

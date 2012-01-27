@@ -1,0 +1,36 @@
+{% extends "home/base.html" %}
+{% load comments %}
+
+{% block title %}Audio - {{ block.super }}{% endblock %}
+
+{% if not request.is_ajax %}
+    {% block postscripts %}
+        {{ block.super }}
+        <script>$(comment_onload);</script>
+    {% endblock %}
+{% endif %}
+
+
+{% block content %}
+    <div id="audiopage">
+        {% if request.is_ajax %}
+            <script>$(userid_load); $(comment_onload);</script>
+        {% endif %}
+        {% if audio %}
+            <div id="audio">
+                <audio width="500" height="100" controls>
+                  <source src="{{ MEDIA_URL }}a/{{ audio.filename }}" type="{{ audio.content_type }}" />
+                  Your browser does not support this media ({{ audio.content_type }}).
+                </audio>
+            </div>
+
+            {% get_comment_list for audio as comment_list %}
+            {% include "comments/comments.html" with anchored=1 stubbed=0 modcontrols=1 title=1 %}
+
+            {% get_comment_form for audio as form %}
+            {% include "comments/form.html" %}
+        {% else %}
+            <p>Audio does not exist.</p>
+        {% endif %}
+    </div>
+{% endblock %}

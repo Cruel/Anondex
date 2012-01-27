@@ -96,6 +96,7 @@ function postComment(){
 					$('#submitbutton').val('Posted.');
                     $('#newcomment').html(data.html);
                     $.growlUI('Comment Posted.');
+                    $('#commentform .cookify').cookify();
 				} else {
                     //alert('errors sent');
                     for (var error in data.errors)
@@ -261,4 +262,6 @@ function comment_onload() {
 
     comment_cluetips();
 
+    // Load form values from cookie
+    $('#commentform .cookify').cookieFill().change();
 };

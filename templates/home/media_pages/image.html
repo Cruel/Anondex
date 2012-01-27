@@ -14,7 +14,7 @@
 {% block content %}
     <div id="imagepage">
         {% if request.is_ajax %}
-            <script>$(comment_onload); $(userid_load);</script>
+            <script>$(userid_load); $(comment_onload);</script>
         {% endif %}
         {% if image %}
             <div class="image">
@@ -25,7 +25,7 @@
             {% get_comment_count for image as comment_count %}
             <p>{{ comment_count }} comments have been posted.</p>
             {% get_comment_list for image as comment_list %}
-            {% include "comments/comments.html" with anchored=1 stubbed=0 modcontrols=1 %}
+            {% include "comments/comments.html" with anchored=1 stubbed=0 modcontrols=1 title=1 %}
             {% comment %}
                 {% render_comment_list for profile %}
                 {% render_comment_form for profile %}

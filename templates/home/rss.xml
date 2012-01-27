@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+    <channel>
+        <title>Anondex Latest</title>
+        <link>http://anondex.com/browse</link>
+        <category>Category HERE</category><description>The last 20 items submitted to Anondex.com most recently.</description>
+        <language>en-us</language><copyright>2011 Anondex.com</copyright><ttl>30</ttl>
+        <pubDate>Tue, 08 Jul 2008 22:31:45 EDT</pubDate><lastBuildDate>Tue, 08 Jul 2008 22:41:45 EDT</lastBuildDate>
+
+        {% for item in items %}
+        <item>
+            <title>{{ item.title }}</title>
+            <description>{{ item.description }}</description>
+            <link>http://anondex.com/?{{ item.item_code }}</link>
+            <guid>{{ item.item_code }}</guid>
+            <enclosure url="{{ item.thumbnail_url }}" type="image/jpeg" length="?" />
+            <pubDate>{{ item.date|date:"D, j M Y, H:i:s T" }}</pubDate>
+            <comments>http://anondex.com{{ item.url }}</comments>
+        </item>
+        {% endfor %}
+
+    </channel>
+</rss>

@@ -1,5 +1,6 @@
 import random
 import string
+import time
 from adex.models import Adex
 import simplejson as json
 
@@ -7,6 +8,10 @@ def processCreateVars(vars):
     errors = list()
     for i in vars.keys():
         if vars[i] == 'undefined': vars[i] = ''
+    if vars.get('duration') == '0':
+        vars['expiration'] = None
+    else:
+        vars['expiration'] = round(time.time()) + int(vars.get('duration'))
     vars['type'] = int(vars.get('type'))
     if not vars.get('title'): errors.append('"Title" must be defined.')
     if not vars.get('description'): errors.append('"Description" must be defined.')

@@ -14,7 +14,7 @@
 {% block content %}
     <div id="videopage">
         {% if request.is_ajax %}
-            <script>$(comment_onload); $(userid_load);</script>
+            <script>$(userid_load); $(comment_onload);</script>
         {% endif %}
         {% if video %}
             <div id="video">
@@ -25,7 +25,7 @@
             </div>
 
             {% get_comment_list for video as comment_list %}
-            {% include "comments/comments.html" with anchored=1 stubbed=0 modcontrols=1 %}
+            {% include "comments/comments.html" with anchored=1 stubbed=0 modcontrols=1 title=1 %}
             {% comment %}
                 {% render_comment_list for profile %}
                 {% render_comment_form for profile %}

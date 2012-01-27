@@ -15,7 +15,6 @@
 		var reportpage = 'http://localhost:8000/report/?a=1&i=133';
         $(indexLoad);
         $(comment_onload);
-        $(userid_load);
     </script>
 {% endblock %}
 
@@ -55,7 +54,7 @@
                     <ul class="itemtags">
                         
                         {% for tag in tags %}
-                            <li title="There are {{ tag.count|default:"0" }} items tagged with '{{ tag.name }}'"><a href="http://anondex.com/browse/tagged/{{ tag.name }}"><b>{{ tag.name }}</b> &times;{{ tag.count|default:"0" }}</a></li>
+                            <li title="There are {{ tag.count|default:"0" }} items tagged with '{{ tag.name }}'"><a href="{% url tagged tag.name 1 %}"><b>{{ tag.name }}</b> &times;{{ tag.count|default:"0" }}</a></li>
                         {% endfor %}
                     </ul>
                     <span id="desexpand" class="desexpandopen" title="Toggle full item description."></span><div class="destext">{{ adex.description|safe }}</div>
@@ -76,16 +75,24 @@
 
 
         <div id="mainwrapper">
-            <div id="itemcell" style="right:550px">
-                <div id="sliderbutton" onclick="ShowHideComments();" title="Toggle comments."><div class="sliderclose"></div><span class="slidertext"></span></div>
-                {% block adexcontent %}{% endblock %}
+            <div id="itemcell" style="right:121px">
+                <div id="sliderbutton" onclick="ShowHideComments();" title="Toggle comments."><div class="slideropen"></div><span class="slidertext"></span></div>
+                {% if not adex.expired %}
+
+                    {% block adexcontent %}{% endblock %}
+
+                    {% if adex.expiration %}
+                        <div id="ctimer" style="bottom:{% if adex.type == 1 %}24{% else %}0{% endif %}px"></div>
+                        <script>
+                            expiration = {{ adex.expiration }};
+                            countdown();
+                        </script>
+                    {% endif %}
+                {% else %}
+                    This Item is Expired!
+                {% endif %}
             </div>
-            <div id="commentcell" style="display:block;width:430px;">
-                <!--iframe id="comments" name="comments" frameborder="0" src="http://anondex.com/comments/133"></iframe-->
-                <script type="text/javascript">
-                    var commentsopen=false;
-                    var commentframe='<iframe id="comments" name="comments" frameborder="0" src="/comments/{{ adex.id }}/"></iframe>';
-                </script>
+            <div id="commentcell" style="display:none;width:0px;">
 
                     <div id="comments">
                         <h1>{{ adex.title }}</h1>
@@ -103,6 +110,7 @@
                         {% get_comment_form for adex as form %}
                         {% include "comments/form.html" %}
                     </div>
+
             </div>
             <div id="sidebarindex">
                 <a href="http://anondex.com/report.php?a=1&i=133" class="reportbutton"></a>

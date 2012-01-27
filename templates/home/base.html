@@ -15,24 +15,27 @@
 	<div id="wrapper">
 		<div class="headerwrapper">
 			<div id="header">
-				<a id="feedlink" href="rssfeed.xml" title="Subscribe to Anondex feed.">RSS</a>
+				<a id="feedlink" class="no-ajaxy" href="{% url rss_feed %}" title="Subscribe to Anondex feed.">RSS</a>
 				<div id="logo">
-					<h1>Anondex</h1>
-					<h2>The Anonymous Index</h2>
+                    <a href="/">
+					    <h1>Anondex</h1>
+					    <h2>The Anonymous Index</h2>
+                    </a>
 				</div>
 				<div id="menu">
 					<ul>
-						<li>
-                            <a id="linkhome" href="/">Home<span class="elbow-left"><span></span></span><span class="elbow-right"><span></span></span></a>
-                        </li>
+
                         <li>
                             <a id="linkcreate" href="{% url home_create %}">Create<span class="elbow-left"><span></span></span><span class="elbow-right"><span></span></span></a>
+                        </li>
+                        <li>
+                            <a id="linkupload" href="{% url home_upload %}">Upload<span class="elbow-left"><span></span></span><span class="elbow-right"><span></span></span></a>
                         </li>
                         <li>
                             <a id="linkbrowser" href="{% url browse 1 %}">Browse<span class="elbow-left"><span></span></span><span class="elbow-right"><span></span></span></a>
                         </li>
                         <li>
-                            <a id="linkmypage" href="{% url home_mypage %}">My Page<span class="elbow-left"><span></span></span><span class="elbow-right"><span></span></span></a>
+                            <a id="linkmypage" href="{% url home_about %}">About<span class="elbow-left"><span></span></span><span class="elbow-right"><span></span></span></a>
                         </li>
 					</ul>
 				</div>
@@ -65,7 +68,7 @@
 		<!-- end div#page -->
 		<div class="footerwrapper">
 			<div id="footer">
-				<p id="legal">Copyright &copy; 2011 Anondex.com | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+				<p id="legal">Copyright &copy; 2011 Anondex.com | <a href="{% url home_privacy %}">Privacy Policy</a> | <a href="{% url home_tos %}">Terms of Service</a></p>
 			</div>
 		</div>
 		<!-- end div#footer -->

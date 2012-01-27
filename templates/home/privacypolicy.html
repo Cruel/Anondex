@@ -1,0 +1,20 @@
+{% extends "home/base.html" %}
+
+{% block content %}
+    <div>
+        <h1>Privacy Policy</h1>
+        <p>
+            As the website name would suggest, Anondex supports complete <em>anonymity</em>.
+            This means that your identity should be able to remain unknown if you wish.
+            For this reason, Anondex provides nearly all services without any type of user registration.
+        </p>
+        <p>The following privacy policy applies to registered and anonymous users alike:</p>
+        <ul>
+            <li>We will never reveal your IP address.</li>
+        </ul>
+        <p>
+            The above policy will only be followed is the <a href="{% url home_tos %}">Terms of Service</a> are followed.
+            This means that some grave violations of the Terms of Service could result in forfeiting your privacy.
+        </p>
+    </div>
+{% endblock %}

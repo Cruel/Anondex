@@ -14,7 +14,7 @@
 {% block content %}
     <div id="flashpage">
         {% if request.is_ajax %}
-            <script>$(comment_onload); $(userid_load);</script>
+            <script>$(userid_load); $(comment_onload);</script>
         {% endif %}
         {% if flash %}
             <div id="flash"></div>
@@ -24,7 +24,7 @@
             </script>
 
             {% get_comment_list for flash as comment_list %}
-            {% include "comments/comments.html" with anchored=1 stubbed=0 modcontrols=1 %}
+            {% include "comments/comments.html" with anchored=1 stubbed=0 modcontrols=1 title=1 %}
             {% comment %}
                 {% render_comment_list for profile %}
                 {% render_comment_form for profile %}

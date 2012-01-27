@@ -9,7 +9,7 @@
         <div {% if anchored %}id="{{ comment.id }}" {% endif %}class="comment {% cycle "commentodd" "commenteven" %}">
             {% if not stubbed %}
                 <div class="leftside">
-                    {% if comment.user and not comment.user_name and not comment.is_anonymous %}
+                    {% if comment.user.profile.avatar and not comment.user_name and not comment.is_anonymous %}
                         <a target="_parent" href="/user/{{ comment.user.username }}/" title="Visit {{ comment.user.username }}'s profile">
                             <img width="42" class="avatar" src="{{ MEDIA_URL }}{{ comment.user.profile.avatarthumb }}" />
                         </a>
