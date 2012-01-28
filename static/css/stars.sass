@@ -1,0 +1,181 @@
+@import base
+
+.star-rating
+  background: url(css/composite.png) 0 69px
+  li
+    &:hover, &:active
+      background: url(css/composite.png) 0 69px
+  .current-rating
+    background: url(css/composite.png) 0 69px
+  position: relative
+  width: 100px
+  height: 20px
+  overflow: hidden
+  list-style: none
+  margin: 0
+  padding: 0
+  background-position: 0 89px
+  li
+    display: inline
+    cursor: pointer
+    position: absolute
+    top: 0
+    left: 0
+    text-indent: -1000em
+    height: 20px
+    line-height: 20px
+    outline: none
+    overflow: hidden
+    border: none
+  .current-rating
+    position: absolute
+    top: 0
+    left: 0
+    text-indent: -1000em
+    height: 20px
+    line-height: 20px
+    outline: none
+    overflow: hidden
+    border: none
+  li
+    &:hover
+      background-position: 0 69px
+    &.star1
+      width: 20%
+      z-index: 6
+    &.star2
+      width: 40%
+      z-index: 5
+    &.star3
+      width: 60%
+      z-index: 4
+    &.star4
+      width: 80%
+      z-index: 3
+    &.star5
+      width: 100%
+      z-index: 2
+  .current-rating
+    z-index: 1
+    background-position: 0 49px
+
+/* SECOND STAR (ALREADY VOTED
+
+.star-rating2
+  background: url(css/composite.png) 0 69px
+  filter: alpha(opacity = 80)
+  opacity: 0.8
+  li:active, .current-rating
+    background: url(css/composite.png) 0 69px
+    filter: alpha(opacity = 80)
+    opacity: 0.8
+  position: relative
+  width: 100px
+  height: 20px
+  overflow: hidden
+  list-style: none
+  margin: 0
+  padding: 0
+  background-position: 0 89px
+  li
+    display: inline
+    position: absolute
+    top: 0
+    left: 0
+    text-indent: -1000em
+    height: 20px
+    line-height: 20px
+    outline: none
+    overflow: hidden
+    border: none
+    cursor: default
+  .current-rating
+    position: absolute
+    top: 0
+    left: 0
+    text-indent: -1000em
+    height: 20px
+    line-height: 20px
+    outline: none
+    overflow: hidden
+    border: none
+    cursor: default
+  li
+    &.star1
+      width: 20%
+      z-index: 6
+    &.star2
+      width: 40%
+      z-index: 5
+    &.star3
+      width: 60%
+      z-index: 4
+    &.star4
+      width: 80%
+      z-index: 3
+    &.star5
+      width: 100%
+      z-index: 2
+  .current-rating
+    z-index: 1
+    background-position: 0 69px
+
+/* END SECOND STAR
+
+/* for an inline rater
+
+.inline-rating
+  display: -moz-inline-block
+  display: -moz-inline-box
+  display: inline-block
+  vertical-align: middle
+
+.voted_twice
+  /*	background: #FFDDDD url(../images/rating_warning.gif) no-repeat 5px 50%;
+  padding: 5px 5px 5px 16px
+  text-align: center
+  font-family: Verdana, Arial, Helvetica, sans-serif
+  color: #333
+  width: 130px
+  font-size: 11px
+
+.voted
+  /*	background: #E7FFCE url(../images/rating_tick.gif) no-repeat 5px 50%;
+  padding: 5px 5px 5px 16px
+  text-align: center
+  font-family: Verdana, Arial, Helvetica, sans-serif
+  color: #333
+  width: 130px
+  font-size: 11px
+
+.percentClass
+  /* Insert styles here for the percentage display. Example (74%)
+
+.votesClass
+  /* Insert styles here for the votes display. Example (2 Votes)
+  font: inherit
+
+.topRatedList
+  padding: 0
+  margin: 0
+  li
+    list-style-type: none
+
+
+/* The text that displays the rating information
+
+.rated_text
+  //font-family: Verdana, Arial, Helvetica, sans-serif
+  //font-size: 11px
+  margin-bottom: 5px
+
+/* Green text that shows 3.34/5
+
+.out5Class
+  //color: #00DD00
+  font: bold 16px Arial
+  //line-height: 16px
+  text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000
+
+.browsetable .out5Class
+  font-size: 26px

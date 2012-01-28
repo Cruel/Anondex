@@ -1,0 +1,165 @@
+@import base
+
+.pagination
+  clear: both
+  width: 300px
+  height: 37px
+  margin: 10px
+  padding-left: 170px
+  font: bold 14px Arial
+  text-align: center
+  li
+    margin: 2px
+    display: block
+    float: left
+    width: 30px
+    height: 30px
+    line-height: 30px
+    +border-radius(4px)
+    color: black
+  a
+    text-decoration: none
+    li
+      background: #FCC
+      &:hover
+        background: #F88
+
+.adexitem
+  clear: both
+  a
+    text-decoration: none
+    display: block
+
+.browsetable
+  width: 640px
+  padding: 5px
+  float: left
+  > div
+    float: left
+    width: 640px
+    border-radius: 8px
+    -moz-border-radius: 8px
+    margin: 3px 0
+    padding: 14px
+    cursor: pointer
+    &:hover
+      background-color: #FCC
+  text-align: left
+  color: black
+
+.browseodd
+  //background-color: #FFD4D4
+
+.browseeven
+  //background-color: #FFD7D7
+
+.browseimagecell
+  float: left
+  width: $thumb_width
+
+.browsedescription
+  float: left
+  width: 330px
+  padding: 5px 0 0 10px
+  vertical-align: top
+  overflow: hidden
+
+.itemtitle
+  font-size: 200%
+
+.itemdescription
+
+.browseicons
+  position: relative
+  float: right
+  width: 25px
+  vertical-align: bottom
+  text-align: center
+  border-left: none
+  padding: 1px
+
+.browsedetails
+  float: right
+  width: 130px
+  vertical-align: top
+  padding: 2px
+
+.browseimagespan
+  a, img
+    /*	background-color: white;
+    border-radius: 5px
+  a
+    position: relative
+    display: block
+    width: $thumb_width
+    height: $thumb_height
+
+
+
+.htmlthumb
+  display: block
+  overflow: hidden
+  img
+    height: auto
+
+.browsetable > div:hover .webthumb, .webthumb:hover
+  overflow-y: auto
+
+.typeicon
+  height: 38px
+  width: 38px
+  position: absolute
+  z-index: 4
+  opacity: 0.6
+  -moz-border-radius-topleft: 3px
+  border-top-left-radius: 3px
+
+.browsetable > div:hover .typeicon
+  filter: alpha(opacity = 90)
+  opacity: 0.9
+
+.icontype1
+  background: url(css/composite.png) -76px 127px
+
+.icontype2
+  background: url(css/composite.png) 0 127px
+
+.icontype3
+  background: url(css/composite.png) -38px 127px
+
+/* View / Comments buttons
+
+a
+  &.buttonwrapper
+    display: block
+    float: left
+    clear: both
+    height: 20px
+    border-radius: 5px
+    -moz-border-radius: 5px
+    padding: 0 5px
+    margin: 1px
+    text-decoration: none
+    color: #000
+    &:hover
+      margin: 0
+      border: 1px solid #F66
+      background-color: #F99
+    div
+      display: inline-block
+    .buttonicon
+      width: 16px
+      height: 16px
+      margin-top: 2px
+    &:hover .buttonicon
+      background-position-x: -196px
+    .buttoncount
+      font-size: 18px
+      line-height: 20px
+      padding-left: 3px
+      height: 100%
+      vertical-align: top
+  &.viewbutton .buttonicon
+    background: url(css/composite.png) -180px 110px
+  &.commentbutton .buttonicon
+    background: url(css/composite.png) -180px 94px

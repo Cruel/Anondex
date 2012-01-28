@@ -4,7 +4,7 @@ import time
 DEBUG = True
 PRODUCTION = False
 TEMPLATE_DEBUG = DEBUG
-MEDIA_DEV_MODE = False
+MEDIA_DEV_MODE = True
 
 #VERSION = '2.0.0'
 
@@ -167,8 +167,6 @@ INSTALLED_APPS = (
     'registration',
     'profiles',
     'social_auth',
-    #'pagination',
-    #'gravatar',
     'tagging',
     'djangoratings',
     #'djcelery',

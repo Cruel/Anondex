@@ -33,25 +33,6 @@ SOCIAL_AUTH_UUID_LENGTH = 3
 SOCIAL_AUTH_COMPLETE_URL_NAME  = 'socialauth_complete'
 SOCIAL_AUTH_ASSOCIATE_URL_NAME = 'socialauth_associate_complete'
 
-TWITTER_CONSUMER_KEY         = 'lqhF3XvLwo6G3F629u5apA'
-TWITTER_CONSUMER_SECRET      = 'TSU4xx8Oc3wlhD5pxuLA2tCGS2X3jZ7jmG8JwU3Z3M'
-FACEBOOK_APP_ID              = '156994677702749'
-FACEBOOK_API_SECRET          = 'bef3c281976a10bdd0d6ff7683c423be'
-LINKEDIN_CONSUMER_KEY        = '9rpa0ss5w6i4'
-LINKEDIN_CONSUMER_SECRET     = 'II1hdMNvXwBH9e5T'
-ORKUT_CONSUMER_KEY           = '555779437648'
-ORKUT_CONSUMER_SECRET        = 'XFmDOokC9oguQfrrjv32tXbf'
-GOOGLE_CONSUMER_KEY          = 'anondex.com'
-GOOGLE_CONSUMER_SECRET       = 'aCJWoaSaE_fldzIkUl60w7MP'
-GOOGLE_DISPLAY_NAME          = 'Anondex'
-GOOGLE_OAUTH2_CLIENT_ID      = '546567997214.apps.googleusercontent.com'
-#GOOGLE_OAUTH2_CLIENT_KEY     = 'AIzaSyA51dAcRrA-vhK_-9_pLbOaP1gBNzbxMtY'
-GOOGLE_OAUTH2_CLIENT_SECRET  = 'XeYMV_E02MgHXlhrrfozVkZ7'
-FOURSQUARE_CONSUMER_KEY      = ''
-FOURSQUARE_CONSUMER_SECRET   = ''
-GITHUB_APP_ID                = ''
-GITHUB_API_SECRET            = ''
-
 # Custom backends
 SOCIAL_AUTH_IMPORT_BACKENDS = (
     #'myproy.social_auth_extra_services',
@@ -118,3 +99,5 @@ RATINGS_VOTES_PER_IP = 4
 HITCOUNT_KEEP_HIT_ACTIVE = { 'days': 1 }
 HITCOUNT_HITS_PER_IP_LIMIT = 0
 #HITCOUNT_EXCLUDE_USER_GROUP = ( 'Editor', )
+
+from api_keys import *

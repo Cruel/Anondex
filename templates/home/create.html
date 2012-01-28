@@ -25,12 +25,12 @@
         </div>
     
         <div id="durationdiv" class="create_field">
-            <label class="fieldlabel" for="duration">Duration:</label>
+            <label class="fieldlabel" for="duration">Duration</label>
             <select id="duration"><option value="0">Permanent</option><option value="43200">12 Hours</option><option value="86400">1 Day</option><option value="259200">3 Days</option><option value="604800">1 Week</option></select>
         </div>
 
         <div id="titlediv" class="create_field">
-            <label class="fieldlabel" for="title">Title:*</label>
+            <label class="fieldlabel" for="title">Title</label>
             <div id="titlefield">
                 <input id="title" type="text" size="25" maxlength="50" class="textskin tooltip" />
                 <span id="titlehint" class="hint">
@@ -42,7 +42,7 @@
         </div>
 
         <div id="tagsdiv" class="create_field">
-            <label class="fieldlabel" for="tags">Tags:</label>
+            <label class="fieldlabel" for="tags">Tags</label>
             <div id="tagsfield">
                 <ul id="taglist"></ul>
             </div>
@@ -53,7 +53,7 @@
         </div>
 
         <div id="descriptiondiv" class="create_field">
-            <label class="fieldlabel" for="description">Description:*</label>
+            <label class="fieldlabel" for="description">Description</label>
             <div id="descriptionfield">
                 <textarea id="description" class="textareaskin tooltip"></textarea>
                 <span id="descriptionhint" class="hint">
@@ -65,7 +65,8 @@
 
         <div id="createbar">
             <div id="createwrapper">
-                <h1>Template:*</h1>
+                <h1>Template</h1>
+                <div class="createcaption">asdf asdf sadf afs</div>
                 <div class="typeradio typeimage"><input id="imageradio" name="type" type="radio" value="image" /><label for="imageradio">Image<b id="imageimage"></b></label></div>
                 <div class="typeradio typevideo"><input id="videoradio" name="type" type="radio" value="video" /><label for="videoradio">Video<b id="videoimage"></b></label></div>
                 <div class="typeradio typeflash"><input id="flashradio" name="type" type="radio" value="flash" /><label for="flashradio">Flash<b id="flashimage"></b></label></div>
@@ -107,8 +108,8 @@
 
         <div id="upload-controller">
             <!--div class="ajax_msg ajax_msg_success">Adex successfully created: <input type="text" onclick="this.select();" value="http://anondex.com/?test"><div onclick="CloseAjaxDiv(this.parentNode);" class="delicon"></div></div-->
-            <h1>File Uploads:</h1>
-            <span class="filetypes"><b>Supported types:</b> .jpg .gif .png .mp3 .swf .webm .mp4</span>
+            <h1>File Uploads</h1>
+            <div class="createcaption"><b>Supported types:</b> .jpg .gif .png .mp3 .swf .webm .mp4</div>
             <input type="button" id="btnAddFile" value="New Upload" />
             <input type="button" id="btnAddFileLib" value="From Library" />
 
