@@ -77,3 +77,10 @@ def rate(request):
         return HttpResponse(json.dumps({'success':False, 'value':response.content}))
     else:
         return redirect('/')
+
+def report(request, type, id):
+    if type == 'adex':
+        adex = get_object_or_404(Adex.objects, pk = id)
+    elif type == 'image':
+        image = get_object_or_404(LibraryFile.objects, pk = id)
+    return redirect('/')

@@ -10,6 +10,7 @@ urlpatterns = patterns('home.ajax_views',
     url(r'^addlibfile/(?P<media_id>\d+)$', 'addlibfile'),
     url(r'^filelist$', 'filelist'),
     url(r'^rate$', 'rate'),
+    #url(r'^report/(?P<type>\w+)/(?P<id>\d+)$', 'report', name='report'),
     url(r'^hit/$', update_hit_count_ajax, name='hitcount_update_ajax'), # keep this name the same
 
     url(r'^mypage$', direct_to_template, {'template': 'home/mypage.html'}, name='mypage'),

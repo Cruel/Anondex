@@ -1,0 +1,32 @@
+
+{% if message %}
+
+    <span>{{ message }}</span>
+    <input class="reportcancel" type="button" value="{{ button|default:"Close" }}" />
+
+{% else %}
+
+        <div class="reportform">
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="object_id" value="{{ object_id }}" />
+                <input type="hidden" name="content_type" value="{{ content_type }}" />
+                <input type="hidden" name="creator_field" value="{{ creator_field }}" />
+                <input type="hidden" name="next" value="{{ request.path }}" />
+
+                <select class="reportselect" name="type">
+                    {% for type_id, type in types %}
+                        <option value="{{ type_id }}">{{ type }}</option>
+                    {% endfor %}
+                </select>
+
+                <input type="button" class="reportsubmit" value="Report" />
+                <input type="button" class="reportcancel" value="Cancel" />
+
+                <textarea class="reporttext" name="comment"></textarea>
+
+            </form>
+        </div>
+
+{% endif %}
+

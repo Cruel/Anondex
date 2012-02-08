@@ -2,4 +2,10 @@
 *.txt
 *.bat
 *.iws
+*.log
 .idea/
+*/migrations/
+_generated_media/
+imported-sass-frameworks/
+media/
+api_keys.py

@@ -171,10 +171,12 @@ INSTALLED_APPS = (
     'djangoratings',
     #'djcelery',
     'hitcount',
+    'south',
     #'tracking',
     # Anondex Specific
     'comments',
     'socialauth',
+    'reporting',
     'adex',
     'home',
     'medialibrary',

@@ -7,8 +7,9 @@
     {% block meta %}{% endblock %}
     <meta charset="utf-8" />
     <meta name="description" content="{% block description %}Anondex is a completely anonymous service that allows for people to create/upload a single web page with some files to be indexed for commenting and rating.{% endblock %}" />
-
     <link rel="shortcut icon" type="image/png" href="/static/favicon.png">
+
+    <link href='http://fonts.googleapis.com/css?family=Alegreya+SC' rel='stylesheet' type='text/css'>
     {% include_media 'anondex.css' %}
 
     <script type="text/javascript">var isbanned=false;</script>
@@ -19,6 +20,7 @@
     <script src="http://balupton.github.com/history.js/scripts/bundled/html5/jquery.history.js"></script>
     {% include_media 'anondex.js' %}
     {% block postscripts %}{% endblock %}
+
 </head>
 <body>
 {% block body %}

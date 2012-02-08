@@ -2,23 +2,23 @@ var reportSettings = {
 	//'autoDimensions':	false,
 	//'width'			:	350,
 	//'height'		:	200,
-	'padding'		:	25,
+    //'type'          :   'ajax',
+    'closeBtn'      :   false,
+    'scrolling'     :   'no',
+	'padding'		:	20,
 	'overlayColor'	:	'black',
 	'modal'			:	true,
 	'overlayOpacity':	0.6,
-	'onComplete'	:	reportWindowOnLoad	
-};
-
-function closeReportWindow() {
-	$('.reportwindow').remove();
+	'afterShow'     :	reportWindowOnLoad
 };
 
 function reportSubmit() {
-	$.post(reportpage, {'type':$('.reportselect').val(), 'other':$('.reporttext').val()},
+	$.post(reporturl, {'type':$('.reportselect').val(), 'comment':$('.reporttext').val()},
 			function(data){
+                reportSettings['type'] = 'html';
 				$.fancybox(data,reportSettings);
 			});
-};
+}
 
 function reportWindowOnLoad(){
 	$('.reportcancel').click(function(){
@@ -30,10 +30,15 @@ function reportWindowOnLoad(){
 			$('.reporttext').slideDown();
 		else
 			$('.reporttext').slideUp();
+        $.fancybox.update()
 	});
-};
+}
 
 $(function(){
-	$('.reportbutton').fancybox(reportSettings);
+    $('.reportbutton').click(function(){
+        reportSettings['type'] = 'ajax';
+        reportSettings['href'] = $(this).data('report-url');
+        $.fancybox(reportSettings);
+    });
 });
 

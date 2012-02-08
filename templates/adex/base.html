@@ -2,7 +2,7 @@
 
 {% block htmlclass %}htmlindex{% endblock %}
 
-{% load comments hitcount_tags %}
+{% load comments hitcount_tags reporting %}
 
 {% block title %}{{ adex.title }} - {{ block.super }}{% endblock %}
 
@@ -33,13 +33,13 @@
                     <li onclick="rateadex('5','{{ adex.id }}'); "title="5 star out of 5" class="star5">5</li>
                 </ul>
 
-            <div id="addthis">
-                <div class="addthis_toolbox addthis_default_style " addthis:title="Dustin Approves!" addthis:description="Dustin Horse">
-                    <a class="addthis_counter addthis_pill_style"></a>
+                <div id="addthis">
+                    <div class="addthis_toolbox addthis_default_style " addthis:title="Dustin Approves!" addthis:description="Dustin Horse">
+                        <a class="addthis_counter addthis_pill_style"></a>
+                    </div>
+                    <script type="text/javascript">var addthis_config = {"data_track_clickback":true};</script>
+                    <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=ra-4d7a704f044c9114"></script>
                 </div>
-                <script type="text/javascript">var addthis_config = {"data_track_clickback":true};</script>
-                <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=ra-4d7a704f044c9114"></script>
-            </div>
             </div>
             <div id="headerdetails">
                 {% get_comment_count for adex as comment_count %}
@@ -113,7 +113,8 @@
 
             </div>
             <div id="sidebarindex">
-                <a href="http://anondex.com/report.php?a=1&i=133" class="reportbutton"></a>
+                {% reportbutton adex "user" %}
+
                 <!-- <img src="images/tab2.gif" alt="Related" title="Related Items" class="tabimg" /> -->
                 <div id="relatedcaption">Related</div>
                 <div id="related" class="csshover">
