@@ -35,7 +35,12 @@ function checkValues(valData) {
 //			if ((!IsDefined(valData.htmlselect)) && (!IsDefined(valData.html))) arrErrors.push("- Must upload an HTML file, or input custom HTML.");
 //			break;
 	}
-	if ((!IsDefined(valData.recaptcha_response_field)) && (valData.preview == '0')) arrErrors.push("- 'Captcha' must be completed.");
+    if (valData.preview == '0'){
+        if (!IsDefined(valData.recaptcha_response_field))
+            arrErrors.push("- 'Captcha' must be completed.");
+        if (valData.tos == 'no')
+            arrErrors.push("- 'You must agree to the Terms of Service to create content.");
+    }
 	
 	var errString = arrErrors.join('\n');
 	if (errString != '') {
@@ -62,7 +67,8 @@ function createPage(NotPreview){
 	content.preview = NotPreview ? '0' : '1';
 	content.type = $("input[name='type']:checked").val();
 	content.imgtemplate = $("input[name='imgtemplate']:checked").val();
-	content.proportional = ($("input[name='proportion']:checked").length == 1) ? 'yes' : 'no';
+	content.proportional = ($("input[name='proportion']").is(':checked')) ? 'yes' : 'no';
+    content.tos = ($("#tos").is(':checked')) ? 'yes' : 'no';
 	switch(content.type){
 		case "image": content.type = 0; break;
 		case "video": content.type = 1; break;
@@ -270,7 +276,7 @@ function create_onload() {
 
 	if (!isbanned) {
 		loadCreateUploader();
-		Recaptcha.create("6LdKer0SAAAAAEj2Tu5XjFY2VajoSy8eltRpjfaN", "recaptchadivframe", 
+		Recaptcha.create("6LdkaM0SAAAAAHoGAvLwosknMLA5pL-J7DYKSVj0", "recaptchadivframe",
 				   {	theme: "clean",
 				     	callback: Recaptcha.focus_response_field 
 				   });

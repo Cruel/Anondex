@@ -1,8 +1,10 @@
 import random
 import string
 import time
+from recaptcha.client import captcha
 from adex.models import Adex
 import simplejson as json
+from api_keys import RECAPTCHA_PRIV_KEY
 
 def processCreateVars(vars):
     errors = list()
@@ -32,9 +34,19 @@ def processCreateVars(vars):
             errors.append('You must upload an HTML file, or input custom HTML.')
     else:
         errors.append('You must select a template.')
-    if vars.get('preview') == '0' and not vars.get('recaptcha_response_field'):
-        errors.append('Captcha must be completed.')
-    # TODO: More checks... for valid files, valid url, etc... ?
+
+    if vars.get('preview') == '0':
+        if vars.get('tos') == 'no':
+            errors.append('You must agree to the Terms of Service to create content.')
+        if not vars.get('recaptcha_response_field'):
+            errors.append('Captcha must be completed.')
+        else:
+            challenge_field = vars.get('recaptcha_challenge_field')
+            response_field = vars.get('recaptcha_response_field')
+            captcha_error = checkCaptcha(challenge_field, response_field, vars.get('ip'))
+            if captcha_error:
+                errors.append(captcha_error)
+        # TODO: More checks... for valid files, valid url, etc... ?
     return errors if len(errors) > 0 else False
 
 
@@ -46,6 +58,21 @@ def genItemCode():
         return genItemCode()
     except Adex.DoesNotExist:
         return ret
+
+def checkCaptcha(challenge_field, response_field, ip):
+    response = captcha.submit(
+        challenge_field,
+        response_field,
+        RECAPTCHA_PRIV_KEY,
+        ip,
+    )
+    if not response.is_valid: # 'incorrect-captcha-sol' or ''
+        if response.error_code == 'incorrect-captcha-sol':
+            return "Incorrect captcha was given, please refresh it and try again."
+        else:
+            return "Captcha error '%s'. Try again. If problem continues, report to admin."
+    else:
+        return False
 
 
 # {"image":{"style":"stretch","proportional":true},"audio":null}

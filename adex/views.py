@@ -89,13 +89,14 @@ def create_adex(request):
     if request.POST:
         # (re)Verify input
         v = request.POST.copy()
+        v['ip'] = request.META['REMOTE_ADDR']
         errors = processCreateVars(v)
         data, media_list = genData(v)
         if not errors:
             user = request.user if request.user.is_authenticated() else None
             adex = Adex.objects.create(
                 user        = user,
-                ip          = request.META['REMOTE_ADDR'],
+                ip          = v.get('ip'),
                 item_code   = genItemCode(),
                 domain      = v.get('domain'),
                 title       = v.get('title'),
@@ -117,7 +118,7 @@ def create_adex(request):
 
             return HttpResponse(json.dumps({'success':True, 'value':'http://anondex.com/?'+adex.item_code}))
         else:
-            return HttpResponse(json.dumps({'success':False, 'error':'<div><ul><li>'+'</li><li>'.join(errors)+'</li></ul></div>'}))
+            return HttpResponse(json.dumps({'success':False, 'value':'<div><ul><li>'+'</li><li>'.join(errors)+'</li></ul></div>'}))
     else:
         return redirect('/')
 
