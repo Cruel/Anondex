@@ -15,6 +15,60 @@
         {% if request.is_ajax %}
             <script>$(userid_load); $(create_onload);</script>
         {% endif %}
+
+        <div id="media-controller">
+            <!--div class="ajax_msg ajax_msg_success">Adex successfully created: <input type="text" onclick="this.select();" value="http://anondex.com/?test"><div onclick="CloseAjaxDiv(this.parentNode);" class="delicon"></div></div-->
+            <h1>Media Bank</h1>
+            <div class="createcaption">Add any media files (image, video, audio) you want to use.</div>
+            <input type="button" id="btnAddFile" value="New Upload" />
+            <input type="button" id="btnAddFileLib" value="From Library" />
+
+            <div id="filedata" class="librarylist"></div>
+        </div>
+
+        <div id="createbar">
+            <div id="createwrapper">
+                <h1>Template</h1>
+                <div class="createcaption">asdf asdf sadf afs</div>
+                <div class="typeradio typeimage"><input id="imageradio" name="type" type="radio" value="image" /><label for="imageradio">Image<b id="imageimage"></b></label></div>
+                <div class="typeradio typevideo"><input id="videoradio" name="type" type="radio" value="video" /><label for="videoradio">Video<b id="videoimage"></b></label></div>
+                <div class="typeradio typeflash"><input id="flashradio" name="type" type="radio" value="flash" /><label for="flashradio">Flash<b id="flashimage"></b></label></div>
+                <div class="typeradio typeurl"><input id="urlradio" name="type" type="radio" value="url" /><label for="urlradio">URL<b id="urlimage"></b></label></div>
+                <!--div class="typeradio typehtml"><input id="htmlradio" name="type" type="radio" value="html" /><label for="htmlradio">HTML<b id="htmlimage"></b></label></div-->
+                <div id="typeoptions">
+                    <div id="urloptions">
+                        <input id="url" type="text" maxlength="200" placeholder="http://" />
+                    </div>
+                    <div id="imageoptions">
+                        <span id="imageoptionlist">
+                            <div id="imgtemp3"><input name="imgtemplate" id="i3" type="radio" value="3" /><label for="i3"><b>Stretch</b></label></div>
+                            <div id="imgtemp2"><input name="imgtemplate" id="i2" type="radio" value="2" /><label for="i2"><b>Repeat</b></label></div>
+                            <div id="imgtemp1"><input name="imgtemplate" id="i1" type="radio" value="1" /><label for="i1"><b>Center</b></label></div>
+                        </span>
+                        <span id="propcheckspan"><input type="checkbox" name="proportion" checked /> Keep proportions</span>
+                        <span id="imageselectspan"></span>
+                        <span id="audioselectspan"></span>
+                    </div>
+                    <div id="videooptions">
+                        <span id="videoselectspan"></span>
+                    </div>
+                    <div id="flashoptions">
+                        <span id="flashselectspan"></span>
+                    </div>
+                    <!--div id="htmloptions">
+                        <div id="htmlfield">
+                            <textarea id="html" wrap="soft" class="tooltip"></textarea>
+                            <span class="hint">
+                                    Enter your page content here. All HTML supported.<br /><br />Uploaded media content can be used in your HTML. Just use a relative path to the file, filenames are preserved.<br />Click below on the filename for example HTML. It will append the file's HTML to yours.
+                                <span class="hint-pointer"></span>
+                            </span>
+                        </div>
+                        <span id="htmlselectspan"></span>
+                    </div-->
+                </div>
+            </div>
+        </div>
+
         <div id="useriddiv" class="create_field">
             <label class="fieldlabel" for="userid">Create as</label>
             <select id="userid">
@@ -66,76 +120,17 @@
             </div>
         </div>
 
-        <div id="createbar">
-            <div id="createwrapper">
-                <h1>Template</h1>
-                <div class="createcaption">asdf asdf sadf afs</div>
-                <div class="typeradio typeimage"><input id="imageradio" name="type" type="radio" value="image" /><label for="imageradio">Image<b id="imageimage"></b></label></div>
-                <div class="typeradio typevideo"><input id="videoradio" name="type" type="radio" value="video" /><label for="videoradio">Video<b id="videoimage"></b></label></div>
-                <div class="typeradio typeflash"><input id="flashradio" name="type" type="radio" value="flash" /><label for="flashradio">Flash<b id="flashimage"></b></label></div>
-                <div class="typeradio typeurl"><input id="urlradio" name="type" type="radio" value="url" /><label for="urlradio">URL<b id="urlimage"></b></label></div>
-                <!--div class="typeradio typehtml"><input id="htmlradio" name="type" type="radio" value="html" /><label for="htmlradio">HTML<b id="htmlimage"></b></label></div-->
-                <div id="typeoptions">
-                    <div id="urloptions">
-                        <input id="url" type="text" maxlength="200" placeholder="http://" />
-                    </div>
-                    <div id="imageoptions">
-                        <span id="imageoptionlist">
-                            <div id="imgtemp3"><input name="imgtemplate" id="i3" type="radio" value="3" /><label for="i3"><b>Stretch</b></label></div>
-                            <div id="imgtemp2"><input name="imgtemplate" id="i2" type="radio" value="2" /><label for="i2"><b>Repeat</b></label></div>
-                            <div id="imgtemp1"><input name="imgtemplate" id="i1" type="radio" value="1" /><label for="i1"><b>Center</b></label></div>
-                        </span>
-                        <span id="propcheckspan"><input type="checkbox" name="proportion" checked /> Keep proportions</span>
-                        <span id="imageselectspan"></span>
-                        <span id="audioselectspan"></span>
-                    </div>
-                    <div id="videooptions">
-                        <span id="videoselectspan"></span>
-                    </div>
-                    <div id="flashoptions">
-                        <span id="flashselectspan"></span>
-                    </div>
-                    <!--div id="htmloptions">
-                        <div id="htmlfield">
-                            <textarea id="html" wrap="soft" class="tooltip"></textarea>
-                            <span class="hint">
-                                    Enter your page content here. All HTML supported.<br /><br />Uploaded media content can be used in your HTML. Just use a relative path to the file, filenames are preserved.<br />Click below on the filename for example HTML. It will append the file's HTML to yours.
-                                <span class="hint-pointer"></span>
-                            </span>
-                        </div>
-                        <span id="htmlselectspan"></span>
-                    </div-->
-                </div>
-            </div>
-        </div>
-
-        <div id="upload-controller">
-            <!--div class="ajax_msg ajax_msg_success">Adex successfully created: <input type="text" onclick="this.select();" value="http://anondex.com/?test"><div onclick="CloseAjaxDiv(this.parentNode);" class="delicon"></div></div-->
-            <h1>File Uploads</h1>
-            <div class="createcaption"><b>Supported types:</b> .jpg .gif .png .mp3 .swf .webm .mp4</div>
-            <input type="button" id="btnAddFile" value="New Upload" />
-            <input type="button" id="btnAddFileLib" value="From Library" />
-
-            <form id="fileuploader" method="post">
-
-                <input type="file" id="file" name="file" accept="image/png,image/jpeg,image/gif" multiple />
-            </form>
-            
-            <div id="filedata" class="librarylist"></div>
-        </div>
-<div id="results"></div>
-
         <div id="recaptchadivframe"></div>
 
-        <div id="termsdiv">
+        <div class="termsdiv">
             <input type="checkbox" id="tos" />
             <label for="tos">Check if you have read the <a href="{% url home_tos %}">Terms of Service</a> and <a href="{% url home_privacy %}">Privacy Policy</a>.</label>
         </div>
         
         <div id="submitbuttons">
-            <input type="button" id="createbutton" value="Create" onClick="createPage(true);" disabled />
-            <input type="button" value="Preview" onClick="createPage(false);" />
-            <input type="button" value="Reset" onclick="resetForm();" />
+            <input type="button" class="createbutton" id="createbutton" value="Create" onClick="createPage(true);" disabled />
+            <input type="button" class="createbutton" value="Preview" onClick="createPage(false);" />
+            <input type="button" class="createbutton" value="Reset" onclick="resetForm();" />
         </div>
 
     </div>

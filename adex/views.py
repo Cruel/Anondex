@@ -10,7 +10,6 @@ from tagging.models import Tag, TaggedItem
 import time
 from adex.create import processCreateVars, genData, genItemCode
 from adex.models import Adex
-from home.ajax_views import addlibfile
 from medialibrary.models import LibraryFile
 from medialibrary.utils import genVideoThumb, webthumb
 import settings
@@ -127,10 +126,12 @@ def upload_file(request):
     # TODO: Limit user uploads to avoid upload bombing
     if request.method == 'POST':
         try:
-            user = request.user if request.user.is_authenticated() else None
-            file = LibraryFile(user=user, ip=request.META['REMOTE_ADDR'])
+            user = None
+            if request.POST.get('user')=='name' and request.user.is_authenticated():
+                user = request.user
+            file = LibraryFile(user=user, ip=request.META['REMOTE_ADDR'], tags=request.POST.get('tags'))
             file.save_file(request.FILES['file'])
-            return addlibfile(request, file.id)
+            return HttpResponse(json.dumps({'success':True, 'id':file.id}))
         except Exception, e:
             return HttpResponse(json.dumps({'success':False, 'error':e.message}))
     return HttpResponse(json.dumps({'success':False, 'error':'Error uploading file.'}))

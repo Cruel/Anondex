@@ -30,7 +30,7 @@ function fadeScale(objSelector, fadeIn, callback){
 
 function browse_onload(){
     $('.browsetable > div').click(function(){
-        window.location = $(this).attr('rel');
+        window.location.href = $(this).attr('rel');
     });
 }
 
@@ -46,6 +46,7 @@ function home_onload(){
         fadeScale('#sidebar', true);
         $('#sidebar').ajaxify();
         comment_cluetips();
+        bindThumbEvents('#sidebar');
     });
 
 	// Check to see if History.js is enabled for our Browser

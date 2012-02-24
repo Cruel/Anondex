@@ -59,11 +59,11 @@ function makePOSTData(postdata, paramlist){
 function createPage(NotPreview){
 	var content = {};
 	makePOSTData(content, ["userid","duration","title","description","recaptcha_challenge_field","recaptcha_response_field","url","imageselect","audioselect","videoselect","flashselect"]);
-    var tagNames = new Array();
-    $("#taglist li.tagItem").each(function () {
-        tagNames.push($(this).html());
-    });
-    content.tags = tagNames.join(',');
+//    var tagNames = new Array();
+//    $("#taglist li.tagItem").each(function () {
+//        tagNames.push($(this).html());
+//    });
+    content.tags = $('#taglist').tagHandler('getSerializedTags');//tagNames.join(',');
 	content.preview = NotPreview ? '0' : '1';
 	content.type = $("input[name='type']:checked").val();
 	content.imgtemplate = $("input[name='imgtemplate']:checked").val();
@@ -93,10 +93,9 @@ function createPage(NotPreview){
                 $.unblockUI();
                 if (data.success) {
                     resetForm();
-                    refreshFileList();
-                    AddAjaxDiv('#upload-controller', "ajax_msg_success", 'Adex successfully created: <input type="text" value="'+data.value+'" onclick="this.select();" />');
+                    AddAjaxDiv('#submitbuttons', "ajax_msg_success", 'Adex successfully created: <input type="text" value="'+data.value+'" onclick="this.select();" />');
                 } else {
-                    AddAjaxDiv('#upload-controller', "ajax_msg_error", data.value);
+                    AddAjaxDiv('#submitbuttons', "ajax_msg_error", data.value);
                 }
                 //if (data.indexOf('<div id="createerrors">') > -1) wnd.close();
         }, "json");
@@ -170,91 +169,36 @@ function checkName(data){
 	if (data.indexOf("is a") > -1) $("#name").css("backgroundColor", "green");
 }
 
-function refreshFileList(removeid, obj) {
-    $('#upload-controller').blockEx();
-	var remove_url = (typeof removeid == 'undefined') ? '' : '?d='+removeid;
-	//alert(remove_url);
-	$('#filedata').load('/ajax/filelist'+remove_url, {},
+function refreshFileList(action, id, obj) {
+    $('#media-controller').blockEx();
+    var mod_url = '';
+    if (action) {
+        mod_url = '?action='+action;
+        mod_url += (typeof id == 'undefined') ? '' : '&id='+id;
+    }
+	$('#filedata').load('/ajax/filelist'+mod_url, {},
 		function(){
-            $('#upload-controller').unblock();
+            $('#media-controller').unblock();
 			$('#imageselectspan').html($('#imagelist').remove().html());
 			$('#audioselectspan').html($('#audiolist').remove().html());
 			$('#videoselectspan').html($('#videolist').remove().html());
 			$('#flashselectspan').html($('#flashlist').remove().html());
 			$('#htmlselectspan').html($('#htmllist').remove().html());
-			$("#uploader").css("display", ($('#maxfileval').remove().html() == '1') ? 'block' : 'none');
 			if (obj) $(obj).remove();
 			//alert($('#imageselectspan').html());
+            bindThumbEvents('#filedata');
 		});
 }
 
-//function startCreateUpload(){
-//    for (i in filelist)
-//        $('#fileuploader').fileupload('send',{files: filelist[i]});
-//}
-
-var filelist = new Array();
 function loadCreateUploader(){
     $('#btnAddFile').click(function(e) {
-        $('#file').click();
+        //$('#file').click();
+        $.fancybox(uploadBox);
     });
 
     $('#btnAddFileLib').click(function(e) {
-        attachBox.onClosed = addFromLibWindowOnClose;
+        attachBox.afterClose = addFromLibWindowOnClose;
         $.fancybox(attachBox);
-    });
-
-    $('#upload-controller').bind('dragenter', function(){
-        $(this).css('outline','2px solid red');
-    });
-    $('#upload-controller').bind('dragleave drop', function(){
-        $(this).css('outline','0');
-    });
-
-    $('#fileuploader').fileupload({
-        url: '/upload_file',
-        dataType: 'json',
-        'dropZone': $('#upload-controller'),
-        'fileInput': $('#file'),
-        sequentialUploads: true,
-        maxFileSize: 50000,
-        add: function (e, data) {
-//                 $.each(data.files, function (index, file) {
-//                    var duplicate = false;
-//                    for (i in filelist)
-//                        if (filelist[i].name == file.name)
-//                            duplicate = true;
-//                    if (!duplicate){
-//                        filelist.push(file);
-//                        $('#filelist').append('<li>'+file.name+'</li>');
-//                    }
-//                });
-                $('#upload-controller').blockEx();
-                data.submit();
-            },
-        'progress': function(e, data){
-                var progress = parseInt(data.loaded / data.total * 100, 10);
-                //drawImageFit(canvas, img, progress);
-                //$('#results').append('<p>'+progress+'-'+data.files[0].name+'</p>');
-            },
-        change: function (e, data) {
-                //loadImage(data.files[0]);
-            },
-        drop: function (e, data) {
-                //loadImage(data.files[0]);
-                $.each(data.files, function (index, file) {
-                    //alert('Dropped file: ' + file.name);
-                    //loadImage(file);
-                });
-            },
-        done: function (e, data) {
-                if (data.result.success) {
-                    refreshFileList();
-                } else {
-                    $('#upload-controller').unblock();
-                    AddAjaxDiv('#upload-controller', "ajax_msg_error", data.result.error);
-                }
-            }
     });
 }
 

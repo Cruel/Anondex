@@ -14,6 +14,27 @@ var attachBox = {
 	//'onClosed'	    :	attachWindowOnClose
 };
 
+function bindThumbEvents(selector){
+    var config = {
+        over: function(){videoThumbCycle(this)},
+        timeout: 600, // milliseconds delay before onMouseOut
+        out: function(){videoThumbCycle(null)}
+    };
+    $(selector+' .video').hoverIntent(config);
+}
+
+var cycleTimeout = null;
+function videoThumbCycle(obj){
+    if (obj==null) {
+        clearTimeout(cycleTimeout);
+    } else {
+        position = parseInt($(obj).css('background-position').replace('%', ''));
+        position = (position==100) ? 0 : position+25;
+        $(obj).css('background-position', position+'%');
+        cycleTimeout = setTimeout(function(){videoThumbCycle(obj);}, 500);
+    }
+}
+
 function attachWindowOnClose(){
     //var obj = ($('#comments').length == 0) ? $(document).contents() : $('#comments').contents();
     if (parent.attach_file_id == null){
@@ -27,18 +48,19 @@ function attachWindowOnClose(){
 
 function addFromLibWindowOnClose(){
     if (attach_file_id != null){
-        $('#upload-controller').blockEx();
-        $.getJSON('/ajax/addlibfile/'+attach_file_id,
-                function(data){
-                    if (data.success) {
-                        //$.growlUI('lol Posted.');
-                        refreshFileList();
-                    } else {
-                        $('#upload-controller').unblock();
-                        alert(data.error);
-                    }
-                }
-           );
+        refreshFileList('add',attach_file_id);
+//        $('#media-controller').blockEx();
+//        $.getJSON('/ajax/addlibfile/'+attach_file_id,
+//                function(data){
+//                    if (data.success) {
+//                        //$.growlUI('lol Posted.');
+//                        refreshFileList();
+//                    } else {
+//                        $('#media-controller').unblock();
+//                        alert(data.error);
+//                    }
+//                }
+//           );
     }
 }
 

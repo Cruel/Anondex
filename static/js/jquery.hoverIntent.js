@@ -30,7 +30,6 @@
 * 
 * modified by Karl Swedberg. Namespaced events in order to work better with clueTip plugin
 */
-//TODO: Fix the erroneous text put here by build.php
 
 (function($) {
 	$.fn.hoverIntent = function(f,g) {

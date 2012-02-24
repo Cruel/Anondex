@@ -6,7 +6,7 @@
 {% if not request.is_ajax %}
     {% block postscripts %}
         {{ block.super }}
-        <script>$(comment_onload);</script>
+        <script>$(comment_onload); $(loadMediaPlayer);</script>
     {% endblock %}
 {% endif %}
 
@@ -14,7 +14,7 @@
 {% block content %}
     <div id="audiopage">
         {% if request.is_ajax %}
-            <script>$(userid_load); $(comment_onload);</script>
+            <script>$(userid_load); $(comment_onload); $(loadMediaPlayer);</script>
         {% endif %}
         {% if audio %}
             <div id="audio">

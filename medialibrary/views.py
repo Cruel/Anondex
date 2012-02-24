@@ -10,7 +10,7 @@ def index(request):
     items = ''
     return render_to_response('home/index.html', {'user':request.user, 'items':items}, context_instance=RequestContext(request))
 
-@login_required
+#@login_required
 def attach(request):
     files = LibraryFile.objects.all().order_by('date')
     return render_to_response('medialibrary/attach.html', {'user':request.user, 'files':files}, context_instance=RequestContext(request))

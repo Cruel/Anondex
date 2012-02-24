@@ -1,0 +1,39 @@
+{% extends "home/base.html" %}
+{% load comments %}
+
+{% block title %}Image - {{ block.super }}{% endblock %}
+
+{% if not request.is_ajax %}
+    {% block postscripts %}
+        {{ block.super }}
+        <script>$(comment_onload);</script>
+    {% endblock %}
+{% endif %}
+
+
+{% block content %}
+    <div id="imagepage">
+        {% if request.is_ajax %}
+            <script>$(userid_load); $(comment_onload);</script>
+        {% endif %}
+        {% if album %}
+            <div class="image">
+                <a href="{{ MEDIA_URL }}i/{{ album.filename }}" class="no-ajaxy">
+                    <img src="{{ MEDIA_URL }}i/{{ album.filename }}" alt="{{ album.name }}" />
+                </a>
+            </div>
+            {% get_comment_count for album as comment_count %}
+            <p>{{ comment_count }} comments have been posted.</p>
+            {% get_comment_list for album as comment_list %}
+            {% include "comments/comments.html" with anchored=1 stubbed=0 modcontrols=1 title=1 %}
+            {% comment %}
+                {% render_comment_list for profile %}
+                {% render_comment_form for profile %}
+            {% endcomment %}
+            {% get_comment_form for album as form %}
+            {% include "comments/form.html" %}
+        {% else %}
+            <p>Image does not exist.</p>
+        {% endif %}
+    </div>
+{% endblock %}

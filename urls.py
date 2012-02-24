@@ -30,6 +30,7 @@ urlpatterns = patterns('',
     url(r'^video/(?P<file_id>\d+)$', 'comments.views.video_page', name='video'),
     url(r'^audio/(?P<file_id>\d+)$', 'comments.views.audio_page', name='audio'),
     url(r'^flash/(?P<file_id>\d+)$', 'comments.views.flash_page', name='flash'),
+    url(r'^album/(?P<file_id>\d+)$', 'comments.views.album_page', name='album'),
 
     # Admin
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

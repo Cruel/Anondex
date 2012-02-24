@@ -1,0 +1,26 @@
+@import base.sass
+
+#uploaddiv
+
+    .fieldlabel
+        float: left
+        width: 100px
+        margin: 5px 0 8px 24px
+        font: 15px $font-content2
+
+#upload-controller
+    margin-bottom: 15px
+    padding: 12px 14px 15px 20px
+    cursor: pointer
+    background: #FBB
+    +border-radius(6px)
+    &.in
+        background: green
+    &.hover
+        background: blue
+    &.fade
+        +transition(all 0.3s ease-out)
+        opacity: 1
+
+#upload-progress
+    //height: 1em

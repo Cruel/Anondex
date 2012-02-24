@@ -4,9 +4,6 @@
 
 #creatediv
   margin-top: 15px
-  input[type=file]
-    position: absolute
-    visibility: hidden
 
 .create_field
   clear: both
@@ -119,7 +116,7 @@
 #createwrapper
   width: 630px
 
-#createbar h1, #upload-controller h1
+#createbar h1, #media-controller h1
   float: left
   font: bold 18px Verdana
   padding: 0 10px 0 0
@@ -262,9 +259,6 @@
 #htmlselect
   width: 130px
 
-#maxfileval
-  display: none
-
 #uploader
   display: none
   clear: both
@@ -272,33 +266,34 @@
   height: 80px
 
 #recaptchadivframe
-  padding: 15px 0
+  padding: 0 24px
 
 #submitbuttons
   clear: both
   margin: 10px 0 15px 20px
   height: 400px
-  > input
-    float: left
-    background: #D4D4FF
-    border: 0
-    border-radius: 4px
-    width: 80px
-    height: 28px
-    box-shadow: 2px 2px 2px #888
-    text-shadow: 1px 1px 1px #444
-    margin: 2px 8px
-    &:enabled
-      &:hover
-        background: #CCF
-        box-shadow: 1px 1px 2px #888
-        margin: 3px 7px 1px 9px
-      &:active
-        margin: 4px 6px 0 10px
-        box-shadow: none
-    &:disabled
-      text-shadow: none
-      background: #CCC
+
+.createbutton
+  float: left
+  background: #D4D4FF
+  border: 0
+  border-radius: 4px
+  width: 80px
+  height: 28px
+  box-shadow: 2px 2px 2px #888
+  text-shadow: 1px 1px 1px #444
+  margin: 2px 8px
+  &:enabled
+    &:hover
+      background: #CCF
+      box-shadow: 1px 1px 2px #888
+      margin: 3px 7px 1px 9px
+    &:active
+      margin: 4px 6px 0 10px
+      box-shadow: none
+  &:disabled
+    text-shadow: none
+    background: #CCC
 
 .hint
   display: none
@@ -323,7 +318,7 @@
     background: url(css/imprimis/pointer.gif) left top no-repeat
 
 
-#upload-controller
+#media-controller
   margin-bottom: 15px
   padding: 12px 14px 15px 20px
   width: 650px
@@ -338,3 +333,6 @@
   clear: both
   width: 640px
 
+.termsdiv
+  clear: both
+  padding: 10px 22px

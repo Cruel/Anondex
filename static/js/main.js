@@ -193,16 +193,17 @@ var loginBox = {
 	'centerOnScroll':	true,
 	'overlayColor'	:	'black',
 	'overlayOpacity':	0.6,
-	'onClosed'	    :	loginBoxOnClosed
+	'afterClose'	    :	loginBoxOnClose
 };
 
-function loginBoxOnClosed(){
+function loginBoxOnClose(){
     if ($('#userid').val()=='login')
         $('#userid').val('anon');
 }
 
 function LoginRedirect(username){
     parent.$('option[value=login]').val('name').html(username);
+    parent.$('#userid').val('name');
     parent.$('#loginmenu').html('<a href="/user/'+username+'">'+username+'</a> &middot; <a class="no-ajaxy" href="/logout/">logout</a>').ajaxify();
     parent.$.fancybox.close();
     parent.$.growlUI('Logged in. Welcome, '+username+'!');
@@ -228,8 +229,9 @@ function moveMouse(e){
 	}
 }
 
-function userid_load(){
-    $("select#userid").change(function(){
+function userid_load(userid){
+    userid = (typeof userid !== 'undefined') ? userid : "userid";
+    $("select#"+userid).change(function(){
         if ($(this).val() == "temp")
             $('input[name=name]').show('fast')
         else
@@ -238,6 +240,12 @@ function userid_load(){
         if ($(this).val() == "login") {
             $.fancybox(loginBox);
         }
+    });
+}
+
+function loadMediaPlayer(){
+    $('video,audio').mediaelementplayer({
+        pluginPath:'http://anondex.com/media/'
     });
 }
 
@@ -281,7 +289,7 @@ function ajaxCSRF(){
 }
 
 $(function(){
-    $(document).mousemove(moveMouse);
+    //$(document).mousemove(moveMouse);
     userid_load();
     $('#loginmenu .login').fancybox(loginBox);
     ajaxCSRF();

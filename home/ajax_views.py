@@ -1,5 +1,6 @@
 import random
 from django.contrib.contenttypes.models import ContentType
+from django.core.cache import cache
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.template.context import RequestContext
@@ -13,11 +14,14 @@ from medialibrary.models import LibraryFile
 
 @csrf_exempt
 def filelist(request):
-    media = request.session.get('uploaded_media')
+    media = request.session.get('uploaded_media') or []
+    action = request.GET.get('action')
     media_list, image_list, video_list, audio_list, flash_list, remove_list = ([] for i in range(6))
-    if media and len(media) > 0:
-        if request.GET.get('d'):
-            media.remove(request.GET.get('d'))
+    if action == 'add':
+        media.append(request.GET.get('id'))
+    if len(media) > 0:
+        if action == 'remove':
+            media.remove(request.GET.get('id'))
         for media_id in media:
             try:
                 file = LibraryFile.objects.get(pk=media_id)
@@ -43,11 +47,11 @@ def comment(request, comment_id):
     comment = get_object_or_404(AdexComment.objects, pk = comment_id)
     return render_to_response('comments/comments.html', {'comment_list':[comment],'anchored':False}, RequestContext(request))
 
-def addlibfile(request, media_id):
-    media = request.session.get('uploaded_media') or []
-    media.append(unicode(media_id))
-    request.session['uploaded_media'] = media
-    return HttpResponse(json.dumps({'success':True, 'value':media_id}))
+#def addlibfile(request, media_id):
+#    media = request.session.get('uploaded_media') or []
+#    media.append(unicode(media_id))
+#    request.session['uploaded_media'] = media
+#    return HttpResponse(json.dumps({'success':True, 'value':media_id}))
 
 def sidebar(request):
     adex_list = Adex.objects.all().order_by('-date')[:2]
@@ -84,3 +88,10 @@ def report(request, type, id):
     elif type == 'image':
         image = get_object_or_404(LibraryFile.objects, pk = id)
     return redirect('/')
+
+def encode_progress(request):
+    ip = request.META['REMOTE_ADDR']
+    framestring = cache.get('%s_frame'%ip)
+    cache.set('%s_frame'%ip, None)
+    cache.delete('%s_frame'%ip)
+    return HttpResponse(json.dumps({'percent':cache.get('%s_encode'%ip), 'frame':framestring}), mimetype="application/json")

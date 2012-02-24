@@ -3,6 +3,7 @@ from datetime import datetime
 from genericpath import getsize
 import mimetypes
 import os
+import re
 import string
 from django.contrib.auth.models import User
 from django.core.files.move import file_move_safe
@@ -13,8 +14,9 @@ from tagging.fields import TagField
 from tagging.utils import parse_tag_input
 from os.path import basename
 import Image as pil
+import time
 from comments.utils import md5_file
-from medialibrary.utils import get_video_size, genVideoThumb, get_media_duration, LIBRARYFILE_THUMB_WIDTH, LIBRARYFILE_THUMB_HEIGHT, THUMB_FRAME_COUNT, LIBRARYFILE_THUMB_RATIO, webthumb
+from medialibrary.utils import get_video_size, genVideoThumb, get_media_duration, LIBRARYFILE_THUMB_WIDTH, LIBRARYFILE_THUMB_HEIGHT, THUMB_FRAME_COUNT, LIBRARYFILE_THUMB_RATIO, webthumb, encodeVideo
 import settings
 from django.template.defaultfilters import slugify
 
@@ -28,11 +30,13 @@ class LibraryFile(models.Model):
         (2, 'video'),
         (3, 'audio'),
         (4, 'flash'),
+        (5, 'album'),
     )
-    IMAGE_EXTENSIONS = ('image/jpeg','image/png','image/gif')
-    VIDEO_EXTENSIONS = ('video/webm','video/x-flv','video/mpeg','video/mp4')
-    AUDIO_EXTENSIONS = ('audio/mp3','audio/mpeg','audio/midi')
-    FLASH_EXTENSIONS = ('application/x-shockwave-flash')
+    # Also see upload.js constants
+    IMAGE_EXTENSIONS = r'^image\/(gif|jpeg|png)$'
+    VIDEO_EXTENSIONS = r'^video\/'
+    AUDIO_EXTENSIONS = r'^audio\/(mp3|mpeg|ogg|midi)$'
+    FLASH_EXTENSIONS = r'^application\/x-shockwave-flash$'
     date        = models.DateTimeField(default=datetime.now)
     user        = models.ForeignKey(User, null=True, blank=True)
     ip          = models.IPAddressField()
@@ -45,6 +49,8 @@ class LibraryFile(models.Model):
     name        = models.CharField(max_length=60)
     filename    = models.CharField(max_length=60)
     tags        = TagField()
+    related     = models.ManyToManyField("self")
+    visible     = models.BooleanField(default=True)
 
     def get_tag_list(self):
         return parse_tag_input(self.tags)
@@ -61,12 +67,16 @@ class LibraryFile(models.Model):
 
     def save_video(self, filename):
         self.type = 2
-        (self.width, self.height) = get_video_size(filename)
-        self.length = get_media_duration(filename)
+        file_ext = os.path.splitext(filename)[1]
+        new_filename = string.replace(filename, self.name, "%d.mp4" % time.time())
+        encodeVideo(filename, new_filename, self.ip)
+        (self.width, self.height) = get_video_size(new_filename)
+        self.length = get_media_duration(new_filename)
         super(LibraryFile, self).save() # Intermediate save to get new ID
-        self.filename = "adex%s_%s" % (self.id, self.name)
-        genVideoThumb(filename, settings.MEDIA_ROOT + "v/thumb/%s.jpg" % self.filename)
-        file_move_safe(filename, settings.MEDIA_ROOT + "v/%s" % self.filename)
+        self.filename = "adex%s_%s" % (self.id, string.replace(self.name, file_ext, '.mp4'))
+        genVideoThumb(new_filename, settings.MEDIA_ROOT + "v/thumb/%s.jpg" % self.filename)
+        file_move_safe(new_filename, settings.MEDIA_ROOT + "v/%s" % self.filename)
+
 
     def save_audio(self, filename):
         self.type = 3
@@ -115,13 +125,13 @@ class LibraryFile(models.Model):
             if self.filesize > LIBRARYFILE_MAX_FILESIZE:
                 raise Exception, 'File "%s" (%d) is greater than maximum file size of %d' % (self.name, self.filesize, LIBRARYFILE_MAX_FILESIZE)
 
-            if content_type in self.IMAGE_EXTENSIONS:
+            if re.match(self.IMAGE_EXTENSIONS, content_type):
                 self.save_image(file)
-            elif content_type in self.VIDEO_EXTENSIONS:
+            elif re.match(self.VIDEO_EXTENSIONS, content_type):
                 self.save_video(file)
-            elif content_type in self.AUDIO_EXTENSIONS:
+            elif re.match(self.AUDIO_EXTENSIONS, content_type):
                 self.save_audio(file)
-            elif content_type in self.FLASH_EXTENSIONS:
+            elif re.match(self.FLASH_EXTENSIONS, content_type):
                 self.save_flash(file)
             else:
                 raise Exception, 'Not a valid LibraryFile MIME type "%s" for file "%s"' % (content_type, self.name)
@@ -167,16 +177,17 @@ class LibraryFile(models.Model):
         return mimetypes.guess_type(self.filename)[0]
 
     def url(self):
-        if self.type == 1:
-            return reverse('image', args=[self.pk])
-        elif self.type == 2:
-            return reverse('video', args=[self.pk])
-        elif self.type == 3:
-            return reverse('audio', args=[self.pk])
-        elif self.type == 4:
-            return reverse('flash', args=[self.pk])
-        else:
-            return False
+        return reverse(self.type_name(), args=[self.pk])
+#        if self.type == 1:
+#            return reverse('image', args=[self.pk])
+#        elif self.type == 2:
+#            return reverse('video', args=[self.pk])
+#        elif self.type == 3:
+#            return reverse('audio', args=[self.pk])
+#        elif self.type == 4:
+#            return reverse('flash', args=[self.pk])
+#        else:
+#            return False
     
     thumbnail.short_description = 'Thumbnail'
     thumbnail.allow_tags = True

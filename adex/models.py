@@ -11,11 +11,6 @@ from medialibrary.utils import LIBRARYFILE_THUMB_WIDTH, LIBRARYFILE_THUMB_RATIO
 import settings
 
 class Adex(models.Model):
-    CONTENT_RATING = (
-        (0, 'PG'),
-        (1, 'PG-13'),
-        (2, 'R'),
-    )
     STATUS = (
         (0, 'Pending'),
         (1, 'Approved'),
@@ -36,8 +31,7 @@ class Adex(models.Model):
     date            = models.DateTimeField(default=datetime.now)
     user            = models.ForeignKey(User, null=True, blank=True)
     ip              = models.IPAddressField()
-    content_rating  = models.PositiveSmallIntegerField(choices=CONTENT_RATING, default=0)
-    status          = models.PositiveSmallIntegerField(choices=STATUS, default=0)
+    status          = models.PositiveSmallIntegerField(choices=STATUS, default=1)
     type            = models.PositiveSmallIntegerField(choices=CONTENT_TYPE)
     rating          = AnonymousRatingField(range=5)
     media           = models.ManyToManyField(LibraryFile)
