@@ -26,11 +26,6 @@ urlpatterns = patterns('',
     # Comments
     url(r'^comment/', include('django.contrib.comments.urls')),
     url(r'^comments/', include('comments.urls')),
-    url(r'^image/(?P<file_id>\d+)$', 'comments.views.image_page', name='image'),
-    url(r'^video/(?P<file_id>\d+)$', 'comments.views.video_page', name='video'),
-    url(r'^audio/(?P<file_id>\d+)$', 'comments.views.audio_page', name='audio'),
-    url(r'^flash/(?P<file_id>\d+)$', 'comments.views.flash_page', name='flash'),
-    url(r'^album/(?P<file_id>\d+)$', 'comments.views.album_page', name='album'),
 
     # Admin
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
@@ -54,11 +49,10 @@ urlpatterns = patterns('',
     url(r'^upload_image$', 'comments.views.upload_image'),
     url(r'^upload_file$', 'adex.views.upload_file'),
     url(r'^ajax/', include('home.ajax_urls')),
-    url(r'^lib/', include('medialibrary.urls')),
+    url(r'^medialib/', include('medialibrary.urls')),
     url(r'^report/', include('reporting.urls')),
     url(r'^login_redirect/$', direct_to_template, {'template': 'socialauth/login_redirect.html'}),
     url(r'^auth_redirect/$', direct_to_template, {'template': 'socialauth/auth_redirect.html'}),
-    url(r'^flashview/', 'comments.views.flashview'),
 
     url(r'^vid/$', 'adex.views.test_video'),
 

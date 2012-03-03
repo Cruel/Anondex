@@ -34,7 +34,7 @@ class Adex(models.Model):
     status          = models.PositiveSmallIntegerField(choices=STATUS, default=1)
     type            = models.PositiveSmallIntegerField(choices=CONTENT_TYPE)
     rating          = AnonymousRatingField(range=5)
-    media           = models.ManyToManyField(LibraryFile)
+    media           = models.ManyToManyField(LibraryFile, blank=True)
     data            = models.TextField()
     tags            = TagField()
 

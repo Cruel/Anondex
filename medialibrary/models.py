@@ -49,7 +49,7 @@ class LibraryFile(models.Model):
     name        = models.CharField(max_length=60)
     filename    = models.CharField(max_length=60)
     tags        = TagField()
-    related     = models.ManyToManyField("self")
+    related     = models.ManyToManyField("self", blank=True)
     visible     = models.BooleanField(default=True)
 
     def get_tag_list(self):

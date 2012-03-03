@@ -11,25 +11,28 @@ import time
 from adex.create import processCreateVars, genData, genItemCode
 from adex.models import Adex
 from medialibrary.models import LibraryFile
+from medialibrary.tagging_utils import get_tag_counts
 from medialibrary.utils import genVideoThumb, webthumb
 import settings
 
 def adex_view(request, item_code):
+
     adex = get_object_or_404(Adex, item_code=item_code)
-    ctype = ContentType.objects.get(model="adex")
-    tags = Tag.objects.raw('''SELECT t.id, t.name, COUNT(*) as count
-          FROM tagging_tag AS t
-                  INNER JOIN tagging_taggeditem AS tt ON t.id = tt.tag_id
-                  INNER JOIN `adex_adex` ON tt.object_id = `adex_adex`.`id`
-          WHERE t.id IN (
-
-            SELECT t.id FROM tagging_tag AS t
-        INNER JOIN tagging_taggeditem AS tt ON t.id = tt.tag_id
-          WHERE tt.content_type_id = %d AND tt.object_id = %d
-
-                  )
-          GROUP BY t.id
-          ORDER BY count DESC''' % (ctype.id, adex.id))
+    tags = get_tag_counts(adex)
+#    ctype = ContentType.objects.get(model="adex")
+#    tags = Tag.objects.raw('''SELECT t.id, t.name, COUNT(*) as count
+#          FROM tagging_tag AS t
+#                  INNER JOIN tagging_taggeditem AS tt ON t.id = tt.tag_id
+#                  INNER JOIN `adex_adex` ON tt.object_id = `adex_adex`.`id`
+#          WHERE t.id IN (
+#
+#            SELECT t.id FROM tagging_tag AS t
+#        INNER JOIN tagging_taggeditem AS tt ON t.id = tt.tag_id
+#          WHERE tt.content_type_id = %d AND tt.object_id = %d
+#
+#                  )
+#          GROUP BY t.id
+#          ORDER BY count DESC''' % (ctype.id, adex.id))
     return adex_render(request, adex, tags)
 
 

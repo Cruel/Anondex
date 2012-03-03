@@ -4,7 +4,7 @@ var attach_file_id = null;
 var attach_file_thumb = null;
 var attachBox = {
     'type'          :   'iframe',
-    'href'          :   '/lib/attach',
+    'href'          :   '/medialib/attach',
 	'width'			:	700,
 	'height'		:	400,
 	'padding'		:	0,

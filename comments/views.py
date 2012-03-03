@@ -7,6 +7,7 @@ from comments.models import AdexComment
 from django.core.cache import cache
 from django.utils import simplejson
 from medialibrary.models import LibraryFile
+from medialibrary.tagging_utils import get_tag_counts
 import settings
 
 #def index(request):
@@ -26,31 +27,7 @@ def detail(request, item_id):
 #    return render_to_response('comments/detail.html', {'comments':c},
 #                               context_instance=RequestContext(request))
 
-def image_page(request, file_id):
-    image = get_object_or_404(LibraryFile.objects, pk=file_id, type=1)
-    return render_to_response('home/media_pages/image.html', {'image':image}, RequestContext(request))
 
-def video_page(request, file_id):
-    video = get_object_or_404(LibraryFile.objects, pk=file_id, type=2)
-    w = 670 if video.width > 670 else video.width
-    h = int(w / (video.width / video.height))
-    return render_to_response('home/media_pages/video.html', {'video':video, 'video_width':w, 'video_height':h}, RequestContext(request))
-
-def audio_page(request, file_id):
-    audio = get_object_or_404(LibraryFile.objects, pk=file_id, type=3)
-    return render_to_response('home/media_pages/audio.html', {'audio':audio}, RequestContext(request))
-
-def flash_page(request, file_id):
-    flash = get_object_or_404(LibraryFile.objects, pk=file_id, type=4)
-    return render_to_response('home/media_pages/flash.html', {'flash':flash}, RequestContext(request))
-
-def album_page(request, file_id):
-    album = get_object_or_404(LibraryFile.objects, pk=file_id, type=5)
-    return render_to_response('home/media_pages/album.html', {'album':album}, RequestContext(request))
-
-def flashview(request):
-    url = request.META.get('QUERY_STRING')
-    return render_to_response('home/media_pages/flashview.html', {'flashurl':url}, RequestContext(request))
 
 #@login_required
 #def require_authentication(request):

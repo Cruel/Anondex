@@ -6,4 +6,5 @@ urlpatterns = patterns('medialibrary.views',
     #url(r'^create$', direct_to_template, {'template': 'home/create.html'}, name='create'),
     url(r'^attach$', 'attach', name='medialibrary_attach'),
     #url(r'^(?P<page>\d+)$', 'browse', name='browse'),
+    url(r'^flashview/', 'flashview', name="flashview"),
 )

@@ -22,6 +22,13 @@
                     <img src="{{ MEDIA_URL }}i/{{ image.filename }}" alt="{{ image.name }}" />
                 </a>
             </div>
+
+            <ul>
+            {% for tag in tags %}
+                <li title="There are {{ tag.count|default:"0" }} items tagged with '{{ tag.name }}'"><a href="{% url tagged tag.name 1 %}"><b>{{ tag.name }}</b> &times;{{ tag.count|default:"0" }}</a></li>
+            {% endfor %}
+            </ul>
+
             {% get_comment_count for image as comment_count %}
             <p>{{ comment_count }} comments have been posted.</p>
             {% get_comment_list for image as comment_list %}

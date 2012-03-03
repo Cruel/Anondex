@@ -52,11 +52,11 @@ MEDIA_ROOT = join(ROOT_PATH, 'media/')
 STATIC_ROOT = join(ROOT_PATH, 'static/')
 if not PRODUCTION:
     MEDIA_URL = 'http://localhost/media/'
-    ADMIN_MEDIA_PREFIX = 'http://localhost/static/admin/'
+    ADMIN_MEDIA_PREFIX = 'http://localhost/media/admin/'
     STATIC_URL = 'http://localhost:8000/static/'
 else:
     MEDIA_URL = 'http://anondex.com/media/'
-    ADMIN_MEDIA_PREFIX = 'http://anondex.com/static/admin/'
+    ADMIN_MEDIA_PREFIX = 'http://anondex.com/media/admin/'
     STATIC_URL = 'http://anondex.com/static/'
 
 #FILE_UPLOAD_TEMP_DIR = 'C:/nginx/upload_tmp'
