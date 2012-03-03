@@ -1,38 +1,16 @@
-{% extends "home/base.html" %}
-{% load comments %}
+{% extends "home/media_pages/base.html" %}
 
-{% block title %}Video - {{ block.super }}{% endblock %}
+{% block title %}Flash - {{ block.super }}{% endblock %}
 
-{% if not request.is_ajax %}
-    {% block postscripts %}
-        {{ block.super }}
-        <script>$(comment_onload);</script>
-    {% endblock %}
-{% endif %}
+{% block normalscripts %}{% endblock %}
+{% block ajaxscripts %}{% endblock %}
 
+{% block div_id %}audiopage{% endblock %}
 
-{% block content %}
-    <div id="flashpage">
-        {% if request.is_ajax %}
-            <script>$(userid_load); $(comment_onload);</script>
-        {% endif %}
-        {% if flash %}
-            <div id="flash"></div>
-            <script>
-                swfobject.embedSWF("{{ MEDIA_URL }}f/{{ flash.filename }}", "flash", "680", "510", "9.0.0","files/expressInstall.swf",
-                    {}, {wmode:"transparent"}, {});
-            </script>
-
-            {% get_comment_list for flash as comment_list %}
-            {% include "comments/comments.html" with anchored=1 stubbed=0 modcontrols=1 title=1 %}
-            {% comment %}
-                {% render_comment_list for profile %}
-                {% render_comment_form for profile %}
-            {% endcomment %}
-            {% get_comment_form for flash as form %}
-            {% include "comments/form.html" %}
-        {% else %}
-            <p>Flash file does not exist.</p>
-        {% endif %}
-    </div>
+{% block objectcontent %}
+    <div id="flash"></div>
+    <script>
+        swfobject.embedSWF("{{ MEDIA_URL }}f/{{ object.filename }}", "flash", "680", "510", "9.0.0","files/expressInstall.swf",
+                {}, {wmode:"transparent"}, {});
+    </script>
 {% endblock %}

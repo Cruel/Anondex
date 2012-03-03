@@ -1,39 +1,16 @@
-{% extends "home/base.html" %}
-{% load comments %}
+{% extends "home/media_pages/base.html" %}
 
-{% block title %}Image - {{ block.super }}{% endblock %}
+{% block title %}Album - {{ block.super }}{% endblock %}
 
-{% if not request.is_ajax %}
-    {% block postscripts %}
-        {{ block.super }}
-        <script>$(comment_onload);</script>
-    {% endblock %}
-{% endif %}
+{% block normalscripts %}{% endblock %}
+{% block ajaxscripts %}{% endblock %}
 
+{% block div_id %}imagepage{% endblock %}
 
-{% block content %}
-    <div id="imagepage">
-        {% if request.is_ajax %}
-            <script>$(userid_load); $(comment_onload);</script>
-        {% endif %}
-        {% if album %}
-            <div class="image">
-                <a href="{{ MEDIA_URL }}i/{{ album.filename }}" class="no-ajaxy">
-                    <img src="{{ MEDIA_URL }}i/{{ album.filename }}" alt="{{ album.name }}" />
-                </a>
-            </div>
-            {% get_comment_count for album as comment_count %}
-            <p>{{ comment_count }} comments have been posted.</p>
-            {% get_comment_list for album as comment_list %}
-            {% include "comments/comments.html" with anchored=1 stubbed=0 modcontrols=1 title=1 %}
-            {% comment %}
-                {% render_comment_list for profile %}
-                {% render_comment_form for profile %}
-            {% endcomment %}
-            {% get_comment_form for album as form %}
-            {% include "comments/form.html" %}
-        {% else %}
-            <p>Image does not exist.</p>
-        {% endif %}
+{% block objectcontent %}
+    <div class="image">
+        <a href="{{ MEDIA_URL }}i/{{ object.filename }}" class="no-ajaxy">
+            <img src="{{ MEDIA_URL }}i/{{ object.filename }}" alt="{{ object.name }}" />
+        </a>
     </div>
 {% endblock %}

@@ -1,3 +1,4 @@
+from __future__ import division
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponse
@@ -57,25 +58,29 @@ def profile(request, username):
 def image_page(request, file_id):
     image = get_object_or_404(LibraryFile.objects, pk=file_id, type=1)
     tags = get_tag_counts(image)
-    return render_to_response('home/media_pages/image.html', {'image':image, 'tags':tags}, RequestContext(request))
+    return render_to_response('home/media_pages/image.html', {'object':image, 'tags':tags}, RequestContext(request))
 
 def video_page(request, file_id):
     video = get_object_or_404(LibraryFile.objects, pk=file_id, type=2)
     w = 670 if video.width > 670 else video.width
     h = int(w / (video.width / video.height))
-    return render_to_response('home/media_pages/video.html', {'video':video, 'video_width':w, 'video_height':h}, RequestContext(request))
+    tags = get_tag_counts(video)
+    return render_to_response('home/media_pages/video.html', {'object':video, 'video_width':w, 'video_height':h, 'tags':tags}, RequestContext(request))
 
 def audio_page(request, file_id):
     audio = get_object_or_404(LibraryFile.objects, pk=file_id, type=3)
-    return render_to_response('home/media_pages/audio.html', {'audio':audio}, RequestContext(request))
+    tags = get_tag_counts(audio)
+    return render_to_response('home/media_pages/audio.html', {'object':audio, 'tags':tags}, RequestContext(request))
 
 def flash_page(request, file_id):
     flash = get_object_or_404(LibraryFile.objects, pk=file_id, type=4)
-    return render_to_response('home/media_pages/flash.html', {'flash':flash}, RequestContext(request))
+    tags = get_tag_counts(flash)
+    return render_to_response('home/media_pages/flash.html', {'object':flash, 'tags':tags}, RequestContext(request))
 
 def album_page(request, file_id):
     album = get_object_or_404(LibraryFile.objects, pk=file_id, type=5)
-    return render_to_response('home/media_pages/album.html', {'album':album}, RequestContext(request))
+    tags = get_tag_counts(album)
+    return render_to_response('home/media_pages/album.html', {'object':album, 'tags':tags}, RequestContext(request))
 
 def rss(request):
     items = Adex.objects.all().order_by('-date')[:20]

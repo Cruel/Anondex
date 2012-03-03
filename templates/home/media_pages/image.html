@@ -1,46 +1,13 @@
-{% extends "home/base.html" %}
-{% load comments %}
+{% extends "home/media_pages/base.html" %}
 
 {% block title %}Image - {{ block.super }}{% endblock %}
 
-{% if not request.is_ajax %}
-    {% block postscripts %}
-        {{ block.super }}
-        <script>$(comment_onload);</script>
-    {% endblock %}
-{% endif %}
+{% block div_id %}imagepage{% endblock %}
 
-
-{% block content %}
-    <div id="imagepage">
-        {% if request.is_ajax %}
-            <script>$(userid_load); $(comment_onload);</script>
-        {% endif %}
-        {% if image %}
-            <div class="image">
-                <a href="{{ MEDIA_URL }}i/{{ image.filename }}" class="no-ajaxy">
-                    <img src="{{ MEDIA_URL }}i/{{ image.filename }}" alt="{{ image.name }}" />
-                </a>
-            </div>
-
-            <ul>
-            {% for tag in tags %}
-                <li title="There are {{ tag.count|default:"0" }} items tagged with '{{ tag.name }}'"><a href="{% url tagged tag.name 1 %}"><b>{{ tag.name }}</b> &times;{{ tag.count|default:"0" }}</a></li>
-            {% endfor %}
-            </ul>
-
-            {% get_comment_count for image as comment_count %}
-            <p>{{ comment_count }} comments have been posted.</p>
-            {% get_comment_list for image as comment_list %}
-            {% include "comments/comments.html" with anchored=1 stubbed=0 modcontrols=1 title=1 %}
-            {% comment %}
-                {% render_comment_list for profile %}
-                {% render_comment_form for profile %}
-            {% endcomment %}
-            {% get_comment_form for image as form %}
-            {% include "comments/form.html" %}
-        {% else %}
-            <p>Image does not exist.</p>
-        {% endif %}
+{% block objectcontent %}
+    <div class="image">
+        <a href="{{ MEDIA_URL }}i/{{ object.filename }}" class="no-ajaxy">
+            <img src="{{ MEDIA_URL }}i/{{ object.filename }}" alt="{{ object.name }}" />
+        </a>
     </div>
 {% endblock %}

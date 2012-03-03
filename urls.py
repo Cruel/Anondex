@@ -16,7 +16,7 @@ urlpatterns = patterns('',
 
     url(r'^', include('home.urls')),
     url(r'^browse/(?P<page>\d+)$', 'home.views.browse', name='browse'),
-    url(r'^browse/tag/(?P<tag>\w+)/(?P<page>\d+)$', 'home.views.tagged', name='tagged'),
+    url(r'^browse/tag/(?P<tag>[-\w]+)/(?P<page>\d+)$', 'home.views.tagged', name='tagged'),
     url(r'^rss.xml$', 'home.views.rss', name='rss_feed'),
 
     # Adex
