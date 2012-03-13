@@ -6,6 +6,10 @@ from django.conf import settings
 #from django import template
 #template.add_to_builtins('project.app.templatetags.custom_tag_module')
 
+#from tagging import models
+#from home.models import MyTag
+#models.Tag = MyTag
+
 from django.contrib import admin
 admin.autodiscover()
 
@@ -16,7 +20,7 @@ urlpatterns = patterns('',
 
     url(r'^', include('home.urls')),
     url(r'^browse/(?P<page>\d+)$', 'home.views.browse', name='browse'),
-    url(r'^browse/tag/(?P<tag>[-\w]+)/(?P<page>\d+)$', 'home.views.tagged', name='tagged'),
+    url(r'^tagged/(?P<tags_string>[-+\w]+)$', 'home.views.tagged', name='tagged'),
     url(r'^rss.xml$', 'home.views.rss', name='rss_feed'),
 
     # Adex

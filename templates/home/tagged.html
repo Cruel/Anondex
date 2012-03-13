@@ -10,49 +10,64 @@
 {% endif %}
 
 {% block content %}
-    <h1>Anondex items tagged with</h1>
+    <h1>Anondex items tagged with {{ tags|join:" and " }}</h1>
     {% include "pagination.html" %}
     <div class="browsetable">
         {% if request.is_ajax %}
             <script>$(browse_onload);</script>
         {% endif %}
-        {% for adex in page.object_list %}
-            <div class="{% cycle "browseodd" "browseeven" %}" rel="/?{{ adex.item_code }}">
+        {% for item in page.object_list %}
+            {% if item.item_code %}
+            <div class="{% cycle "browseodd" "browseeven" %}" rel="/?{{ item.item_code }}">
                 <div class="browseimagecell">
                             <span class="browseimagespan">
-                                <a class="no-ajaxy" href="/?{{ adex.item_code }}">
-                                    <span class="typeicon icontype{{ adex.type }}"></span>
-                                    {{ adex.thumbnail|safe }}
+                                <a class="no-ajaxy" href="/?{{ item.item_code }}">
+                                    <span class="typeicon icontype{{ item.type }}"></span>
+                                    {{ item.thumbnail|safe }}
                                 </a>
                             </span>
                 </div>
                 <div class="browsedescription">
-                    <div class="itemtitle">{{ adex.title }}</div>
-                    <div class="itemdescription">{{ adex.description|linebreaksbr }}</div>
+                    <div class="itemtitle">{{ item.title }}</div>
+                    <div class="itemdescription">{{ item.description|linebreaksbr }}</div>
                 </div>
                 <div class="browsedetails" nowrap>
-                    <span class="rated_text"><span class="out5Class" style="{% rating_style adex.rating.get_rating 1 %}">{{ adex.rating.get_rating }}</span><span class="votesClass"> - {{ adex.rating.votes }} Vote{{ adex.rating.votes|pluralize }}</span></span>
-                    <span><ul class="star-rating2"><li class="current-rating" style="width:{% widthratio adex.rating.get_rating 5 100 %}%"></li><li></li><li></li><li></li><li></li><li></li></ul></span>
-                    <div>{{ adex.date|timeago }}</div>
-                    {% get_comment_count for adex as comment_count %}
+                    <span class="rated_text"><span class="out5Class" style="{% rating_style item.rating.get_rating 1 %}">{{ item.rating.get_rating }}</span><span class="votesClass"> - {{ adex.rating.votes }} Vote{{ adex.rating.votes|pluralize }}</span></span>
+                    <span><ul class="star-rating2"><li class="current-rating" style="width:{% widthratio item.rating.get_rating 5 100 %}%"></li><li></li><li></li><li></li><li></li><li></li></ul></span>
+                    <div>{{ item.date|timeago }}</div>
+                    {% get_comment_count for item as comment_count %}
                     <div>
                         {% if comment_count > 0 %}
-                            <a href="{{ adex.url }}">
+                            <a href="{{ item.url }}">
                                 {{ comment_count }} Comment{{ comment_count|pluralize }}
                             </a>
                         {% else %}
                             0 Comments
                         {% endif %}
                     </div>
-                    {% get_hit_count for adex as views %}
+                    {% get_hit_count for item as views %}
                     <div>{{ views }} View{{ views|pluralize }}</div>
-                    {% if adex.user %}
-                        <div><a href="{% url profiles_profile_detail adex.user.username %}">{{ adex.user.username }}</a></div>
+                    {% if item.user %}
+                        <div><a href="{% url profiles_profile_detail item.user.username %}">{{ item.user.username }}</a></div>
                     {% endif %}
                 </div>
                 <div class="browseicons"></div>
             </div>
+            {% else %}
+                <a href="{{ item.url }}">
+                    {{ item.thumbnail|safe }}
+                </a>
+            {% endif %}
         {% endfor %}
     </div>
+
+    {% for tag in related_tags %}
+        <div>
+            <a href="{{ tags_string }}+{{ tag.name }}">
+                {{ tag.name }} = {{ tag.count }}
+            </a>
+        </div>
+    {% endfor %}
+
     {% include "pagination.html" %}
 {% endblock %}

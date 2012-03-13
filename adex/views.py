@@ -10,29 +10,14 @@ from tagging.models import Tag, TaggedItem
 import time
 from adex.create import processCreateVars, genData, genItemCode
 from adex.models import Adex
+from adextagging.models import MyTag
 from medialibrary.models import LibraryFile
-from medialibrary.tagging_utils import get_tag_counts
 from medialibrary.utils import genVideoThumb, webthumb
 import settings
 
 def adex_view(request, item_code):
-
     adex = get_object_or_404(Adex, item_code=item_code)
-    tags = get_tag_counts(adex)
-#    ctype = ContentType.objects.get(model="adex")
-#    tags = Tag.objects.raw('''SELECT t.id, t.name, COUNT(*) as count
-#          FROM tagging_tag AS t
-#                  INNER JOIN tagging_taggeditem AS tt ON t.id = tt.tag_id
-#                  INNER JOIN `adex_adex` ON tt.object_id = `adex_adex`.`id`
-#          WHERE t.id IN (
-#
-#            SELECT t.id FROM tagging_tag AS t
-#        INNER JOIN tagging_taggeditem AS tt ON t.id = tt.tag_id
-#          WHERE tt.content_type_id = %d AND tt.object_id = %d
-#
-#                  )
-#          GROUP BY t.id
-#          ORDER BY count DESC''' % (ctype.id, adex.id))
+    tags = MyTag.objects.get_tag_counts(adex)
     return adex_render(request, adex, tags)
 
 
@@ -44,13 +29,6 @@ def adex_render(request, adex, tags, media=None):
 
     return render_to_response(adex.template(), {'user':request.user, 'adex':adex, 'media_list':media, 'adex_data':adex_data, 'tags':tags, 'related':related},
                                   context_instance=RequestContext(request))
-
-
-def filelist(request):
-    #if request.user.is_authenticated():
-        #comment_list = Comment.objects.all().order_by('date')
-    items = ''
-    return render_to_response('home/index.html', {'user':request.user, 'items':items}, context_instance=RequestContext(request))
 
 
 @csrf_exempt

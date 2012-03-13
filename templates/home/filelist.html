@@ -13,6 +13,6 @@
 {% for media in media_list %}
     <div>
         {{ media.thumbnail|safe }}
-        <div class="delicon" onclick="refreshFileList('remove',{{ media.id }},this.parentNode);"></div>
+        <div class="delicon" onclick="refreshFileList('remove',{{ media.id }});"></div>
     </div>
 {% endfor %}

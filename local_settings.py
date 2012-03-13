@@ -1,6 +1,8 @@
 THUMBNAIL_URL = 'http://anondex.com/media/i/thumb/'
 IMAGE_URL = 'http://anondex.com/media/i/'
 
+FORCE_LOWERCASE_TAGS = True
+
 # Interval limitation
 INTERVAL_ANON_ADEX = 1500
 INTERVAL_USER_ADEX = 1500

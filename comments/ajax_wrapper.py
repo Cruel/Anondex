@@ -55,7 +55,6 @@ def include_request(func):
         request = args[0]
         comments.render_to_response = jsonify_if_ajax(render_to_response, request)
         comments.next_redirect = jsonify_if_ajax(next_redirect, request)
-        print "wrapped"
         return func(*args, **kwargs)
     return wrapped
 

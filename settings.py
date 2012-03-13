@@ -174,12 +174,14 @@ INSTALLED_APPS = (
     'south',
     #'tracking',
     # Anondex Specific
+
+    'home',
     'comments',
     'socialauth',
     'reporting',
     'adex',
-    'home',
     'medialibrary',
+    'adextagging',
 )
 
 COMMENTS_APP = 'comments'

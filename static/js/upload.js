@@ -191,8 +191,10 @@ function upload_onload(){
     $('#upload-controller').click(function(e) {
         $('#file').click();
     });
-    $('#upload-taglist').tagHandler({
-        getURL: '/ajax/taglist',
-        autocomplete: true
-    });
+//    $('#upload-taglist').tagHandler({
+//        getURL: '/ajax/taglist',
+//        autocomplete: true
+//    });
+    loadTagHandler('upload-taglist');
+    loadTagHandler('upload-taglist');
 }

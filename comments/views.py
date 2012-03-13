@@ -6,7 +6,6 @@ from comments.models import AdexComment
 from django.core.cache import cache
 from django.utils import simplejson
 from medialibrary.models import LibraryFile
-from medialibrary.tagging_utils import get_tag_counts
 import settings
 
 #def index(request):

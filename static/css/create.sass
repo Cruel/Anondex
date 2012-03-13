@@ -7,18 +7,17 @@
 
 .create_field
   clear: both
+  > div
+    float: left
+    margin: 0 0 4px 0
+    vertical-align: middle
+    width: 400px
 
 #creatediv .fieldlabel
   float: left
   width: 100px
   margin: 5px 0 8px 24px
   font: 15px $font-content2
-
-#titlefield, #namefield, #tagsfield
-  float: left
-  margin: 0 0 4px 0
-  vertical-align: middle
-  width: 400px
 
 #descriptionfield
   float: left
@@ -27,7 +26,7 @@
   width: 400px
   margin: 0 0 15px 0
 
-#creatediv .textskin, .tagHandler, .textareaskin
+.textskin, .tagHandler, .textareaskin
   outline: 0
   border: 1px solid #900
   +border-radius(4px)
@@ -39,7 +38,6 @@
   background: #FFF
   +box-shadow(1px 1px 2px #888)
 
-#creatediv .textskin, .tagHandler, .textareaskin
   +transition(all 500ms)
   &:focus, &:hover
     border: 1px solid #E00

@@ -8,6 +8,7 @@ from django.utils import simplejson as json
 from django.views.decorators.csrf import csrf_exempt
 from tagging.models import Tag
 from adex.models import Adex
+from adextagging.models import MyTag
 from comments.models import AdexComment
 from comments.templatetags.adexcomments import get_thumb_rating
 from medialibrary.models import LibraryFile
@@ -40,8 +41,12 @@ def filelist(request):
                     context_instance=RequestContext(request))
 
 def taglist(request):
-    tags = Tag.objects.all().order_by('name').values_list('name', flat=True)
-    return HttpResponse(json.dumps({'availableTags':tuple(tags),'assignedTags':()}))
+    media = request.session.get('uploaded_media') or []
+    available_tags = Tag.objects.all().order_by('name').values_list('name', flat=True)
+    assigned_tags = []
+    if 'create' in request.META.get('QUERY_STRING'):
+        assigned_tags = MyTag.objects.get_tags_from_media(media)
+    return HttpResponse(json.dumps({'availableTags':tuple(available_tags),'assignedTags':tuple(assigned_tags)}), mimetype="application/json")
 
 def comment(request, comment_id):
     comment = get_object_or_404(AdexComment.objects, pk = comment_id)

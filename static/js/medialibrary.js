@@ -10,8 +10,8 @@ var attachBox = {
 	'padding'		:	0,
 	'centerOnScroll':	true,
 	'overlayColor'	:	'black',
-	'overlayOpacity':	0.6
-	//'onClosed'	    :	attachWindowOnClose
+	'overlayOpacity':	0.6,
+	'afterClose'    :	attachWindowOnClose
 };
 
 function bindThumbEvents(selector){
@@ -38,6 +38,7 @@ function videoThumbCycle(obj){
 function attachWindowOnClose(){
     //var obj = ($('#comments').length == 0) ? $(document).contents() : $('#comments').contents();
     if (parent.attach_file_id == null){
+        alert('none');
         $('#fileselect').val('');
     } else {
         $('input[name=file]').val(parent.attach_file_id);

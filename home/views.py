@@ -5,12 +5,13 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.context import RequestContext
 from profiles.views import profile_detail
-from tagging.models import TaggedItem
+from tagging.models import TaggedItem, Tag
 from adex.models import Adex
 from adex.views import adex_view
+from adextagging.models import MyTag
 from comments.models import AdexComment
+from home.query_utils import QuerySetSequence
 from medialibrary.models import LibraryFile
-from medialibrary.tagging_utils import get_tag_counts
 
 def index(request):
     #if request.user.is_authenticated():
@@ -32,16 +33,28 @@ def browse(request, page):
         p = paginator.page(paginator.num_pages)
     return render_to_response('home/browse.html', {'user':request.user, 'page':p}, context_instance=RequestContext(request))
 
-def tagged(request, tag, page):
-    adex = TaggedItem.objects.get_by_model(Adex, tag)
-    paginator = Paginator(adex, 5)
+def tagged(request, tags_string):
+    tags = tags_string.split('+')
+    page = request.GET.get('page') or 1
+    adex = TaggedItem.objects.get_by_model(Adex, tags)
+    media = TaggedItem.objects.get_by_model(LibraryFile, tags)
+    results = QuerySetSequence(media, adex)
+    p = Paginator(results, 100)
     try:
-        p = paginator.page(page)
+        p_results = p.page(page)
     except PageNotAnInteger:
-        p = paginator.page(1)
+        p_results = p.page(1)
     except EmptyPage:
-        p = paginator.page(paginator.num_pages)
-    return render_to_response('home/tagged.html', {'user':request.user, 'page':p}, context_instance=RequestContext(request))
+        p_results = p.page(paginator_adex.num_pages)
+    related_tags = MyTag.objects.get_related(tags)
+    c = {
+#        'user'          :request.user,
+        'page'          :p_results,
+        'tags_string'   :tags_string,
+        'tags'          :tags,
+        'related_tags'  :related_tags,
+    }
+    return render_to_response('home/tagged.html', c, context_instance=RequestContext(request))
 
 def user_home(request):
     return render_to_response('home/mypage.html', {'user':request.user}, context_instance=RequestContext(request))
@@ -57,29 +70,29 @@ def profile(request, username):
 
 def image_page(request, file_id):
     image = get_object_or_404(LibraryFile.objects, pk=file_id, type=1)
-    tags = get_tag_counts(image)
+    tags = MyTag.objects.get_tag_counts(image)
     return render_to_response('home/media_pages/image.html', {'object':image, 'tags':tags}, RequestContext(request))
 
 def video_page(request, file_id):
     video = get_object_or_404(LibraryFile.objects, pk=file_id, type=2)
     w = 670 if video.width > 670 else video.width
     h = int(w / (video.width / video.height))
-    tags = get_tag_counts(video)
+    tags = MyTag.objects.get_tag_counts(video)
     return render_to_response('home/media_pages/video.html', {'object':video, 'video_width':w, 'video_height':h, 'tags':tags}, RequestContext(request))
 
 def audio_page(request, file_id):
     audio = get_object_or_404(LibraryFile.objects, pk=file_id, type=3)
-    tags = get_tag_counts(audio)
+    tags = MyTag.objects.get_tag_counts(audio)
     return render_to_response('home/media_pages/audio.html', {'object':audio, 'tags':tags}, RequestContext(request))
 
 def flash_page(request, file_id):
     flash = get_object_or_404(LibraryFile.objects, pk=file_id, type=4)
-    tags = get_tag_counts(flash)
+    tags = MyTag.objects.get_tag_counts(flash)
     return render_to_response('home/media_pages/flash.html', {'object':flash, 'tags':tags}, RequestContext(request))
 
 def album_page(request, file_id):
     album = get_object_or_404(LibraryFile.objects, pk=file_id, type=5)
-    tags = get_tag_counts(album)
+    tags = MyTag.objects.get_tag_counts(album)
     return render_to_response('home/media_pages/album.html', {'object':album, 'tags':tags}, RequestContext(request))
 
 def rss(request):

@@ -6,9 +6,8 @@ function resetForm(){
 	$("#name").css({ color:"black", backgroundColor:"" });	
 	Recaptcha.reload();
 	refreshFileList();
-	$('.tagHandler').remove();
-	$('#tagsfield').prepend('<ul id="taglist"></ul>');
-	loadTagHandler();
+
+//    loadTagHandler('#taglist','create');
     $('#createbutton').attr("disabled", "disabled");
 }
 
@@ -169,7 +168,7 @@ function checkName(data){
 	if (data.indexOf("is a") > -1) $("#name").css("backgroundColor", "green");
 }
 
-function refreshFileList(action, id, obj) {
+function refreshFileList(action, id) {
     $('#media-controller').blockEx();
     var mod_url = '';
     if (action) {
@@ -179,12 +178,13 @@ function refreshFileList(action, id, obj) {
 	$('#filedata').load('/ajax/filelist'+mod_url, {},
 		function(){
             $('#media-controller').unblock();
+            loadTagHandler('taglist','create');
 			$('#imageselectspan').html($('#imagelist').remove().html());
 			$('#audioselectspan').html($('#audiolist').remove().html());
 			$('#videoselectspan').html($('#videolist').remove().html());
 			$('#flashselectspan').html($('#flashlist').remove().html());
 			$('#htmlselectspan').html($('#htmllist').remove().html());
-			if (obj) $(obj).remove();
+//			if (obj) $(obj).remove();
 			//alert($('#imageselectspan').html());
             bindThumbEvents('#filedata');
 		});
@@ -202,16 +202,17 @@ function loadCreateUploader(){
     });
 }
 
-function loadTagHandler(){
-	$('#taglist').tagHandler({
-	    getURL: '/ajax/taglist',
-	    autocomplete: true
-	});
+function loadTagHandler(id, querystring){
+    $('#'+id).parent().replaceWith('<ul id="'+id+'"></ul>');
+    //$(selector+' #tagsfield').prepend('<ul class="taglist"></ul>');
+    $('#'+id).tagHandler({
+        getURL: '/ajax/taglist?'+querystring,
+        autocomplete: true
+    });
 }
 
 function create_onload() {
 	refreshFileList();
-	loadTagHandler();
 
 	$(".tooltip").focus( function(){ $('#'+$(this).attr('id')+'hint').css('display','inline'); } );
 	$(".tooltip").blur( function(){ $('#'+$(this).attr('id')+'hint').css('display','none'); } );
