@@ -31,30 +31,61 @@ function uploadBoxOnLoad(){
     upload_onload();
 }
 
+var drawfps = 24,
+    framerate = 5100, // Should be a bit longer than ENCODE_PREVIEW_INTERVAL in medialibrary/utils.py
+    drawstart = false,
+    encodedrawing = null,
+    framequeue = new Array();
+function StartEncodeDrawing(){
+    var ctx = uploadcanvas.getContext("2d"),
+        time = +new Date(),
+        timediff = (drawstart) ? (time-drawstart) : 0;
+    if (!drawstart) drawstart = time;
+    ctx.clearRect(0, 0, uploadcanvas.width, uploadcanvas.height);
+    for (var i = 0; i < framequeue.length; ++i) {
+        var frame = framequeue[i],
+            new_x = uploadcanvas.width + (frame.width*i) - frame.width*(timediff/framerate);
+        ctx.drawImage(frame, new_x, 0);
+    }
+    encodedrawing = setTimeout(StartEncodeDrawing, 1000/drawfps);
+}
+
+function StopEncodeDrawing(){
+    clearTimeout(encodedrawing);
+    drawstart = false;
+}
+
+function addFrameToQueue(jpeg_string){
+    var frame = new Image();
+    frame.src = "data:image/jpeg;base64,"+jpeg_string;
+    frame.onload = function(){
+        framequeue.push(this);
+        if (uploadcanvas.height == 0) uploadcanvas.height = this.height;
+    }
+}
+
 function drawb64jpeg(jpeg_string){
-    var canvas = $("#testcanvas")[0],
-        ctx = canvas.getContext("2d"),
-        image = new Image();
-    $('#testimg').attr('src', "data:image/jpeg;base64,"+jpeg_string);
+    var ctx = uploadcanvas.getContext("2d"),
+    image = new Image();
+    image.onload = function(){
+        //canvas.width = image.width;
+        canvas.height = image.height;
+        ctx.drawImage(image, 0, 0);
+    }
     image.src = "data:image/jpeg;base64,"+jpeg_string;
-    canvas.width = image.width;
-    canvas.height = image.height;
-    ctx.drawImage(image, 0, 0);
 }
 
 function showEncodeProgress(){
     $.get('/ajax/encode_progress', function(data){
         var progress = data.percent;
-        //$('#events').append('<p>'+progress+'</p>');
         if (progress < 100) {
-            if (data.frame)
-                drawb64jpeg(data.frame);
-            $("#upload-progress").progressbar({
-                value: progress
-            });
+            if (data.frame) addFrameToQueue(data.frame);
+            if (!drawstart) StartEncodeDrawing();
+            $("#upload-progress").progressbar({ value: progress });
             setTimeout(showEncodeProgress, 2000);
         } else {
             $("#upload-progress").progressbar('destroy');
+            StopEncodeDrawing();
         }
     })
 }
@@ -114,24 +145,24 @@ function loadUploader(){
                         filelist.push(file);
                         if (filetypes.image.test(file.type)) {
                             $('#filelisttest').append('<li>'+file.name+' - '+file.type+'</li>');
-                            alert('image added');
+                            //alert('image added');
                         } else if (filetypes.video.test(file.type)) {
                             if (filelist.length > 1){
                                 filelist.pop();
                                 alert("Videos cannot be bundled with other files.\nYou must upload videos by themselves by removing other files in queue.");
                             } else {
-                                alert('video added');
+                                //alert('video added');
                                 $('#filelisttest').append('<li>'+file.name+' - '+file.type+'</li>');
                             }
                         } else if (filetypes.audio.test(file.type)) {
                             $('#filelisttest').append('<li>'+file.name+' - '+file.type+'</li>');
-                            alert ('audio added');
+                            //alert ('audio added');
                         } else if (filetypes.flash.test(file.type)) {
                             if (filelist.length > 1){
                                 filelist.pop();
                                 alert("Flash files cannot be bundled with other files.\nYou must upload flash files by themselves by removing other files in queue.");
                             } else {
-                                alert('flash added');
+                                //alert('flash added');
                                 $('#filelisttest').append('<li>'+file.name+' - '+file.type+'</li>');
                             }
                         } else{
@@ -140,7 +171,7 @@ function loadUploader(){
                         }
                     }
                 });
-            alert(filelist.length);
+//            alert(filelist.length);
 //            $('#upload-controller').blockEx();
 //            data.submit();
         },
@@ -170,22 +201,25 @@ function loadUploader(){
         },
         done: function (e, data) {
             $("#upload-progress").progressbar("destroy");
+            $('#upload-controller').unblock();
             filelist = new Array();
             if (data.result.success) {
                 if($('.fancybox-opened').length) {
                     refreshFileList('add',data.result.id);
                     $.fancybox.close();
                 }
-                $.growlUI('Successfully uploaded '+data.files[0].name+'!');
+                //$.growlUI('Successfully uploaded '+data.files[0].name+'!');
+                AddAjaxDiv('#uploadresults', "ajax_msg_success", 'Successfully uploaded: <input type="text" value="'+data.result.url+'" onclick="this.select();" />');
             } else {
-                $('#upload-controller').unblock();
-                AddAjaxDiv('#upload-controller', "ajax_msg_error", data.result.error);
+                AddAjaxDiv('#uploadresults', "ajax_msg_error", data.result.error);
             }
         }
     });
 }
 
+var uploadcanvas;
 function upload_onload(){
+    uploadcanvas = $("#uploadcanvas")[0]
     loadUploader();
     userid_load("userid_uploader");
     $('#upload-controller').click(function(e) {

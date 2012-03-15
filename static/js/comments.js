@@ -198,10 +198,10 @@ function comment_onload() {
         $('#commentform').fileupload('option', 'fileInput', $('#imagefile'));
         $('#attachpreview').hide('fast').unbind('click');
         if ($(this).val() == "upload"){
-            $("#attachpreview").click(function(){
-                $('#imagefile').click();
-            });
-
+//            $("#attachpreview").click(function(){
+//                $('#imagefile').click();
+//            });
+            $.fancybox(uploadBox);
         }
         if ($(this).val() == "library"){
             $("#attachpreview").click(function(){
