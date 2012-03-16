@@ -76,6 +76,7 @@ MEDIA_BUNDLES = (
     ('anondex.js',
 #         {'filter': 'mediagenerator.filters.media_url.MediaURL'},
         'js/jquery.cookies.2.2.0.js',
+        'js/jquery.history.js',
         'js/jquery.fileupload.js',
         'js/jquery.fancybox-2.0.4.js',
         'js/jquery.taghandler.js',
