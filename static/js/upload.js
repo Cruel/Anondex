@@ -1,4 +1,5 @@
-var uploadBox = {
+var filelist = new Array(),
+uploadBox = {
     'type'          :   'ajax',
     'href'          :   '/upload',
     'ajax':         {
@@ -15,7 +16,8 @@ var uploadBox = {
     'centerOnScroll':	true,
     'overlayColor'	:	'black',
     'overlayOpacity':	0.3,
-    'afterShow'	    :	uploadBoxOnLoad
+    'afterShow'	    :	uploadBoxOnLoad,
+    'afterClose'    :   uploadBoxOnClose
 },
 // Also see medialibrary/models.py constants
 filetypes = {
@@ -29,6 +31,13 @@ function uploadBoxOnLoad(){
     userid_load();
     //create_onload();
     upload_onload();
+    //filelist = new Array();
+}
+
+function uploadBoxOnClose(){
+    if ($('#comment').length && ($('input[name=file]').val() == "")){
+        $('#fileselect').val('');
+    }
 }
 
 var drawfps = 24,
@@ -90,7 +99,6 @@ function showEncodeProgress(){
     })
 }
 
-var filelist = new Array();
 function startCreateUpload(){
     //first check for tags and TOS
     $('#upload-controller').block({message:'Uploading...'});
@@ -204,8 +212,13 @@ function loadUploader(){
             $('#upload-controller').unblock();
             filelist = new Array();
             if (data.result.success) {
-                if($('.fancybox-opened').length) {
-                    refreshFileList('add',data.result.id);
+                if ($('.fancybox-opened').length) {
+                    if ($('#comment').length){
+                        $('input[name=file]').val(data.result.id);
+                        $('#attachpreview').html(data.result.thumb).show('fast');
+                    } else {
+                        refreshFileList('add',data.result.id);
+                    }
                     $.fancybox.close();
                 }
                 //$.growlUI('Successfully uploaded '+data.files[0].name+'!');

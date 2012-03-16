@@ -177,17 +177,11 @@ class LibraryFile(models.Model):
         return mimetypes.guess_type(self.filename)[0]
 
     def url(self):
-        return reverse(self.type_name(), args=[self.pk])
-#        if self.type == 1:
-#            return reverse('image', args=[self.pk])
-#        elif self.type == 2:
-#            return reverse('video', args=[self.pk])
-#        elif self.type == 3:
-#            return reverse('audio', args=[self.pk])
-#        elif self.type == 4:
-#            return reverse('flash', args=[self.pk])
-#        else:
-#            return False
+        if self.name in self.filename:
+            slug = os.path.splitext(self.name)[0]
+        else:
+            slug = slugify(self.name)
+        return reverse(self.type_name(), args=[self.pk]) + '/' + slug
     
     thumbnail.short_description = 'Thumbnail'
     thumbnail.allow_tags = True

@@ -107,18 +107,18 @@ function postComment(){
         }, "json" );
 }
 
-var CommentImageFile = null;
+//var CommentImageFile = null;
 function submitComment(){
 	$('#submitbutton').attr("disabled", "disabled").css('color','#555').val('Posting...');
-	if (CommentImageFile && ($('input[name=file]').val() == ''))
-		postCommentImage();
-	else
+//	if (CommentImageFile && ($('input[name=file]').val() == ''))
+//		postCommentImage();
+//	else
 		postComment();
 }
 
-function postCommentImage(){
-    $('#commentform').fileupload('send',{files: CommentImageFile});
-}
+//function postCommentImage(){
+//    $('#commentform').fileupload('send',{files: CommentImageFile});
+//}
 
 function drawImageFit(canvas, image, percentWidth){
     var p = typeof(percentWidth) != 'undefined' ? percentWidth/100 : 1;
@@ -178,9 +178,8 @@ function comment_cluetips(){
 	//parent.jQuery('a.iframe', window.document).fancybox(commentBox);
 }
 
-var img, canvas;
+var img;
 function comment_onload() {
-    canvas = $('canvas')[0];
 	if (location.hash.substr(1)) hltag(location.hash.substr(1));
 
     $('#submitbutton').click(function(){
@@ -190,38 +189,27 @@ function comment_onload() {
     });
 
     $("#fileselect").change(function(){
-        loadImage(null);
+        //loadImage(null);
+        attach_file_id = null;
         $('input[name=file]').val('');
-        $('#attachpreview').css('background-image','');
-        $("#imagefile").replaceWith('<input type="file" name="imagefile" id="imagefile" accept="image/png,image/jpeg,image/gif" />');
-        CommentImageFile = null;
-        $('#commentform').fileupload('option', 'fileInput', $('#imagefile'));
         $('#attachpreview').hide('fast').unbind('click');
         if ($(this).val() == "upload"){
-//            $("#attachpreview").click(function(){
-//                $('#imagefile').click();
-//            });
-            $.fancybox(uploadBox);
+            $("#attachpreview").click(function(){
+                $.fancybox(uploadBox);
+            });
         }
         if ($(this).val() == "library"){
             $("#attachpreview").click(function(){
-                attachBox.onClosed = attachWindowOnClose;
+                attachBox.afterClose = attachWindowOnClose;
                 parent.$.fancybox(attachBox);
             });
-
         }
         $("#attachpreview").click();
     });
 
 
-    
-	//if (parent.window.reportpage) alert('iframed');
 
-//    $('#imagedropframe').click(function(e) {
-//        e.preventDefault();
-//        $('#imagefile').click();
-//    });
-
+/*
     $('.formtable').bind('dragenter', function(){
         $(this).css('border','1px solid red');
     });
@@ -259,7 +247,7 @@ function comment_onload() {
                 }
             }
     });
-
+*/
     comment_cluetips();
 
     // Load form values from cookie

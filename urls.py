@@ -50,8 +50,8 @@ urlpatterns = patterns('',
     url(r'^profile/edit/', 'profiles.views.edit_profile', {'form_class': ProfileForm,}, name='profiles_edit_profile'),
 
     # Misc
-    url(r'^upload_image$', 'comments.views.upload_image'),
-    url(r'^upload_file$', 'adex.views.upload_file'),
+#    url(r'^upload_image$', 'comments.views.upload_image'),
+    url(r'^upload_file$', 'medialibrary.views.upload_file'),
     url(r'^ajax/', include('home.ajax_urls')),
     url(r'^medialib/', include('medialibrary.urls')),
     url(r'^report/', include('reporting.urls')),

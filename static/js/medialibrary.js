@@ -1,7 +1,7 @@
 
 var THUMB_FRAME_COUNT = 5; // Must be same as in /medialibrary/utils.py
 var attach_file_id = null;
-var attach_file_thumb = null;
+var attach_file_html = null;
 var attachBox = {
     'type'          :   'iframe',
     'href'          :   '/medialib/attach',
@@ -10,8 +10,7 @@ var attachBox = {
 	'padding'		:	0,
 	'centerOnScroll':	true,
 	'overlayColor'	:	'black',
-	'overlayOpacity':	0.6,
-	'afterClose'    :	attachWindowOnClose
+	'overlayOpacity':	0.6
 };
 
 function bindThumbEvents(selector){
@@ -37,31 +36,19 @@ function videoThumbCycle(obj){
 
 function attachWindowOnClose(){
     //var obj = ($('#comments').length == 0) ? $(document).contents() : $('#comments').contents();
-    if (parent.attach_file_id == null){
-        alert('none');
+    if (attach_file_id == null){
         $('#fileselect').val('');
+        //$('#attachpreview').hide('fast');
     } else {
-        $('input[name=file]').val(parent.attach_file_id);
-        $('#attachpreview').css('background-image','url('+parent.attach_file_thumb+')');
-        $('#attachpreview').show('fast');
+        $('input[name=file]').val(attach_file_id);
+        //$('#attachpreview').css('background-image','url('+parent.attach_file_html+')');
+        $('#attachpreview').html(attach_file_html).show('fast');
     }
 }
 
 function addFromLibWindowOnClose(){
     if (attach_file_id != null){
         refreshFileList('add',attach_file_id);
-//        $('#media-controller').blockEx();
-//        $.getJSON('/ajax/addlibfile/'+attach_file_id,
-//                function(data){
-//                    if (data.success) {
-//                        //$.growlUI('lol Posted.');
-//                        refreshFileList();
-//                    } else {
-//                        $('#media-controller').unblock();
-//                        alert(data.error);
-//                    }
-//                }
-//           );
     }
 }
 
@@ -73,6 +60,6 @@ function medialib_onload(){
 
 function LibFileSelect(obj){
     parent.attach_file_id = $(obj).data('id');
-    parent.attach_file_thumb = $(obj).data('thumburl');
+    parent.attach_file_html = $(obj).html();
     parent.$.fancybox.close();
 }

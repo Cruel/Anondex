@@ -31,14 +31,14 @@ def detail(request, item_id):
 #def require_authentication(request):
 #    return HttpResponse('This page requires authentication')
 
-def upload_image(request):
-    if request.method == 'POST':
-        try:
-            user = request.user if request.user.is_authenticated() else None
-            file = LibraryFile(user=user, ip=request.META['REMOTE_ADDR'])
-            file.save_file(request.FILES['imagefile'])
-            return HttpResponse(simplejson.dumps({'success':True, 'value':file.id}))
-        except Exception, e:
-            return HttpResponse(simplejson.dumps({'success':False, 'error':e.message}))
-    else:
-        redirect('/')
+#def upload_image(request):
+#    if request.method == 'POST':
+#        try:
+#            user = request.user if request.user.is_authenticated() else None
+#            file = LibraryFile(user=user, ip=request.META['REMOTE_ADDR'])
+#            file.save_file(request.FILES['imagefile'])
+#            return HttpResponse(simplejson.dumps({'success':True, 'value':file.id}))
+#        except Exception, e:
+#            return HttpResponse(simplejson.dumps({'success':False, 'error':e.message}))
+#    else:
+#        redirect('/')

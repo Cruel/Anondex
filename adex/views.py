@@ -103,23 +103,6 @@ def create_adex(request):
         return redirect('/')
 
 
-def upload_file(request):
-    # TODO: Limit user uploads to avoid upload bombing
-    if request.method == 'POST':
-        try:
-            user = None
-            if request.POST.get('user')=='name' and request.user.is_authenticated():
-                user = request.user
-            file = LibraryFile(user=user, ip=request.META['REMOTE_ADDR'], tags=request.POST.get('tags'))
-            file.save_file(request.FILES['file'])
-            return HttpResponse(json.dumps({'success':True, 'id':file.id}))
-        except Exception, e:
-            return HttpResponse(json.dumps({'success':False, 'error':e.message}))
-    return HttpResponse(json.dumps({'success':False, 'error':'Error uploading file.'}))
-
-
-
-
 
 def test_video(request):
     if genVideoThumb('/home/thomas/PycharmProjects/anondex/media/v/test.webm','/home/thomas/PycharmProjects/anondex/media/v/test.jpg'):
