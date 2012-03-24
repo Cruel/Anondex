@@ -1,3 +1,4 @@
+from datetime import timedelta, datetime
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
@@ -24,11 +25,16 @@ def upload_file(request):
     # TODO: Limit user uploads to avoid upload bombing
     if request.method == 'POST':
         try:
+            recentfiles = LibraryFile.objects.filter(ip=request.META['REMOTE_ADDR'], visible=True, date__gt=datetime.now()-timedelta(minutes=5))
+            test = len(recentfiles)
+            if test > 3: raise Exception("You exceeded the file upload limit, please wait a minute or two and try again.")
+            if request.POST.get('tos') != 'true': raise Exception("You must agree to the Terms of Service before uploading content.")
+            if request.POST.get('tags') == '': raise Exception("Uploaded files must be tagged.")
             user = None
             if request.POST.get('user')=='name' and request.user.is_authenticated():
                 user = request.user
-            file = LibraryFile(user=user, ip=request.META['REMOTE_ADDR'], tags=request.POST.get('tags'))
-            file.save_file(request.FILES['file'])
+            file = LibraryFile(user=user, ip=request.META['REMOTE_ADDR'], tags=request.POST.get('tags'), name=request.POST.get('title'))
+            file.save_file(request.FILES.getlist('file'))
             return HttpResponse(json.dumps({
                 'success'   :True,
                 'id'        :file.id,
@@ -36,5 +42,5 @@ def upload_file(request):
                 'thumb'     :file.thumbnail(),
             }))
         except Exception, e:
-            return HttpResponse(json.dumps({'success':False, 'error':e.message}))
+            return HttpResponse(json.dumps({'success':False, 'error':e.msg})) # Not e.message ?
     return HttpResponse(json.dumps({'success':False, 'error':'Error uploading file.'}))

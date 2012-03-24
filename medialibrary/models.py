@@ -60,7 +60,7 @@ class LibraryFile(models.Model):
         im = pil.open(filename)
         (self.width, self.height) = im.size
         super(LibraryFile, self).save() # Intermediate save to get new ID
-        self.filename = "adex%s_%s" % (self.id, self.name)
+        self.filename = "adex%s_%s" % (self.id, self.filename)
         im.thumbnail((LIBRARYFILE_THUMB_WIDTH,LIBRARYFILE_THUMB_HEIGHT), pil.ANTIALIAS)
         im.save(settings.MEDIA_ROOT + "i/thumb/%s" % self.filename)
         file_move_safe(filename, settings.MEDIA_ROOT + "i/%s" % self.filename)
@@ -68,12 +68,12 @@ class LibraryFile(models.Model):
     def save_video(self, filename):
         self.type = 2
         file_ext = os.path.splitext(filename)[1]
-        new_filename = string.replace(filename, self.name, "%d.mp4" % time.time())
+        new_filename = string.replace(filename, self.filename, "%d.mp4" % time.time())
         encodeVideo(filename, new_filename, self.ip)
         (self.width, self.height) = get_video_size(new_filename)
         self.length = get_media_duration(new_filename)
         super(LibraryFile, self).save() # Intermediate save to get new ID
-        self.filename = "adex%s_%s" % (self.id, string.replace(self.name, file_ext, '.mp4'))
+        self.filename = "adex%s_%s" % (self.id, string.replace(self.filename, file_ext, '.mp4'))
         genVideoThumb(new_filename, settings.MEDIA_ROOT + "v/thumb/%s.jpg" % self.filename)
         file_move_safe(new_filename, settings.MEDIA_ROOT + "v/%s" % self.filename)
 
@@ -82,15 +82,15 @@ class LibraryFile(models.Model):
         self.type = 3
         self.length = get_media_duration(filename)
         super(LibraryFile, self).save() # Intermediate save to get new ID
-        self.filename = "adex%s_%s" % (self.id, self.name)
+        self.filename = "adex%s_%s" % (self.id, self.filename)
         file_move_safe(filename, settings.MEDIA_ROOT + "a/%s" % self.filename)
 
     def save_flash(self, filename):
         self.type = 4
         super(LibraryFile, self).save() # Intermediate save to get new ID
-        self.filename = "adex%s_%s" % (self.id, self.name)
+        self.filename = "adex%s_%s" % (self.id, self.filename)
         webthumb(
-            'http://anondex.com/flashview/?'+settings.MEDIA_URL+'tmp/'+self.name,
+            'http://anondex.com/flashview/?'+settings.MEDIA_URL+'tmp/'+basename(filename),
             settings.MEDIA_ROOT+"f/thumb/%s.jpg"%self.filename,
             is_flash=True,
         )
@@ -98,9 +98,26 @@ class LibraryFile(models.Model):
         if settings.DEBUG:
             return
 
+    def save_album(self, filelist):
+        self.type = 5
+        self.filename = 'Album'
+        if self.name == '': self.name = 'Album'
+        self.filesize = len(filelist)
+        self.md5 = time.time()
+        super(LibraryFile, self).save() # Intermediate save to get new ID
+        for file in filelist:
+            libfile = LibraryFile(user=self.user, ip=self.ip, visible=False)
+            libfile.save_file([file])
+            libfile.related.add(self)
+            self.related.add(libfile)
 
-
-    def save_file(self, file):
+    # filelist could be arrays [UploadedFile] or ['/path/file.ext']
+    def save_file(self, filelist):
+        if len(filelist) > 1:
+            self.save_album(filelist)
+            super(LibraryFile, self).save()
+            return
+        file = filelist[0]
         if isinstance(file, UploadedFile):
             base, ext = os.path.splitext(file.name)
             filename = settings.MEDIA_ROOT + 'tmp/' + slugify(base[:40]) + ext
@@ -120,10 +137,11 @@ class LibraryFile(models.Model):
             f = LibraryFile.objects.get(md5=self.md5)
             self.__dict__ = f.__dict__
         except LibraryFile.DoesNotExist:
-            self.name = basename(file)
+            self.filename = basename(file)
+            if self.name == '': self.name = self.filename
             self.filesize = getsize(file)
             if self.filesize > LIBRARYFILE_MAX_FILESIZE:
-                raise Exception, 'File "%s" (%d) is greater than maximum file size of %d' % (self.name, self.filesize, LIBRARYFILE_MAX_FILESIZE)
+                raise Exception, 'File "%s" (%d) is greater than maximum file size of %d' % (self.filename, self.filesize, LIBRARYFILE_MAX_FILESIZE)
 
             if re.match(self.IMAGE_EXTENSIONS, content_type):
                 self.save_image(file)
@@ -134,7 +152,7 @@ class LibraryFile(models.Model):
             elif re.match(self.FLASH_EXTENSIONS, content_type):
                 self.save_flash(file)
             else:
-                raise Exception, 'Not a valid LibraryFile MIME type "%s" for file "%s"' % (content_type, self.name)
+                raise Exception, 'Not a valid LibraryFile MIME type "%s" for file "%s"' % (content_type, self.filename)
             super(LibraryFile, self).save()
 
     def delete(self):
@@ -152,9 +170,15 @@ class LibraryFile(models.Model):
         elif self.type == 4: # Flash
             delfile("%sf/thumb/%s.jpg" % (settings.MEDIA_ROOT, self.filename))
             delfile("%sf/%s" % (settings.MEDIA_ROOT, self.filename))
+        elif self.type == 5: # Album
+            for file in self.related.all():
+                if len(file.related.all()) == 1 and not file.visible: # Delete only if not related to other albums
+                    file.delete()
         super(LibraryFile, self).delete()
 
     def thumbnail_url(self):
+        if self.type == 5:
+            return self.related.all()[0].thumbnail_url()
         filename = self.filename if self.type == 1 else self.filename + '.jpg'
         if self.type == 1: folder = 'i'
         elif self.type == 2: folder = 'v'
@@ -164,11 +188,10 @@ class LibraryFile(models.Model):
         return settings.MEDIA_URL + folder + '/thumb/' + filename
 
     def thumbnail(self, width=LIBRARYFILE_THUMB_WIDTH):
-        extra_class = 'video' if self.type == 2 else ''
         height = width / LIBRARYFILE_THUMB_RATIO
         return u'<div title="%s" class="adexthumb" style="width:%dpx;height:%dpx;"><div class="%s" style="background-image:url(%s);"></div></div>' %\
-               ('%s - %s' % (self.type_name(), self.name or self.filename),
-                width, height, extra_class, self.thumbnail_url())
+               ('%s - %s' % (self.type_name(), self.name),
+                width, height, self.type_name(), self.thumbnail_url())
 
     def type_name(self):
         return self.MEDIA_CHOICES[self.type-1][1]
@@ -186,4 +209,4 @@ class LibraryFile(models.Model):
     thumbnail.short_description = 'Thumbnail'
     thumbnail.allow_tags = True
     def __unicode__(self):
-        return "%s [%s]" % (self.name or self.filename, self.type_name())
+        return "%s [%s]" % (self.name, self.type_name())

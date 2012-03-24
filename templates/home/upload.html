@@ -17,30 +17,24 @@
             <script>$(upload_onload);</script>
         {% endif %}
 
-        <div id="upload-progress"></div>
-
         <div id="upload-controller">
             <!--div class="ajax_msg ajax_msg_success">Adex successfully created: <input type="text" onclick="this.select();" value="http://anondex.com/?test"><div onclick="CloseAjaxDiv(this.parentNode);" class="delicon"></div></div-->
             <h1>Click or drag files here to add.</h1>
-            <div class="createcaption">Supported files types: mp3, swf, mid</div>
-
-
-
-            <div id="filedata" class="librarylist"></div>
+            <div><strong>Supported files types:</strong> jpg, gif, png, swf, mp3, ogg, mid, and video files.</div>
+            <div><strong>Note:</strong> Only one file can be uploaded at a time unless they're images, in which case you're uploading a <em>single</em> album.</div>
         </div>
+
+        <div id="upload-progress"></div>
 
         <div>
             <ul id="filelisttest">
 
             </ul>
+            <div id="canvasdiv" class="webkit-scrollbars">
+                <canvas id="uploadcanvas" width="684" height="100"></canvas>
+            </div>
 
-            <canvas id="uploadcanvas" width="684" height="0"></canvas>
-
-            <hr />
-
-            <ul id="events">
-
-            </ul>
+            <ul id="events"></ul>
         </div>
 
 
@@ -95,10 +89,9 @@
 
         <div>
             <input type="button" class="createbutton" value="Upload" onClick="startCreateUpload();" />
-            <input type="button" class="createbutton" value="Test" onClick="addFrameToQueue('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');" />
-            <input type="button" class="createbutton" value="Start" onClick="StartEncodeDrawing();" />
-            <input type="button" class="createbutton" value="Stop" onClick="StopEncodeDrawing();" />
-
+            <input type="button" class="createbutton" value="Reset" onClick="resetUploadForm();" />
+            <input type="button" class="createbutton" value="progress test" onClick="ok=0;progresstest();" />
+            <input type="button" class="createbutton" value="progress test" onClick="verifyTags('#upload-taglist');" />
         </div>
 
     </div>

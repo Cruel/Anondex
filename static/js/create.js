@@ -11,25 +11,21 @@ function resetForm(){
     $('#createbutton').attr("disabled", "disabled");
 }
 
-function IsDefined(val){
-	return ((val !== '') && (val !== 'undefined') && (typeof(val) !== 'undefined'));
-}
-
 function checkValues(valData) {
 	var arrErrors = [];
 	
-	if (!IsDefined(valData.title)) arrErrors.push("- 'Title' must be defined.");
-	if (!IsDefined(valData.description)) arrErrors.push("- 'Description' must be defined.");
-    if (!IsDefined(valData.tags)) arrErrors.push("- You must supply some tags.");
-	if (!IsDefined(valData.type)) arrErrors.push("- Must select a template.");
+	if (!IsDefined(valData.title)) arrErrors.push("'Title' must be defined.");
+	if (!IsDefined(valData.description)) arrErrors.push("'Description' must be defined.");
+    if (!IsDefined(valData.tags)) arrErrors.push("You must supply some tags.");
+	if (!IsDefined(valData.type)) arrErrors.push("Must select a template.");
 	switch (valData.type) {
 		case 0: 
-			if (!IsDefined(valData.imgtemplate)) arrErrors.push("- Must select an image template layout.");
-			if (!IsDefined(valData.imageselect)) arrErrors.push("- Must upload an image.");
+			if (!IsDefined(valData.imgtemplate)) arrErrors.push("Must select an image template layout.");
+			if (!IsDefined(valData.imageselect)) arrErrors.push("Must upload an image.");
 			break;
-		case 1: if (!IsDefined(valData.videoselect)) arrErrors.push("- Must upload a video."); break;
-        case 2: if (!IsDefined(valData.flashselect)) arrErrors.push("- Must upload a flash (.swf) file."); break;
-		case 3: if (!IsDefined(valData.url)) arrErrors.push("- Must define a URL."); break;
+		case 1: if (!IsDefined(valData.videoselect)) arrErrors.push("Must upload a video."); break;
+        case 2: if (!IsDefined(valData.flashselect)) arrErrors.push("Must upload a flash (.swf) file."); break;
+		case 3: if (!IsDefined(valData.url)) arrErrors.push("Must define a URL."); break;
 //		case 4:
 //			if ((!IsDefined(valData.htmlselect)) && (!IsDefined(valData.html))) arrErrors.push("- Must upload an HTML file, or input custom HTML.");
 //			break;
@@ -41,9 +37,9 @@ function checkValues(valData) {
             arrErrors.push("- 'You must agree to the Terms of Service to create content.");
     }
 	
-	var errString = arrErrors.join('\n');
+	var errString = arrErrors.join('\n- ');
 	if (errString != '') {
-		alert(errString);
+		alert("- "+errString);
 		return false;
 	} else
 		return true;
@@ -200,6 +196,13 @@ function loadCreateUploader(){
         attachBox.afterClose = addFromLibWindowOnClose;
         $.fancybox(attachBox);
     });
+}
+
+function verifyTags(tags){
+    var accepted = /^[a-zA-Z0-9\- ,]+$/,
+        ret = accepted.test(tags);
+    if (!ret) alert('Special characters are not allowed in tags.');
+    return ret;
 }
 
 function loadTagHandler(id, querystring){

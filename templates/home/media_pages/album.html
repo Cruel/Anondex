@@ -9,8 +9,10 @@
 
 {% block objectcontent %}
     <div class="image">
-        <a href="{{ MEDIA_URL }}i/{{ object.filename }}" class="no-ajaxy">
-            <img src="{{ MEDIA_URL }}i/{{ object.filename }}" alt="{{ object.name }}" />
-        </a>
+        {% for image in object.related.all %}
+            <a href="{{ MEDIA_URL }}i/{{ image.filename }}" class="no-ajaxy">
+                <img src="{{ MEDIA_URL }}i/{{ image.filename }}" alt="{{ image.name }}" />
+            </a>
+        {% endfor %}
     </div>
 {% endblock %}

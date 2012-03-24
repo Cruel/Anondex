@@ -51,6 +51,10 @@ function IsNumeric(input){
    return (input - 0) == input && input.length > 0;
 }
 
+function IsDefined(val){
+    return ((val !== '') && (val !== 'undefined') && (typeof(val) !== 'undefined'));
+}
+
 function ShowHideComments(instant) {
 	if (animating) return;
     var delay = (instant) ? 0 : 500;

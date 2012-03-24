@@ -120,45 +120,6 @@ function submitComment(){
 //    $('#commentform').fileupload('send',{files: CommentImageFile});
 //}
 
-function drawImageFit(canvas, image, percentWidth){
-    var p = typeof(percentWidth) != 'undefined' ? percentWidth/100 : 1;
-    var ctx = canvas.getContext('2d');
-    ratio = image.width / image.height;
-    if (ratio >= 1){
-        w = Math.min(image.width, canvas.width);
-        h = w / ratio;
-    } else {
-        h = Math.min(image.height, canvas.height);
-        w = h * ratio;
-    }
-    ctx.drawImage(image,
-        0, 0, image.width*p, image.height,
-        (canvas.width-w)/2, (canvas.height-h)/2, w*p, h
-    );
-}
-
-function loadImage(file){
-    if (file != null)
-        $('#attachpreview').show('fast');
-    else
-        canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-    var reader = new FileReader();
-    reader.onload = function (event) {
-        var ctx = canvas.getContext('2d');
-        img = new Image();
-        img.onload = function(){
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.globalAlpha = 0.5;
-            drawImageFit(canvas, img);
-            ctx.globalAlpha = 1.0;
-            //drawImageFit(canvas, img, 50);
-        }
-        img.src = event.target.result;
-    };
-    reader.readAsDataURL(file);
-    CommentImageFile = file;
-}
-
 function comment_cluetips(){
 	$('a.reply').each(function(i){
         if (!$(this).hasClass('cluetiplink')) {
@@ -178,7 +139,6 @@ function comment_cluetips(){
 	//parent.jQuery('a.iframe', window.document).fancybox(commentBox);
 }
 
-var img;
 function comment_onload() {
 	if (location.hash.substr(1)) hltag(location.hash.substr(1));
 

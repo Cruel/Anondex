@@ -1,23 +1,32 @@
-var filelist = new Array(),
+var filelist = [], imagelist = [],
 uploadBox = {
     'type'          :   'ajax',
     'href'          :   '/upload',
+    'padding'		:	0,
+    'centerOnScroll':	true,
+    'overlayColor'	:	'black',
+    'overlayOpacity':	0.3,
     'ajax':         {
                         dataFilter: function(data){
                             return $(data).find('#content').css({
                                 'background-color':'#FDD',
                                 'padding':'15px 0',
-                                'width':'700px',
+                                'width':'684px',
                                 'border-radius':'5px'
                             });
                         }
                     },
-    'padding'		:	0,
-    'centerOnScroll':	true,
-    'overlayColor'	:	'black',
-    'overlayOpacity':	0.3,
-    'afterShow'	    :	uploadBoxOnLoad,
-    'afterClose'    :   uploadBoxOnClose
+    'afterShow'	    :	function(){
+                            userid_load();
+                            //create_onload();
+                            upload_onload();
+                            filelist = [];
+                        },
+    'afterClose'    :   function(){
+                            if ($('#comment').length && ($('input[name=file]').val() == "")){
+                                $('#fileselect').val('');
+                            }
+                        }
 },
 // Also see medialibrary/models.py constants
 filetypes = {
@@ -27,34 +36,21 @@ filetypes = {
     flash: /^application\/x-shockwave-flash$/
 };
 
-function uploadBoxOnLoad(){
-    userid_load();
-    //create_onload();
-    upload_onload();
-    //filelist = new Array();
-}
-
-function uploadBoxOnClose(){
-    if ($('#comment').length && ($('input[name=file]').val() == "")){
-        $('#fileselect').val('');
-    }
-}
-
+// Video encoding preview stream
 var drawfps = 24,
     framerate = 5100, // Should be a bit longer than ENCODE_PREVIEW_INTERVAL in medialibrary/utils.py
     drawstart = false,
     encodedrawing = null,
-    framequeue = new Array();
+    framequeue = [];
 function StartEncodeDrawing(){
-    var ctx = uploadcanvas.getContext("2d"),
-        time = +new Date(),
+    var time = +new Date(),
         timediff = (drawstart) ? (time-drawstart) : 0;
     if (!drawstart) drawstart = time;
-    ctx.clearRect(0, 0, uploadcanvas.width, uploadcanvas.height);
+    uploadctx.clearRect(0, 0, uploadcanvas.width, uploadcanvas.height);
     for (var i = 0; i < framequeue.length; ++i) {
         var frame = framequeue[i],
             new_x = uploadcanvas.width + (frame.width*i) - frame.width*(timediff/framerate);
-        ctx.drawImage(frame, new_x, 0);
+        uploadctx.drawImage(frame, new_x, 0);
     }
     encodedrawing = setTimeout(StartEncodeDrawing, 1000/drawfps);
 }
@@ -73,17 +69,6 @@ function addFrameToQueue(jpeg_string){
     }
 }
 
-function drawb64jpeg(jpeg_string){
-    var ctx = uploadcanvas.getContext("2d"),
-    image = new Image();
-    image.onload = function(){
-        //canvas.width = image.width;
-        canvas.height = image.height;
-        ctx.drawImage(image, 0, 0);
-    }
-    image.src = "data:image/jpeg;base64,"+jpeg_string;
-}
-
 function showEncodeProgress(){
     $.get('/ajax/encode_progress', function(data){
         var progress = data.percent;
@@ -99,17 +84,125 @@ function showEncodeProgress(){
     })
 }
 
+function addFileToList(file){
+    var image = new Image();
+    var reader = new FileReader();
+    reader.onload = function (e) {
+        image.src = e.target.result;
+    };
+    image.onload = function(){
+        addImageToList(this);
+    };
+    reader.readAsDataURL(file);
+}
+
+function addImageToList(image){
+    var ratio = image.width/image.height;
+    imagelist.push({
+        width   : ratio*100,
+        image   : image
+    });
+    if (imagelist.length == filelist.length)
+        drawImageList();
+}
+
+function reloadFileList(){
+    $('#filelisttest').html('');
+    imagelist = []
+    for (i in filelist){
+        var file = filelist[i];
+        //$('#filelisttest').append('<li>'+file.name+' - '+file.type+'</li>');
+        if (filetypes.image.test(file.type)){
+            addFileToList(file);
+        } else {
+            $('#filelisttest').html('<li>'+file.name+' - '+file.type+'</li>');
+            var img = new Image();
+            img.onload = function(){ addImageToList(this); }
+            img.src = 'http://localhost/media/audio.jpg';
+        }
+    }
+    $('#canvasdiv').show('fast');
+}
+
+var ok = 0;
+function progresstest(){
+    ok += 0.01;
+    canvasprogress(ok);
+    if (ok <= 1.0)
+        setTimeout(progresstest, 30);
+}
+
+function canvasprogress(p){
+    var width = 0;
+    for (i in imagelist)
+        width += imagelist[i].width;
+    width = Math.max(width, uploadcanvas.width);
+    drawImageList((uploadcanvas.width-width)*p,p);
+}
+
+function onCanvasMouseMove(e){
+    var w       = $(this).width(),
+        edge    = w * 0.1,
+        new_w   = w - (edge*2),
+        curX    = e.pageX - $(this).offset().left - edge;
+    curX = Math.max(curX, 0);
+    curX = Math.min(curX, new_w);
+    var pos = curX / new_w;
+    //$("#filelisttest").html(e.data.width + " - " + $(this).offset().left + " - " + curX);
+    drawImageList(-pos*(e.data.width - w));
+}
+
+function drawImageList(offset, percent){
+    if (typeof(offset) == 'undefined') offset = 0;
+    if (typeof(percent) == 'undefined') percent = false;
+    var x = 0;
+    clearUploadCanvas();
+    uploadctx.globalAlpha = (percent === false) ? 1.0 : 0.4;
+    for (i in imagelist){
+        var img = imagelist[i];
+        if ((x+offset < uploadcanvas.width) && (x+offset > -img.width))
+            uploadctx.drawImage(img.image, x+offset, 0, img.width, 100);
+        x += img.width;
+    }
+    uploadctx.globalAlpha = 1.0;
+    $("#uploadcanvas").unbind('mousemove');
+    if (percent === false) {
+        if (x > uploadcanvas.width){
+            $("#uploadcanvas").mousemove({width:x}, onCanvasMouseMove);
+        }
+    } else {
+        var percent_w = x * percent;
+        x = 0;
+        for (i in imagelist){
+            var img = imagelist[i];
+            if (percent_w-img.width < 0) {
+                uploadctx.drawImage(img.image, 0, 0, img.image.width*(percent_w/img.width), img.image.height, x+offset, 0, percent_w, 100);
+                break;
+            } else
+                uploadctx.drawImage(img.image, x+offset, 0, img.width, 100);
+            percent_w -= img.width;
+            x += img.width;
+        }
+    }
+}
+
 function startCreateUpload(){
-    //first check for tags and TOS
+    var data = {
+        title: $('#filetitle').val(),
+        user : $('#userid_uploader').val(),
+        tags : $('#upload-taglist').tagHandler('getSerializedTags'),
+        tos  : $("#upload-tos").is(':checked')
+    }
+    if (!IsDefined(data.tags)) { alert('Uploaded files must be tagged.'); return; }
+    if (!verifyTags(data.tags)) return;
+    if (!data.tos) { alert('You must agree to the Terms of Service before uploading content.'); return; }
     $('#upload-controller').block({message:'Uploading...'});
     $('#fileuploader').fileupload('option',{
-        formData: {
-            user: $('#userid_uploader').val(),
-            tags: $('#upload-taglist').tagHandler('getSerializedTags')
-        }
+        formData: data
     });
-    for (i in filelist)
-        $('#fileuploader').fileupload('send',{files: filelist[i]});
+//    for (i in filelist)
+//        $('#fileuploader').fileupload('send',{files: filelist[i]});
+    $('#fileuploader').fileupload('send',{files: filelist});
 }
 
 function loadUploader(){
@@ -141,61 +234,44 @@ function loadUploader(){
         dataType: 'json',
         'dropZone': $('#upload-controller'),
         //'fileInput': $('#file'),
-        sequentialUploads: true,
+        //sequentialUploads: true,
+        singleFileUploads: false,
         maxFileSize: 50000,
         add: function (e, data) {
                  $.each(data.files, function (index, file) {
+                    if (filelist.length > 0 && ((!filetypes.image.test(file.type)) || (!filetypes.image.test(filelist[filelist.length-1].type)))) {
+                        filelist = [];
+                    }
                     var duplicate = false;
                     for (i in filelist)
                         if (filelist[i].name == file.name)
                             duplicate = true;
                     if (!duplicate){
                         filelist.push(file);
-                        if (filetypes.image.test(file.type)) {
-                            $('#filelisttest').append('<li>'+file.name+' - '+file.type+'</li>');
-                            //alert('image added');
-                        } else if (filetypes.video.test(file.type)) {
-                            if (filelist.length > 1){
-                                filelist.pop();
-                                alert("Videos cannot be bundled with other files.\nYou must upload videos by themselves by removing other files in queue.");
-                            } else {
-                                //alert('video added');
-                                $('#filelisttest').append('<li>'+file.name+' - '+file.type+'</li>');
-                            }
-                        } else if (filetypes.audio.test(file.type)) {
-                            $('#filelisttest').append('<li>'+file.name+' - '+file.type+'</li>');
-                            //alert ('audio added');
-                        } else if (filetypes.flash.test(file.type)) {
-                            if (filelist.length > 1){
-                                filelist.pop();
-                                alert("Flash files cannot be bundled with other files.\nYou must upload flash files by themselves by removing other files in queue.");
-                            } else {
-                                //alert('flash added');
-                                $('#filelisttest').append('<li>'+file.name+' - '+file.type+'</li>');
-                            }
-                        } else{
-                            filelist.pop();
-                            alert('The file type ('+file.type+') is not supported.');
-                        }
+                        for (i in filetypes)
+                            if (filetypes[i].test(file.type))
+                                return 1; // Continue to next iteration
+                        filelist.pop();
+                        alert('The file type ('+file.type+') is not supported.');
                     }
                 });
-//            alert(filelist.length);
 //            $('#upload-controller').blockEx();
 //            data.submit();
+            reloadFileList();
         },
         'progress': function(e, data){
             var progress = parseInt(data.loaded / data.total * 100, 10);
-            //drawImageFit(canvas, img, progress);
             if (progress == 100){
                 if (filetypes.video.test(data.files[0].type)){
                     $('#upload-controller').block({message:'Encoding video...'});
                     setTimeout(showEncodeProgress, 3000);
                 }
             }
-            //$('#events').append('<p>'+progress+'-'+data.files[0].name+'</p>');
             $("#upload-progress").progressbar({
                 value: progress
             });
+            //console.log("Progess: "+progress)
+            canvasprogress(progress/100);
         },
         change: function (e, data) {
             //loadImage(data.files[0]);
@@ -210,8 +286,8 @@ function loadUploader(){
         done: function (e, data) {
             $("#upload-progress").progressbar("destroy");
             $('#upload-controller').unblock();
-            filelist = new Array();
             if (data.result.success) {
+
                 if ($('.fancybox-opened').length) {
                     if ($('#comment').length){
                         $('input[name=file]').val(data.result.id);
@@ -222,6 +298,7 @@ function loadUploader(){
                     $.fancybox.close();
                 }
                 //$.growlUI('Successfully uploaded '+data.files[0].name+'!');
+                resetUploadForm();
                 AddAjaxDiv('#uploadresults', "ajax_msg_success", 'Successfully uploaded: <input type="text" value="'+data.result.url+'" onclick="this.select();" />');
             } else {
                 AddAjaxDiv('#uploadresults', "ajax_msg_error", data.result.error);
@@ -230,18 +307,22 @@ function loadUploader(){
     });
 }
 
-var uploadcanvas;
+function clearUploadCanvas(){ uploadctx.clearRect(0, 0, uploadcanvas.width, uploadcanvas.height); }
+
+function resetUploadForm(){
+    filelist = [];
+    loadTagHandler('upload-taglist');
+    $('#filetitle').val('');
+    clearUploadCanvas();
+    $('#canvasdiv').hide('fast');
+}
+
+var uploadcanvas, uploadctx;
 function upload_onload(){
     uploadcanvas = $("#uploadcanvas")[0]
+    uploadctx = uploadcanvas.getContext('2d');
     loadUploader();
     userid_load("userid_uploader");
-    $('#upload-controller').click(function(e) {
-        $('#file').click();
-    });
-//    $('#upload-taglist').tagHandler({
-//        getURL: '/ajax/taglist',
-//        autocomplete: true
-//    });
-    loadTagHandler('upload-taglist');
+    $('#upload-controller').click(function(e) { $('#file').click(); });
     loadTagHandler('upload-taglist');
 }
