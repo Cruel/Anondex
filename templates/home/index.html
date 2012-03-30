@@ -2,8 +2,51 @@
 
 {% block content %}
     <div>
-        <h1>Home page.</h1>
+        {% if featured %}
+            <h2>Featured Adex</h2>
+            <div>
+                <a class="no-ajaxy" href="/?{{ featured.item_code }}">
+                    <span class="typeicon icontype{{ featured.type }}"></span>
+                    {{ featured.thumbnail|safe }}
+                </a>
+                <p>{{ featured.title }}</p>
+            </div>
+        {% endif %}
 
-        
+        <div class="topcategories">
+            {% if bestrated %}
+                <div>
+                    <h2>Best Rated</h2>
+                    <a class="no-ajaxy" href="/?{{ bestrated.item_code }}">
+                        <span class="typeicon icontype{{ bestrated.type }}"></span>
+                        {{ bestrated.thumbnail|safe }}
+                    </a>
+                    <p>{{ bestrated.title }}</p>
+                </div>
+            {% endif %}
+            {% if mostviewed %}
+                <div>
+                    <h2>Most Viewed</h2>
+                    <a class="no-ajaxy" href="/?{{ mostviewed.item_code }}">
+                        <span class="typeicon icontype{{ mostviewed.type }}"></span>
+                        {{ mostviewed.thumbnail|safe }}
+                    </a>
+                    <p>{{ mostviewed.title }}</p>
+                </div>
+            {% endif %}
+            {% if talkedabout %}
+                <div>
+                    <h2>Most Talked About</h2>
+                    <a class="no-ajaxy" href="/?{{ talkedabout.item_code }}">
+                        <span class="typeicon icontype{{ talkedabout.type }}"></span>
+                        {{ talkedabout.thumbnail|safe }}
+                    </a>
+                    <p>{{ talkedabout.title }}</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <h2>Top Comments</h2>
+        {% include "comments/comments.html" with anchored=0 stubbed=1 modcontrols=1 %}
     </div>
 {% endblock %}

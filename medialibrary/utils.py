@@ -93,7 +93,7 @@ def genVideoThumb(videofile, imagefile):
 def webthumb(url, filename, is_flash=False):
     script = '''
         var s = document.createElement('script');
-        s.src = 'http://cruels.net/sb/flashfix.js';
+        s.src = 'http://anondex.com/media/flashfix.min.js';
         document.body.appendChild(s);
     '''
     print "webthumb(%s, %s)" % (url, filename)

@@ -14,13 +14,21 @@ from home.query_utils import QuerySetSequence
 from medialibrary.models import LibraryFile
 
 def index(request):
-    #if request.user.is_authenticated():
-        #comment_list = Comment.objects.all().order_by('date')
     if len(request.GET) > 0:
         item_code = request.META.get('QUERY_STRING')
         return adex_view(request, item_code)
     else:
-        return render_to_response('home/index.html', {'user':request.user}, context_instance=RequestContext(request))
+        comments = AdexComment.objects.all().order_by('-submit_date')[:4]
+        f = Adex.objects.all().order_by('date')[0]
+        c = {
+            'user'          : request.user,
+            'comment_list'  : comments,
+            'featured'      : f,
+            'bestrated'     : f,
+            'mostviewed'    : f,
+            'talkedabout'   : f,
+        }
+        return render_to_response('home/index.html', c, context_instance=RequestContext(request))
 
 def browse(request, page):
     #adex_list = Adex.objects.all()

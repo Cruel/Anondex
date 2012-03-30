@@ -213,26 +213,6 @@ function LoginRedirect(username){
     parent.$.growlUI('Logged in. Welcome, '+username+'!');
 }
 
-function moveMouse(e){
-	if (enablehover){
-		var newY = e.pageY ? e.pageY : e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
-		newY = newY - 100;
-		if (hoverbound) {
-			var maxY = $(window).height() - $('#hoverdiv').height() - 22;
-			var minY = 114;
-			if (showads) maxY = maxY - 220;
-			if (newY > maxY) newY = maxY;
-			if (newY < minY) newY = minY;
-		}
-		//TODO: Snap hoverdiv to top of thumbs?
-		//var changeY = Math.abs($('#hoverdiv').position().top - newY);
-		//if (changeY > 40)
-		//	$('#hoverdiv').stop().animate({top:newY+"px"}, changeY);
-		//else
-			$('#hoverdiv').css('top',newY+"px");
-	}
-}
-
 function userid_load(userid){
     userid = (typeof userid !== 'undefined') ? userid : "userid";
     $("select#"+userid).change(function(){
@@ -244,6 +224,23 @@ function userid_load(userid){
         if ($(this).val() == "login") {
             $.fancybox(loginBox);
         }
+    });
+}
+
+var mediaplayer;
+function loadAdexMediaPlayer(){
+    $('video').mediaelementplayer({
+        pluginPath:'http://anondex.com/media/',
+        success: function (player, obj) {
+            mediaplayer = player;
+            jQuery.resize.delay = 25;
+            $("#itemcell").resize(function(){
+                console.log("resized!");
+                mediaplayer.player.setPlayerSize($('#itemcell').width(), $('#itemcell').height());
+            });
+        },
+        videoWidth: $('#itemcell').width(),
+        videoHeight: $('#itemcell').height()
     });
 }
 
@@ -293,7 +290,6 @@ function ajaxCSRF(){
 }
 
 $(function(){
-    //$(document).mousemove(moveMouse);
     userid_load();
     $('#loginmenu .login').fancybox(loginBox);
     ajaxCSRF();

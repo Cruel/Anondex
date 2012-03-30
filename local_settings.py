@@ -81,6 +81,7 @@ MEDIA_BUNDLES = (
         'js/jquery.fancybox-2.0.4.js',
         'js/jquery.taghandler.js',
         'js/jquery.cluetip.js',
+        'js/jquery.ba-resize.js',
         'js/jquery.hoverIntent.js',
         'js/jquery.scrollto.js',
         'js/jquery.blockUI.js',
