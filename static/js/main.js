@@ -1,6 +1,8 @@
 
-var enablehover = false;
-var hoverbound = false;
+var enablehover = false,
+    hoverbound = false,
+    animating = false,
+    expiration = 0;
 //document.domain = "localhost";
 
 var commentBox = {

@@ -52,12 +52,6 @@ def comment(request, comment_id):
     comment = get_object_or_404(AdexComment.objects, pk = comment_id)
     return render_to_response('comments/comments.html', {'comment_list':[comment],'anchored':False}, RequestContext(request))
 
-#def addlibfile(request, media_id):
-#    media = request.session.get('uploaded_media') or []
-#    media.append(unicode(media_id))
-#    request.session['uploaded_media'] = media
-#    return HttpResponse(json.dumps({'success':True, 'value':media_id}))
-
 def sidebar(request):
     adex_list = Adex.objects.all().order_by('-date')[:2]
     comments = AdexComment.objects.all().order_by('-submit_date')[:3]
@@ -86,13 +80,6 @@ def rate(request):
         return HttpResponse(json.dumps({'success':False, 'value':response.content}))
     else:
         return redirect('/')
-
-def report(request, type, id):
-    if type == 'adex':
-        adex = get_object_or_404(Adex.objects, pk = id)
-    elif type == 'image':
-        image = get_object_or_404(LibraryFile.objects, pk = id)
-    return redirect('/')
 
 def encode_progress(request):
     ip = request.META['REMOTE_ADDR']

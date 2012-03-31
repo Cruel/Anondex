@@ -1,8 +1,4 @@
 var reportSettings = {
-	//'autoDimensions':	false,
-	//'width'			:	350,
-	//'height'		:	200,
-    //'type'          :   'ajax',
     'closeBtn'      :   false,
     'scrolling'     :   'no',
 	'padding'		:	20,
@@ -13,7 +9,7 @@ var reportSettings = {
 };
 
 function reportSubmit() {
-	$.post(reporturl, {'type':$('.reportselect').val(), 'comment':$('.reporttext').val()},
+	$.post(reportSettings['href'], {'type':$('.reportselect').val(), 'comment':$('.reporttext').val()},
 			function(data){
                 reportSettings['type'] = 'html';
 				$.fancybox(data,reportSettings);
