@@ -2,12 +2,9 @@
 function resetForm(){
 	$('input[type=text]').val('');
 	$('textarea').val('');
-	$('#url').val('http://');
-	$("#name").css({ color:"black", backgroundColor:"" });	
+	$('#url').val('');
 	Recaptcha.reload();
 	refreshFileList();
-
-//    loadTagHandler('#taglist','create');
     $('#createbutton').attr("disabled", "disabled");
 }
 
@@ -47,18 +44,13 @@ function checkValues(valData) {
 
 function makePOSTData(postdata, paramlist){
 	for (var x in paramlist)
-		//postdata[paramlist[x]] = encodeURIComponent($("#"+paramlist[x]).val()).replace("'","%27");
         postdata[paramlist[x]] = $("#"+paramlist[x]).val();
 }
 
 function createPage(NotPreview){
 	var content = {};
 	makePOSTData(content, ["userid","duration","title","description","recaptcha_challenge_field","recaptcha_response_field","url","imageselect","audioselect","videoselect","flashselect"]);
-//    var tagNames = new Array();
-//    $("#taglist li.tagItem").each(function () {
-//        tagNames.push($(this).html());
-//    });
-    content.tags = $('#taglist').tagHandler('getSerializedTags');//tagNames.join(',');
+    content.tags = $('#taglist').tagHandler('getSerializedTags');
 	content.preview = NotPreview ? '0' : '1';
 	content.type = $("input[name='type']:checked").val();
 	content.imgtemplate = $("input[name='imgtemplate']:checked").val();
@@ -71,7 +63,6 @@ function createPage(NotPreview){
 		case "url": content.type = 3; break;
 	}
 	if (!checkValues(content)) return false;
-	//TODO: Fix preview winodow opener...?
 	if (!NotPreview) {
         $('body').append('<form id="tmpform" action="/preview" method="post" target="previewWin"></form>');
         for(var i in content) {
@@ -80,7 +71,6 @@ function createPage(NotPreview){
         window.open('', 'previewWin', '');
         $('#createbutton').removeAttr("disabled");
         $('#tmpform').submit().remove();
-        //var wnd = window.open('loading', 'previewWin', '');
     } else{
         $.blockUI();
         $.post("/create/post", content,
@@ -91,8 +81,8 @@ function createPage(NotPreview){
                     AddAjaxDiv('#submitbuttons', "ajax_msg_success", 'Adex successfully created: <input type="text" value="'+data.value+'" onclick="this.select();" />');
                 } else {
                     AddAjaxDiv('#submitbuttons', "ajax_msg_error", data.value);
+                    Recaptcha.reload();
                 }
-                //if (data.indexOf('<div id="createerrors">') > -1) wnd.close();
         }, "json");
     }
 	return true;

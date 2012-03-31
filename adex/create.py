@@ -68,7 +68,7 @@ def checkCaptcha(challenge_field, response_field, ip):
     )
     if not response.is_valid: # 'incorrect-captcha-sol' or ''
         if response.error_code == 'incorrect-captcha-sol':
-            return "Incorrect captcha was given, please refresh it and try again."
+            return "Incorrect captcha was given, please try again."
         else:
             return "Captcha error '%s'. Try again. If problem continues, report to admin."
     else:
