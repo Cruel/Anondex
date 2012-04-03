@@ -1,3 +1,19 @@
+@import base
+
+.reportbutton
+  position: absolute
+  top: 0px
+  right: 22px
+  width: 70px
+  height: 25px
+  display: block
+  border-radius: 4px
+  color: #fff
+  text-shadow: 0 1px 1px rgba(0,0,0,0.25)
+  +background-image(linear-gradient(top, #41c4f4 0%, #39aad4 100%))
+  &:hover, &:active
+    +background-image(linear-gradient(top, #14bcfb 0%, #0189bc 100%))
+
 .reportform
   //width: 250px
 

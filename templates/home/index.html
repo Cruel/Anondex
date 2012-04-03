@@ -1,5 +1,7 @@
 {% extends "home/base.html" %}
 
+{% load medialibrary adexcomments %}
+
 {% block content %}
     <div>
         {% if featured %}
@@ -14,36 +16,22 @@
         {% endif %}
 
         <div class="topcategories">
-            {% if bestrated %}
-                <div>
-                    <h2>Best Rated</h2>
-                    <a class="no-ajaxy" href="/?{{ bestrated.item_code }}">
-                        <span class="typeicon icontype{{ bestrated.type }}"></span>
-                        {{ bestrated.thumbnail|safe }}
-                    </a>
-                    <p>{{ bestrated.title }}</p>
-                </div>
-            {% endif %}
-            {% if mostviewed %}
-                <div>
-                    <h2>Most Viewed</h2>
-                    <a class="no-ajaxy" href="/?{{ mostviewed.item_code }}">
-                        <span class="typeicon icontype{{ mostviewed.type }}"></span>
-                        {{ mostviewed.thumbnail|safe }}
-                    </a>
-                    <p>{{ mostviewed.title }}</p>
-                </div>
-            {% endif %}
-            {% if talkedabout %}
-                <div>
-                    <h2>Most Talked About</h2>
-                    <a class="no-ajaxy" href="/?{{ talkedabout.item_code }}">
-                        <span class="typeicon icontype{{ talkedabout.type }}"></span>
-                        {{ talkedabout.thumbnail|safe }}
-                    </a>
-                    <p>{{ talkedabout.title }}</p>
-                </div>
-            {% endif %}
+            {% for category, objects in categories.items %}
+                {% if objects %}
+                    <div>
+                        <h2>{{ category }}</h2>
+                        {% for adex in objects %}
+                            <div>
+                                <a class="no-ajaxy" href="/?{{ adex.item_code }}">
+                                    <span class="typeicon icontype{{ adex.type }}"></span>
+                                    {% evalformat "width" "150-25*%d" forloop.counter0 %}
+                                    {% mediathumb adex width %}
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endfor %}
         </div>
 
         <h2>Top Comments</h2>

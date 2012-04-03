@@ -177,12 +177,12 @@ function refreshFileList(action, id) {
 }
 
 function loadCreateUploader(){
-    $('#btnAddFile').click(function(e) {
+    $('#btnAddFile').click(function() {
         //$('#file').click();
         $.fancybox(uploadBox);
     });
 
-    $('#btnAddFileLib').click(function(e) {
+    $('#btnAddFileLib').click(function() {
         attachBox.afterClose = addFromLibWindowOnClose;
         $.fancybox(attachBox);
     });

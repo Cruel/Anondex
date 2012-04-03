@@ -1,5 +1,6 @@
 from __future__ import division
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
@@ -13,20 +14,42 @@ from comments.models import AdexComment
 from home.query_utils import QuerySetSequence
 from medialibrary.models import LibraryFile
 
+ITEMS_PER_CATEGORY = 2
+
 def index(request):
     if len(request.GET) > 0:
         item_code = request.META.get('QUERY_STRING')
         return adex_view(request, item_code)
     else:
+        adex_content_type = ContentType.objects.get_for_model(Adex)
         comments = AdexComment.objects.all().order_by('-submit_date')[:4]
-        f = Adex.objects.all().order_by('date')[0]
+
+        # Atm, I'm going just going to hardcode featured item ID (ya, lazy)
+        featured = Adex.objects.get(id=1)
+
+        mostviewed = Adex.objects.all().extra(
+            select={
+                'hit_count':    'SELECT hits FROM hitcount_hit_count as t\
+                                WHERE t.content_type_id = %d\
+                                AND t.object_pk = adex_adex.id' % adex_content_type.id
+            }
+        ).order_by("-hit_count")[:ITEMS_PER_CATEGORY]
+
+        bestrated = Adex.objects.all().extra(select={
+            'rating_': '((100/%s*rating_score/(rating_votes+%s))+100)/2' % (Adex.rating.range, Adex.rating.weight)
+        }).order_by('-rating_')[:ITEMS_PER_CATEGORY]
+
+        talkedabout = False #Adex.objects.all()[:ITEMS_PER_CATEGORY]
+
         c = {
             'user'          : request.user,
             'comment_list'  : comments,
-            'featured'      : f,
-            'bestrated'     : f,
-            'mostviewed'    : f,
-            'talkedabout'   : f,
+            'featured'      : featured,
+            'categories'    : {
+                "Best Rated"        : bestrated,
+                "Most Viewed"       : mostviewed,
+                "Most Talked About" : talkedabout,
+            },
         }
         return render_to_response('home/index.html', c, context_instance=RequestContext(request))
 

@@ -10,3 +10,7 @@ and `sudo python setup.py install`
 6. Download https://github.com/thornomad/django-hitcount
 and `sudo python setup.py install`
 7. `sudo gem install sass compass`
+
+## Todo ##
+
+1. See into changing some (or all) tables to InnoDB for transactions. A transaction failure occurs when you upload an erroneous file (ex. a gif with a jpg extension), and is likely to occur elsewhere too.
