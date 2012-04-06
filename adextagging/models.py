@@ -1,12 +1,14 @@
 import string
+from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.template.defaultfilters import slugify
-from tagging.models import TagManager, Tag
+from tagging.models import TagManager, Tag, TaggedItem
 import tagging
 from adex.models import Adex
 from medialibrary.models import LibraryFile
 
 class MyTagManager(TagManager):
+    items = generic.GenericRelation(TaggedItem)
     def update_tags(self, obj, tag_names):
         tags = tag_names.split(',')
         for i, j in enumerate(tags):
@@ -41,6 +43,7 @@ class MyTagManager(TagManager):
             tags = tags | set(self.get_for_object(file).values_list('name', flat=True))
         return list(tags)
     def get_related(self, tags):
+        #TODO: merging the query sets does not increment the count properly ???
         tag_list1 = self.related_for_model(tags, LibraryFile, counts=True, min_count=None)
         tag_list2 = self.related_for_model(tags, Adex, counts=True, min_count=None)
         related_tags = list(set(tag_list1 + tag_list2))                 # Cast to set to remove duplicates

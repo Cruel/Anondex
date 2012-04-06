@@ -1,17 +1,20 @@
 import random
 from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
+from django.db.models.aggregates import Count
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.template.context import RequestContext
 from django.utils import simplejson as json
 from django.views.decorators.csrf import csrf_exempt
 from tagging.models import Tag
+from tagging.utils import calculate_cloud
 from adex.models import Adex
 from adextagging.models import MyTag
 from comments.models import AdexComment
 from comments.templatetags.adexcomments import get_thumb_rating
 from medialibrary.models import LibraryFile
+import tagging
 
 @csrf_exempt
 def filelist(request):
@@ -57,7 +60,9 @@ def sidebar(request):
     comments = AdexComment.objects.all().order_by('-submit_date')[:3]
     files = LibraryFile.objects.exclude(type=3).exclude(visible=False)
     if files.count() > 6: files = random.sample(files, 6)
-    return render_to_response('home/sidebar.html', {'adex_list':adex_list, 'comment_list':comments, 'rand_files':files},
+    tagcloud = MyTag.objects.annotate(count=Count('id')).filter(items__isnull=False, count__gt=0).order_by('name')
+    tagcloud = calculate_cloud(tagcloud, steps=4, distribution=tagging.utils.LOGARITHMIC)
+    return render_to_response('home/sidebar.html', {'adex_list':adex_list, 'comment_list':comments, 'rand_files':files, 'tagcloud':tagcloud},
                     context_instance=RequestContext(request))
 
 def rate(request):

@@ -1,5 +1,14 @@
 {% load medialibrary adexcomments %}
 
+<h2>Tag Cloud</h2>
+<ul class="tagcloud">
+    {% for tag in tagcloud %}
+        <li title="There are {{ tag.count|default:"0" }} items tagged with '{{ tag.name }}'" class="tagweight{{ tag.font_size }}">
+            <a href="{% url tagged tag.name %}">{{ tag.name }}</a>
+        </li>
+    {% endfor %}
+</ul>
+
 <h2>Latest Adex</h2>
 {% for adex in adex_list %}
     <a class="latestitem no-ajaxy" href="/?{{ adex.item_code }}">
