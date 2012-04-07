@@ -4,7 +4,7 @@ import time
 DEBUG = True
 PRODUCTION = False
 TEMPLATE_DEBUG = DEBUG
-MEDIA_DEV_MODE = True
+MEDIA_DEV_MODE = False
 
 #VERSION = '2.0.0'
 
@@ -44,11 +44,10 @@ PRODUCTION_MEDIA_URL = '/static/'
 
 GLOBAL_MEDIA_DIRS = (
     join(ROOT_PATH, 'static'),
-    join(ROOT_PATH, 'imported-sass-frameworks'),
+    join(ROOT_PATH, '../imported-sass-frameworks'),
 )
 
-MEDIA_ROOT = join(ROOT_PATH, 'media/')
-#MEDIA_ROOT = 'C:/nginx/html/media/'
+MEDIA_ROOT = join(ROOT_PATH, '../media/')
 STATIC_ROOT = join(ROOT_PATH, 'static/')
 if not PRODUCTION:
     MEDIA_URL = 'http://localhost/media/'
@@ -59,10 +58,8 @@ else:
     ADMIN_MEDIA_PREFIX = 'http://anondex.com/media/admin/'
     STATIC_URL = 'http://anondex.com/static/'
 
-#FILE_UPLOAD_TEMP_DIR = 'C:/nginx/upload_tmp'
-
-YUICOMPRESSOR_PATH = join(ROOT_PATH, 'yuicompressor.jar')
-CLOSURE_COMPILER_PATH = join(ROOT_PATH, 'closure.jar')
+YUICOMPRESSOR_PATH = join(ROOT_PATH, '../yuicompressor.jar')
+CLOSURE_COMPILER_PATH = join(ROOT_PATH, '../closure.jar')
 
 ROOT_MEDIA_FILTERS = {
     'js': 'mediagenerator.filters.closure.Closure',
@@ -145,7 +142,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    #'pagination.middleware.PaginationMiddleware',
 )
 
 if DEBUG:
